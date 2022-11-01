@@ -33,9 +33,6 @@ class Player:
         self._buffs: Dict[int, buff] = {
         }
 
-
-
-
     # ————————————————————怒气部分————————————————————
 
     @property
@@ -90,7 +87,14 @@ class Player:
     def ParryValue(self):
         return
 
+    # ————————————————————技能部分————————————————————
 
+    def CastSkill(self):
+        pass
 
+    # ————————————————————气劲部分————————————————————
+
+    def AddBuff(self):
+        pass
 
 
