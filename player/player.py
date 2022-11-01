@@ -2,6 +2,7 @@
 # author: LinXin
 
 from main import buff
+from .player_attribute import Attribute
 
 from typing import Dict
 
@@ -15,20 +16,7 @@ class Player:
         self._casted = None
         self._damage = 0
         # ————————————————————属性部分————————————————————
-        self._attributes = {
-            'Vitality': 41,
-            'Agility': 41,
-            'Strength': 41,
-            'PhysicsAttackPowerBase': 0,
-            'PhysicsCriticalStrike': 0,
-            'PhysicsCriticalDamagePower': 0,
-            'PhysicsOvercome': 0,
-            'Strain': 0,
-            'SurplusValue': 0,
-            'Haste': 0,
-            'Parry': 0,
-            'ParryValue': 0,
-        }
+        self._attribute = Attribute(self)
         # ————————————————————气劲部分————————————————————
         self._buffs: Dict[int, buff] = {
         }
@@ -45,56 +33,61 @@ class Player:
         self._rage = min(110, value)
 
     # ————————————————————属性部分————————————————————
-    # ————————————————————这里明天可以单独写一个class加载进来————————————————————
-
     @property
     def Vitality(self):
-        return
+        return self._attribute.Vitality
 
     @property
     def PhysicsAttackPower(self):
-        return
+        return self._attribute.PhysicsAttackPower
 
     @property
     def PhysicsCriticalPercent(self):
-        return
+        return self._attribute.PhysicsCriticalPercent
 
     @property
     def PhysicsCriticalDamagePowerPercent(self):
-        return
+        return self._attribute.PhysicsCriticalDamagePowerPercent
 
     @property
     def OvercomePercent(self):
-        return
+        return self._attribute.OvercomePercent
 
     @property
     def StrainPercent(self):
-        return
+        return self._attribute.StrainPercent
 
     @property
     def SurplusValue(self):
-        return
+        return self._attribute.SurplusValue
 
     @property
     def HastePercent(self):
-        return
+        return self._attribute.HastePercent
 
     @property
     def ParryPercent(self):
-        return
+        return self._attribute.ParryPercent
 
     @property
     def ParryValue(self):
-        return
+        return self._attribute.ParryValue
+
 
     # ————————————————————技能部分————————————————————
 
     def CastSkill(self):
+        # 1. 获取到对应脚本
+        # 2. 执行对应脚本的Apply方法
+        # 3. 检查释放结果，记录释放信息
         pass
 
     # ————————————————————气劲部分————————————————————
 
     def AddBuff(self):
+        pass
+
+    def GetBuff(self):
         pass
 
 
