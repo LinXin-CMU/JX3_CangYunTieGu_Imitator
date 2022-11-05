@@ -59,5 +59,9 @@ class Attribute:
         return
 
     @property
+    def ParryPercentValue(self):
+        return
+
+    @property
     def ParryValue(self):
         return
