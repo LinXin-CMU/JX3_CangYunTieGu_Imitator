@@ -23,4 +23,4 @@ def Apply(player: Player, target):
 
 
 
-DunDao_4 = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, Apply)
+DunDao_4 = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState, Apply)

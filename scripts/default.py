@@ -2,6 +2,8 @@
 # author: LinXin
 
 from jx3_types import skill_script, damage_data, cooldown_data, Player
+from scripts.buff import buff_data
+import random
 
 
 tSkillData = {
@@ -16,6 +18,7 @@ tSkillName = '默认技能'
 tDesc = '默认的技能脚本'
 nNeedGcdType = 0
 nNeedMinRage = 0
+nNeedPosState = 0   # 盾姿态
 
 
 def Apply(player: Player, target):
@@ -24,4 +27,4 @@ def Apply(player: Player, target):
 
 
 
-default = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, Apply)
+default = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState, Apply)

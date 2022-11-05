@@ -12,5 +12,9 @@ from .DunYa import DunYa
 from .DunJi import DunJi
 from .DunMeng import DunMeng
 from .DunDang import DunDang
+from .DunFei import DunFei
+from .DunFeiAttack import DunFeiAttack
+from .DunFeiChangeState import DunFeiChangeState
+from .DunFeiAddXuRuo import DunFeiAddXuRuo
 
 

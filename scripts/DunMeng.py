@@ -34,9 +34,18 @@ def Apply(player: Player, target):
     if player.GetSkillLevel('激昂') == 1:
         player.AddBuff(8418, 1)
 
+    # 盾压重置
+    parry = player.ParryPercent
+    if not isinstance(parry, float):
+        return
+    rand = random.randint(1, 10000)
+    if rand/10000 <= parry:
+        player.ClearCDTime(13045)
+
+
     return 1
 
 
 
 
-DunMeng = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, Apply)
+DunMeng = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState, Apply)

@@ -16,8 +16,8 @@ class Attribute:
             'Strain': 0,
             'SurplusValue': 0,
             'Haste': 0,
-            'Parry': 0,
-            'ParryValue': 0,
+            'Parry': 40000,
+            'ParryValue': 160000,
         }
 
         self._player = player
@@ -56,12 +56,12 @@ class Attribute:
 
     @property
     def ParryPercent(self):
-        return
+        return 0.4
 
     @property
     def ParryPercentValue(self):
-        return
+        return self._attributes['Parry']
 
     @property
     def ParryValue(self):
-        return
+        return self._attributes['ParryValue']

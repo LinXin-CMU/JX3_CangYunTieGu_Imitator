@@ -1,6 +1,5 @@
 # coding: utf-8
 # author: LinXin
-
 from scripts.default import *
 
 
@@ -61,11 +60,18 @@ def Apply(player: Player, target):
         player.rage += 5
         player.AddPublicCoolDown(1, 1*16)
 
-    # player.AddBuff(8398, 1)   # 卷云
+    # target.AddBuff(8398, 1)   # 卷云
+    # 盾压重置
+    parry = player.ParryPercent
+    if not isinstance(parry, float):
+        return
+    rand = random.randint(1, 10000)
+    if rand/10000 <= parry:
+        player.ClearCDTime(13045)
 
     return 1
 
 
 
 
-DunDao = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, Apply)
+DunDao = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState, Apply)

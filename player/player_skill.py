@@ -18,5 +18,8 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     13059: scripts.DunDao_2,
     13060: scripts.DunDao_3,
     13119: scripts.DunDao_4,
+    13316: scripts.DunFeiAttack,
+    13352: scripts.DunFeiChangeState,
     13391: scripts.DunDang,
+    13540: scripts.DunFeiAddXuRuo,
 }

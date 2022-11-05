@@ -33,12 +33,10 @@ def Apply(player: Player, target):
     if player.GetSkillLevel('雄峦') == 1:
         player.AddBuff(8253, 1)
 
-
-
     player.AddBuff(8738, 1)
     return 1
 
 
 
 
-DunYa = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, Apply)
+DunYa = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState, Apply)

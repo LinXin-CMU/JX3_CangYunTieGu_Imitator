@@ -41,6 +41,9 @@ class Player:
         }
         # 当前时间
         self._timer = -1
+        # ————————————————————体态部分————————————————————
+        # 默认添加盾姿态buff
+        self.AddBuff(8277, 1)
 
     # ————————————————————怒气部分————————————————————
 
@@ -150,11 +153,9 @@ class Player:
             self._damage += state
             # 记录技能
             if self.casted is None:
-                self.casted = {
-                    self._timer: _skill.tSkillName
-                }
+                self.casted = [{'frame': self._timer, 'name': _skill.tSkillName, 'desc': _skill.tDesc}]
             else:
-                self.casted[self._timer] = _skill.tSkillName
+                self.casted.append({'frame': self._timer, 'name': _skill.tSkillName, 'desc': _skill.tDesc})
 
     def GetSkillLevel(self, skill_id):
         """
@@ -199,13 +200,13 @@ class Player:
                 return
             if level == _buff.level:
                 layer = _buff.layer + 1
-                self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting)
+                self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting, _buff.script)
                 return
             # 等级大于的情况
-            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting)
+            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff.script)
 
         else:
-            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting)
+            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff_data.Script)
 
 
     def IsHaveBuff(self, buff_id, buff_level=None):
@@ -228,8 +229,9 @@ class Player:
         else:
             return _buff
 
-    def DelBuff(self, buff_id, buff_level=None):
+    def DelBuff(self, buff_id, buff_level=None, all_layer=False):
         """
+        :param all_layer:
         :param buff_id:
         :param buff_level:
         :return:
@@ -241,16 +243,18 @@ class Player:
 
         _buff = self.buffs[buff_id]
         if buff_level is not None and _buff.level == buff_level or buff_level is None:
-            new_layer = max(0, _buff.layer - 1)
+            if all_layer:
+                new_layer = 0
+            else:
+                new_layer = max(0, _buff.layer - 1)
             if not new_layer:
                 del self.buffs[buff_id]
                 return 1
             else:
-                self.buffs[buff_id] = buff(_buff.id, _buff.level, new_layer, _buff.desc, _buff.lasting)
+                self.buffs[buff_id] = buff(_buff.id, _buff.level, new_layer, _buff.desc, _buff.lasting, _buff.script)
                 return 1
         else:
             return
-
 
     # ————————————————————时间部分————————————————————
 
@@ -292,6 +296,9 @@ class Player:
             else:
                 self.buffs[buff_id] = buff(*_buff_data[:-1], new_lasting)
         for buff_id in _del:
+            if hasattr(scripts, self.buffs[buff_id].script):
+                _skill = getattr(scripts, self.buffs[buff_id].script)
+                self.CastSkill(_skill, 1)
             del self.buffs[buff_id]
 
 
@@ -322,21 +329,19 @@ class Player:
             return
         self._gcd_list[cooldown_type] = period
 
-    def ClearCDTime(self, skill_id, period):
+    def ClearCDTime(self, skill_id, period=None):
         """
         :param skill_id:
         :param period:
         :return:
         """
-        if not period:
-            return
         if not skill_id:
             return
         if skill_id not in self._cooldown:
             return
         else:
             cd = self._cooldown[skill_id]
-            if cd <= period:
+            if period is None or cd <= period:
                 del self._cooldown[skill_id]
             else:
                 self._cooldown[skill_id] = cd - period

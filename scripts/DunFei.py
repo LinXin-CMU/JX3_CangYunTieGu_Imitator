@@ -1,0 +1,53 @@
+# coding: utf-8
+# author: LinXin
+
+from scripts.default import *
+
+
+tSkillData = {
+    1: damage_data(nDamageBase=0, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0)
+}
+
+tSkillCoolDown = {
+    1: cooldown_data(nSingleCoolDown=18, nMaxStackNum=3)
+}
+
+tSkillName = '盾飞'
+tDesc = '盾飞母技能'
+nNeedGcdType = [6]
+
+
+def Apply(player: Player, target):
+
+    # 盾飞加buff
+    nTime = buff_data.get(8391)
+    if not nTime:
+        return
+    if player.IsSkillRecipeActive('#盾飞加时间1', 1):
+        nTime += 5
+    if player.IsSkillRecipeActive('#盾飞加时间2', 1):
+        nTime += 5
+    player.AddBuff(8391, 1, lasting=nTime)
+
+    # 盾飞延迟换姿态
+    player.AddBuff(13352, 1)
+
+    # ------------------以下效果要延迟0.375s放到盾飞子技能里实现-------------------
+    # 盾飞换姿态
+    # 盾飞加盾威buff
+
+    # 盾飞加虚弱buff
+    # target.AddBuff(8248, 1)
+
+    # 怒炎
+    if player.GetSkillLevel('#怒炎') == 1:
+        # 加怒炎buff
+        player.AddBuff(8276, 1)
+        player.ClearCDTime('#斩刀', 5*16)
+
+    return 1
+
+
+
+
+DunFei = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState, Apply)

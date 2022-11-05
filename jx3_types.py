@@ -1,15 +1,16 @@
 # coding: utf-8
 # author: LinXin
 from collections import namedtuple
+from typing import List, Dict
 
 
-skill_script = namedtuple('skill_script', ['tSkillData', 'tSkillCoolDown', 'tSkillName', 'tDesc', 'nNeedGcdType', 'nNeedMinRage', 'Apply'])
+skill_script = namedtuple('skill_script', ['tSkillData', 'tSkillCoolDown', 'tSkillName', 'tDesc', 'nNeedGcdType', 'nNeedMinRage', 'nNeedPosState', 'Apply'])
 
 damage_data = namedtuple('skill_damage', ['nDamageBase', 'nDamageRand', 'nAttackRate', 'nWeaponDamagePercent'])
 
 cooldown_data = namedtuple('cooldown_data', ['nSingleCoolDown', 'nMaxStackNum'])
 
-buff = namedtuple('buff', ['id', 'level', 'layer', 'desc', 'lasting'])
+buff = namedtuple('buff', ['id', 'level', 'layer', 'desc', 'lasting', 'script'])
 
 GCD_TYPE = {
     0: 'normal_24',     # 常规1.5s
@@ -24,8 +25,11 @@ GCD_TYPE = {
 
 
 class Player:
-
-    def __init__(self): ...
+    casted: List
+    buffs: Dict[int, buff]
+    talents: List
+    recipes: List
+    def __init__(self, talents: list, recipes: list): ...
     # ————————————————————怒气部分————————————————————
     @property
     def rage(self): return ...
@@ -88,15 +92,16 @@ class Player:
         :return:
         """
 
-    def IsHaveBuff(self, buff_id, buff_level=None):
+    def IsHaveBuff(self, buff_id, buff_level=None) -> buff:
         """
         :param buff_id:
         :param buff_level:
         :return:
         """
 
-    def DelBuff(self, buff_id, buff_level=None):
+    def DelBuff(self, buff_id, buff_level=None, all_layer=False):
         """
+        :param all_layer:
         :param buff_id:
         :param buff_level:
         :return:
@@ -132,7 +137,7 @@ class Player:
         :return:
         """
 
-    def ClearCDTime(self, skill_id, period):
+    def ClearCDTime(self, skill_id, period=None):
         """
         :param skill_id:
         :param period:

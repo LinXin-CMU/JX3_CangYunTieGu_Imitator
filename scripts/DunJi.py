@@ -19,14 +19,23 @@ nNeedGcdType = [0, 1, 2, 3, 4, 5]
 
 def Apply(player: Player, target):
     player.AddPublicCoolDown(1, 1*16)
-    player.AddPublicCoolDown(0.5*16, 1)
+    player.AddPublicCoolDown(2, 0.5*16)
 
     player.AddSkillCoolDown(13047, 4*16)
 
     player.rage += 10
+
+    # 盾压重置
+    parry = player.ParryPercent
+    if not isinstance(parry, float):
+        return
+    rand = random.randint(1, 10000)
+    if rand/10000 <= parry:
+        player.ClearCDTime(13045)
+
     return 1
 
 
 
 
-DunJi = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, Apply)
+DunJi = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState, Apply)
