@@ -16,7 +16,7 @@ tDesc = '盾刀母技能脚本'
 nNeedGcdType = [0, 1, 2, 3, 4, 5]
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target):
     # print('这是盾刀母技能脚本')
     if not player:
         return
@@ -60,7 +60,7 @@ def Apply(player: Player, target):
         player.rage += 5
         player.AddPublicCoolDown(1, 1*16)
 
-    # target.AddBuff(8398, 1)   # 卷云
+    target.AddBuff(8398, 1)   # 卷云
     # 盾压重置
     parry = player.ParryPercent
     if not isinstance(parry, float):

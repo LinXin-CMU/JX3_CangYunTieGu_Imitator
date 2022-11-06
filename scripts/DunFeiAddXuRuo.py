@@ -14,12 +14,14 @@ tSkillCoolDown = {
 tSkillName = '盾飞添加虚弱buff'
 tDesc = '盾飞添加虚弱buff子技能'
 nNeedGcdType = []
+nNeedPosState = None
 
 
-def Apply(player: Player, target):
-    # ------------------以下效果要延迟0.375s放到盾飞子技能里实现-------------------
+def Apply(player: Player, target: Target):
+
+    # 延迟0.125s刷新虚弱buff
     if player.IsHaveBuff(50001) and player.IsHaveBuff(8278):
-        # target.AddBuff(8248, 1)
+        target.AddBuff(8248, 1)
         pass
 
     return 1

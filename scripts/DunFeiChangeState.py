@@ -15,16 +15,17 @@ tSkillCoolDown = {
 tSkillName = '盾飞切换姿态'
 tDesc = '盾飞切姿态子技能'
 nNeedGcdType = []
+nNeedPosState = None
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target):
 
     # ------------------以下效果要延迟0.375s放到盾飞子技能里实现-------------------
     # 盾飞换姿态
     player.DelBuff(8277, 1)
     player.AddBuff(8278, 1)
     # 盾飞加盾威buff
-    # target.AddBuff(8397, 1)
+    target.AddBuff(8397, 1)
     # 盾飞造成伤害
     player.CastSkill(13316, 1)
 

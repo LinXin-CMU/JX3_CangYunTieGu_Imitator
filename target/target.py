@@ -2,17 +2,17 @@
 # author: LinXin
 
 from jx3_types import *
-from .player_attribute import Attribute
-from .player_skill import skill_id_to_script
+from .target_attribute import Attribute
+from .target_skill import skill_id_to_script
 from scripts.buff import buff_data
 import scripts
 
 from typing import Dict, Union
 
 
-class Player:
+class Target:
 
-    def __init__(self, talents: list, recipes: list, target: Target):
+    def __init__(self):
         # ————————————————————怒气部分————————————————————
         self._rage = 0
 
@@ -24,8 +24,8 @@ class Player:
         self.buffs: Dict[int, buff] = {
         }
         # ————————————————————技能部分————————————————————
-        self.talents = talents
-        self.recipes = recipes
+        # self.talents = talents
+        # self.recipes = recipes
         # ————————————————————技能cd部分————————————————————
         self._cooldown = {
         }
@@ -42,66 +42,61 @@ class Player:
         # 当前时间
         self._timer = -1
         # ————————————————————体态部分————————————————————
-        # 默认添加盾姿态buff
-        self.AddBuff(8277, 1)
-        # ————————————————————目标部分————————————————————
-        self._target = target
 
     # ————————————————————怒气部分————————————————————
 
-    @property
-    def rage(self):
-        return self._rage
-
-    @rage.setter
-    def rage(self, value):
-        assert isinstance(value, int), '怒气必须为整数'
-        self._rage = min(110, value)
+    # @property
+    # def rage(self):
+    #     return self._rage
+    #
+    # @rage.setter
+    # def rage(self, value):
+    #     assert False
 
     # ————————————————————属性部分————————————————————
-    @property
-    def Vitality(self):
-        return self._attribute.Vitality
-
-    @property
-    def PhysicsAttackPower(self):
-        return self._attribute.PhysicsAttackPower
-
-    @property
-    def PhysicsCriticalPercent(self):
-        return self._attribute.PhysicsCriticalPercent
-
-    @property
-    def PhysicsCriticalDamagePowerPercent(self):
-        return self._attribute.PhysicsCriticalDamagePowerPercent
-
-    @property
-    def OvercomePercent(self):
-        return self._attribute.OvercomePercent
-
-    @property
-    def StrainPercent(self):
-        return self._attribute.StrainPercent
-
-    @property
-    def SurplusValue(self):
-        return self._attribute.SurplusValue
-
-    @property
-    def HastePercent(self):
-        return self._attribute.HastePercent
-
-    @property
-    def ParryPercent(self):
-        return self._attribute.ParryPercent
-
-    @property
-    def ParryPercentValue(self):
-        return self._attribute.ParryPercentValue
-
-    @property
-    def ParryValue(self):
-        return self._attribute.ParryValue
+    # @property
+    # def Vitality(self):
+    #     return self._attribute.Vitality
+    #
+    # @property
+    # def PhysicsAttackPower(self):
+    #     return self._attribute.PhysicsAttackPower
+    #
+    # @property
+    # def PhysicsCriticalPercent(self):
+    #     return self._attribute.PhysicsCriticalPercent
+    #
+    # @property
+    # def PhysicsCriticalDamagePowerPercent(self):
+    #     return self._attribute.PhysicsCriticalDamagePowerPercent
+    #
+    # @property
+    # def OvercomePercent(self):
+    #     return self._attribute.OvercomePercent
+    #
+    # @property
+    # def StrainPercent(self):
+    #     return self._attribute.StrainPercent
+    #
+    # @property
+    # def SurplusValue(self):
+    #     return self._attribute.SurplusValue
+    #
+    # @property
+    # def HastePercent(self):
+    #     return self._attribute.HastePercent
+    #
+    # @property
+    # def ParryPercent(self):
+    #     return self._attribute.ParryPercent
+    #
+    # @property
+    # def ParryPercentValue(self):
+    #     return self._attribute.ParryPercentValue
+    #
+    # @property
+    # def ParryValue(self):
+    #     return self._attribute.ParryValue
 
     # ————————————————————技能部分————————————————————
 
@@ -146,19 +141,18 @@ class Player:
                 return
 
         # 检查怒气需求
-        if self._rage < _skill.nNeedMinRage:
-            return
+        # if self._rage < _skill.nNeedMinRage:
+        #     return
 
         # 检查体态
-        if self.IsHaveBuff(8277):
-            n_state = 0
-        else:
-            n_state = 1
-        if _skill.nNeedPosState is not None:
-            if _skill.nNeedPosState != n_state:
-                return
+        # if self.IsHaveBuff(8277):
+        #     n_state = 0
+        # else:
+        #     n_state = 1
+        # if _skill.nNeedPosState != n_state:
+        #     return
 
-        state = _skill.Apply(self, self._target)
+        state = _skill.Apply(self, self)
         # 技能伤害
         if state:
             self._damage += state
@@ -328,12 +322,11 @@ class Player:
                 self.buffs[buff_id] = buff(*_buff_data[:-2], new_lasting, _buff_data.script)
         for buff_id in _del:
             _script = self.buffs[buff_id].script
-            # 先移除再调用！以免自循环buff被移除
-            if buff_id in self.buffs:
-                del self.buffs[buff_id]
             if _script is not None:
                 self.CastSkill(_script, 1)
-
+            # 技能脚本可能会删除buff, 这里再检查一次
+            if buff_id in self.buffs:
+                del self.buffs[buff_id]
 
 
     def AddSkillCoolDown(self, skill_id, period):

@@ -17,7 +17,7 @@ tDesc = '盾飞母技能'
 nNeedGcdType = [6]
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target):
 
     # 盾飞加buff
     nTime = buff_data.get(8391)
@@ -36,18 +36,21 @@ def Apply(player: Player, target):
     # 盾飞进gcd
     player.AddPublicCoolDown(6, 1*16)
 
-    # ------------------以下效果要延迟0.375s放到盾飞子技能里实现-------------------
-    # 盾飞换姿态
-    # 盾飞加盾威buff
-
-    # 盾飞加虚弱buff
-    # target.AddBuff(8248, 1)
+    # 盾飞立即加虚弱buff
+    target.AddBuff(8248, 1)
 
     # 怒炎
     if player.GetSkillLevel('#怒炎') == 1:
         # 加怒炎buff
         player.AddBuff(8276, 1)
-        player.ClearCDTime('#斩刀', 5*16)
+        player.ClearCDTime(13054, 5*16)
+
+    # 0.5s内无法施展盾猛
+    player.AddBuff(8873, 1)
+
+    # ------------------以下效果要延迟0.375s放到盾飞子技能里实现-------------------
+    # 盾飞换姿态
+    # 盾飞加盾威buff
 
     return 1
 

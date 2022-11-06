@@ -5,7 +5,7 @@ from scripts.default import *
 
 
 tSkillData = {
-    1: damage_data(nDamageBase=0, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0)
+    1: damage_data(nDamageBase=24, nDamageRand=2, nAttackRate=max(0.1, 27/160), nWeaponDamagePercent=1)
 }
 
 tSkillCoolDown = {
@@ -15,6 +15,7 @@ tSkillCoolDown = {
 tSkillName = '盾飞'
 tDesc = '盾飞伤害子技能'
 nNeedGcdType = []
+nNeedPosState = None
 
 
 def Apply(player: Player, target):

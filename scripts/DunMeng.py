@@ -18,6 +18,11 @@ nNeedGcdType = [0, 1, 2, 3, 4, 5]
 
 
 def Apply(player: Player, target):
+
+    # 盾飞后0.5s无法施展盾猛
+    if player.IsHaveBuff(8873, 1):
+        return
+
     player.AddSkillCoolDown(13046, 15*16)
     player.AddPublicCoolDown(0, 1.5*16)
 
@@ -42,6 +47,8 @@ def Apply(player: Player, target):
     if rand/10000 <= parry:
         player.ClearCDTime(13045)
 
+    # 盾猛延迟0.625s造成击倒
+    player.AddBuff(50004, 1)
 
     return 1
 

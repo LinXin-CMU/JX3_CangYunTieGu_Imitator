@@ -1,7 +1,7 @@
 # coding: utf-8
 # author: LinXin
 
-from jx3_types import skill_script, damage_data, cooldown_data, Player
+from jx3_types import skill_script, damage_data, cooldown_data, Player, Target
 from scripts.buff import buff_data
 import random
 
@@ -21,7 +21,7 @@ nNeedMinRage = 0
 nNeedPosState = 0   # 盾姿态
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target):
     return 1
 
 
