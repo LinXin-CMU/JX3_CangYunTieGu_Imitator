@@ -10,6 +10,8 @@ for i in range(300 * 16):
 
     if player.rage == 110:
         player.CastSkill(13391, 1)  # /cast [rage>109] 盾挡
+    if player.rage > 65 and player.IsHaveBuff(8499) or player.IsHaveBuff(8448):
+        player.CastSkill(13050, 1)  # /cast [rage>65&buff:盾挡] 盾飞
 
     print(player.rage)
     print(player.buffs)

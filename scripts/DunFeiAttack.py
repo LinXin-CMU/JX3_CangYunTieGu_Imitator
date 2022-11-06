@@ -31,7 +31,7 @@ def Apply(player: Player, target):
         return
     if b_count.layer == 50:
         # 调用收回盾牌的脚本
-        pass
+        player.CastSkill('DunHuiChangeState', 1)
     else:
         # 可以有下一跳盾飞, 添加1s间隔
         player.AddBuff(50003, 1)

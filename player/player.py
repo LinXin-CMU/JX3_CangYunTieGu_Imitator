@@ -147,6 +147,14 @@ class Player:
         if self._rage < _skill.nNeedMinRage:
             return
 
+        # 检查体态
+        if self.IsHaveBuff(8277):
+            n_state = 0
+        else:
+            n_state = 1
+        if _skill.nNeedPosState != n_state:
+            return
+
         state = _skill.Apply(self, None)
         # 技能伤害
         if state:
@@ -294,12 +302,14 @@ class Player:
             if not new_lasting:
                 _del.append(buff_id)
             else:
-                self.buffs[buff_id] = buff(*_buff_data[:-1], new_lasting)
+                self.buffs[buff_id] = buff(*_buff_data[:-2], new_lasting, _buff_data.script)
         for buff_id in _del:
-            if hasattr(scripts, self.buffs[buff_id].script):
-                _skill = getattr(scripts, self.buffs[buff_id].script)
-                self.CastSkill(_skill, 1)
-            del self.buffs[buff_id]
+            _script = self.buffs[buff_id].script
+            if _script is not None:
+                self.CastSkill(_script, 1)
+            # 技能脚本可能会删除buff, 这里再检查一次
+            if buff_id in self.buffs:
+                del self.buffs[buff_id]
 
 
     def AddSkillCoolDown(self, skill_id, period):

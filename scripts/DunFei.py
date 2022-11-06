@@ -23,6 +23,7 @@ def Apply(player: Player, target):
     nTime = buff_data.get(8391)
     if not nTime:
         return
+    nTime = nTime.nMaxTime
     if player.IsSkillRecipeActive('#盾飞加时间1', 1):
         nTime += 5
     if player.IsSkillRecipeActive('#盾飞加时间2', 1):
@@ -31,6 +32,9 @@ def Apply(player: Player, target):
 
     # 盾飞延迟换姿态
     player.AddBuff(13352, 1)
+
+    # 盾飞进gcd
+    player.AddPublicCoolDown(6, 1*16)
 
     # ------------------以下效果要延迟0.375s放到盾飞子技能里实现-------------------
     # 盾飞换姿态

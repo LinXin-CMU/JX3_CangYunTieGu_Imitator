@@ -16,5 +16,7 @@ from .DunFei import DunFei
 from .DunFeiAttack import DunFeiAttack
 from .DunFeiChangeState import DunFeiChangeState
 from .DunFeiAddXuRuo import DunFeiAddXuRuo
+from .DunHui import DunHui
+from .DunHuiChangeState import DunHuiChangeState
 
 
