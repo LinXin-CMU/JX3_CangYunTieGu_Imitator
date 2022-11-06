@@ -34,8 +34,9 @@ def Apply(player: Player, target):
         # 调用收回盾牌的脚本
         player.CastSkill('DunHuiChangeState', 1)
     else:
-        # 可以有下一跳盾飞, 添加1s间隔
-        player.AddBuff(50003, 1)
+        if player.IsHaveBuff(8391, 1):
+            # 可以有下一跳盾飞, 添加1s间隔
+            player.AddBuff(50003, 1)
 
     return 1
 
