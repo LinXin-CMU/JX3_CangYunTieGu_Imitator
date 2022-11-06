@@ -57,6 +57,8 @@ class Player:
     def rage(self, value):
         assert isinstance(value, int), '怒气必须为整数'
         self._rage = min(110, value)
+        if self._rage < 0:
+            self._rage = 0
 
     # ————————————————————属性部分————————————————————
     @property
@@ -164,9 +166,9 @@ class Player:
             self._damage += state
             # 记录技能
             if self.casted is None:
-                self.casted = [{'frame': self._timer, 'name': _skill.tSkillName, 'desc': _skill.tDesc}]
+                self.casted = [{'second': self._timer/16, 'frame': self._timer, 'name': _skill.tSkillName, 'desc': _skill.tDesc, 'rage': self._rage, 'buff': self.buffs, 'tbuff': self._target.buffs}]
             else:
-                self.casted.append({'frame': self._timer, 'name': _skill.tSkillName, 'desc': _skill.tDesc})
+                self.casted.append({'second': self._timer/16, 'frame': self._timer, 'name': _skill.tSkillName, 'desc': _skill.tDesc, 'rage': self._rage, 'buff': self.buffs, 'tbuff': self._target.buffs})
 
     def GetSkillLevel(self, skill_id):
         """
@@ -350,6 +352,18 @@ class Player:
             self._cooldown[skill_id] = period
         else:
             self._cooldown[skill_id] += period
+
+    def GetSkillCoolDown(self, skill_id) -> Union[int, None]:
+        """
+        :param skill_id:
+        :return:
+        """
+        if not skill_id:
+            return
+        if skill_id not in self._cooldown:
+            return 0
+        else:
+            return self._cooldown[skill_id]
 
     def AddPublicCoolDown(self, cooldown_type, period):
         """

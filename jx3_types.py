@@ -255,6 +255,12 @@ class Player:
         :return:
         """
 
+    def GetSkillCoolDown(self, skill_id) -> Union[int, None]:
+        """
+        :param skill_id:
+        :return:
+        """
+
     def AddPublicCoolDown(self, cooldown_type, period):
         """
         GCD_TYPE = {\n

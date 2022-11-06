@@ -5,7 +5,7 @@ from scripts.default import *
 
 
 tSkillData = {
-    1: damage_data(nDamageBase=0, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0)
+    1: damage_data(nDamageBase=228, nDamageRand=10, nAttackRate=max(0.1, 250 * 0.9 * 0.85*1.05*1.1*1.15*1.15*1.05/160), nWeaponDamagePercent=1)
 }
 
 tSkillCoolDown = {
@@ -25,6 +25,7 @@ def Apply(player: Player, target: Target):
 
     player.AddPublicCoolDown(0, 1.5*16)
     player.AddSkillCoolDown(13054, 10*16)
+    player.rage -= 15
 
     # 流血部分
     # 获取加速
@@ -36,9 +37,12 @@ def Apply(player: Player, target: Target):
 
     # 怒炎-命中虚弱目标添加怒炎buff
     if target.IsHaveBuff(8248):
+        # if player.GetSkillLevel('#怒炎') == 1:
         player.AddBuff(24755, 1)
-        target.DelBuff(8248)
+        player.AddBuff(24756, 1)
 
+        # 斩刀命中虚弱buff添加流血
+        target.DelBuff(8248)
         if target.IsHaveBuff(8249, 1):
             # 已有流血目标
             b_lxitv = player.GetBuff(50005)
@@ -47,7 +51,10 @@ def Apply(player: Player, target: Target):
             # 仅有虚弱目标
             target.AddBuff(8249, 1, lasting=(25 * lx_itv))
             # 添加流血间隔技能自身监控
-            player.CastSkill(8249, 1)
+            if player.GetSkillLevel('#炼狱') == 1:
+                player.CastSkill(50002, 1)
+            else:
+                player.CastSkill(50001, 1)
 
     elif target.IsHaveBuff(8249):
         # 命中仅有流血buff目标刷新流血效果
@@ -56,6 +63,9 @@ def Apply(player: Player, target: Target):
 
     # 戍卫-斩刀强仇和减伤
     player.AddBuff(13934, 1)
+
+    # 铁骨1级破招
+    player.CastSkill(32745, 1)
 
     return 1
 
