@@ -1,10 +1,7 @@
 # coding: utf-8
 # author: LinXin
 
-from jx3_types import skill_script, damage_data, cooldown_data, Player, Target
-from scripts.buff import buff_data
-import random
-
+from settings.jx3_types import skill_script, damage_data, cooldown_data, Player, Target
 
 tSkillData = {
     1: damage_data(nDamageBase=0, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0),

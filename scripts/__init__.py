@@ -40,3 +40,4 @@ from .JianTie import JianTie
 from .JianTieStop import JianTieStop
 from .JianTieDisappear import JianTieDisappear
 from .ChongYun import ChongYun
+from .BeAttacked import BeAttacked

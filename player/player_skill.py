@@ -1,9 +1,7 @@
 # coding: utf-8
 # author: LinXin
 
-from typing import Dict, Union
-
-from jx3_types import *
+from settings.jx3_types import *
 import scripts
 
 
@@ -39,6 +37,7 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     32745: scripts.PoZhao,
 
     # 以下是自定义技能
+    50000: scripts.BeAttacked,
     50001: scripts.LiuXueInterval_1,
     50002: scripts.LiuXueInterval_2,
     50003: scripts.LiuXueInterval_3,

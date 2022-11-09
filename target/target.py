@@ -1,7 +1,7 @@
 # coding: utf-8
 # author: LinXin
 
-from jx3_types import *
+from settings.jx3_types import *
 from .target_attribute import Attribute
 from .target_skill import skill_id_to_script
 from scripts.buff import buff_data

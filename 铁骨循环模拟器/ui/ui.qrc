@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="main">
+    <file>source/border_qx.png</file>
+  </qresource>
+</RCC>
