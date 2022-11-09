@@ -166,9 +166,25 @@ class Player:
             self._damage += state
             # 记录技能
             if self.casted is None:
-                self.casted = [{'second': self._timer/16, 'frame': self._timer, 'name': _skill.tSkillName, 'desc': _skill.tDesc, 'rage': self._rage, 'buff': self.buffs, 'tbuff': self._target.buffs}]
+                self.casted = [{
+                    'second': self._timer/16,
+                    'frame': self._timer,
+                    'name': _skill.tSkillName,
+                    'desc': _skill.tDesc,
+                    'rage': self._rage,
+                    'buff': {i: j for i, j in self.buffs.items()},
+                    'tbuff': {i: j for i, j in self._target.buffs.items()}
+                }]
             else:
-                self.casted.append({'second': self._timer/16, 'frame': self._timer, 'name': _skill.tSkillName, 'desc': _skill.tDesc, 'rage': self._rage, 'buff': self.buffs, 'tbuff': self._target.buffs})
+                self.casted.append({
+                    'second': self._timer/16,
+                    'frame': self._timer,
+                    'name': _skill.tSkillName,
+                    'desc': _skill.tDesc,
+                    'rage': self._rage,
+                    'buff': {i: j for i, j in self.buffs.items()},
+                    'tbuff': {i: j for i, j in self._target.buffs.items()}
+                })
 
     def GetSkillLevel(self, skill_id):
         """

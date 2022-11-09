@@ -11,6 +11,7 @@ import scripts
 # 建立变量名和技能脚本的关系
 
 skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int, str]]] = {
+    13040: scripts.XueNu,
     13044: scripts.DunDao,
     13045: scripts.DunYa,
     13046: scripts.DunMeng,
@@ -24,10 +25,17 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     13059: scripts.DunDao_2,
     13060: scripts.DunDao_3,
     13119: scripts.DunDao_4,
+    13135: scripts.HanJia,
+    13139: scripts.JianTie,
+    13140: scripts.JianTieStop,
+    13164: scripts.DunDao_ChuChen,
     13316: scripts.DunFeiAttack,
     13352: scripts.DunFeiChangeState,
     13391: scripts.DunDang,
     13540: scripts.DunFeiAddXuRuo,
+    21749: scripts.ChongYun,
+    25213: scripts.DuanMaCuiCheng,
+    25215: scripts.DuanMaCuiChengDamage,
     32745: scripts.PoZhao,
 
     # 以下是自定义技能
