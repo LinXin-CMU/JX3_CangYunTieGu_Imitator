@@ -16,6 +16,7 @@ tSkillName = '盾挡'
 tDesc = '盾挡'
 nNeedGcdType = [0, 2, 5]
 nNeedMinRage = 10
+nNeedPosState = 0
 
 
 def Apply(player: Player, target):
@@ -25,13 +26,13 @@ def Apply(player: Player, target):
     lv_dundang = rage // 10
 
     # 千山奇穴下效果
-    if player.GetSkillLevel('#千山') == 1:
+    if player.GetSkillLevel('千山') == 1:
         player.AddBuff(8448, lv_dundang)
     else:
         player.AddBuff(8499, lv_dundang)
 
     # 振奋
-    if player.GetSkillLevel('#振奋') == 1:
+    if player.GetSkillLevel('振奋') == 1:
         n_zhenfen = min(player.ParryPercentValue // 1500, 125)
         player.AddBuff(8504, n_zhenfen)
 

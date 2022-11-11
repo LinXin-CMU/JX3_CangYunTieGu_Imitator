@@ -2,6 +2,7 @@
 # author: LinXin
 
 from settings.jx3_types import *
+from settings.jx3_collections import recipe
 from .player_attribute import Attribute
 from .player_skill import skill_id_to_script
 from scripts.buff import buff_data
@@ -12,7 +13,7 @@ from typing import Dict, Union
 
 class Player:
 
-    def __init__(self, talents: list, recipes: list, target: Target):
+    def __init__(self, talents: Dict, recipes: Dict, target: Target):
         # ————————————————————怒气部分————————————————————
         self._rage = 0
 
@@ -191,15 +192,28 @@ class Player:
         :param skill_id:
         :return:
         """
-        pass
+        if skill_id in self.talents.values():
+            return 1
 
-    def IsSkillRecipeActive(self, recipe_id, recipe_level):
+    def IsSkillRecipeActive(self, recipe_id):
         """
         :param recipe_id:
-        :param recipe_level:
         :return:
         """
-        pass
+        if recipe_id not in recipe:
+            return
+
+        recipe_data = recipe.get(recipe_id)
+
+        for skill_recipe in self.recipes.values():
+            if recipe_data.index in skill_recipe:
+                break
+        else:
+            # 没有找到该秘籍
+            return
+
+        return 1
+
 
     # ————————————————————气劲部分————————————————————
 

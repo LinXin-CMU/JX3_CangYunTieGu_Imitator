@@ -28,7 +28,7 @@ def Apply(player: Player, target: Target):
     player.rage -= 15
 
     # 割裂buff
-    if player.GetSkillLevel('#割裂') == 1:
+    if player.GetSkillLevel('割裂') == 1:
         if player.IsHaveBuff(8249):
             player.AddBuff(21308, 1)
 

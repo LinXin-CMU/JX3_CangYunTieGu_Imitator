@@ -36,6 +36,7 @@ tSkillCoolDown = {
 tSkillName = '断马摧城'
 tDesc = '断马摧城伤害子技能'
 nNeedGcdType = []
+nNeedPosState = 0
 
 
 def Apply(player: Player, target):

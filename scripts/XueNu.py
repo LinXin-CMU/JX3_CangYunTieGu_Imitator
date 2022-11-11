@@ -24,26 +24,26 @@ def Apply(player: Player, target: Target):
     player.AddSkillCoolDown(13040, 25*16)
 
     nAddRage = 10
-    if player.IsSkillRecipeActive('#血怒回怒秘籍1', 1):
+    if player.IsSkillRecipeActive(1870):
         nAddRage += 5
-    if player.IsSkillRecipeActive('#血怒回怒秘籍2', 1):
+    if player.IsSkillRecipeActive(1871):
         nAddRage += 5
-    if player.IsSkillRecipeActive('#血怒回怒秘籍3', 1):
+    if player.IsSkillRecipeActive(1872):
         nAddRage += 5
 
-    if player.GetSkillLevel('#愤恨') == 1:
+    if player.GetSkillLevel('愤恨') == 1:
         nPeriod = 25
     else:
         nPeriod = 10
-    if player.IsSkillRecipeActive('#血怒时间秘籍1', 1):
+    if player.IsSkillRecipeActive(1867):
         nPeriod += 1
-    if player.IsSkillRecipeActive('#血怒时间秘籍2', 1):
+    if player.IsSkillRecipeActive(1868):
         nPeriod += 1
-    if player.IsSkillRecipeActive('#血怒时间秘籍3', 1):
+    if player.IsSkillRecipeActive(1869):
         nPeriod += 1
     nPeriod *= 16
 
-    if player.GetSkillLevel('#愤恨') == 1:
+    if player.GetSkillLevel('愤恨') == 1:
         buff_xn_id = 8386
     else:
         buff_xn_id = 8245

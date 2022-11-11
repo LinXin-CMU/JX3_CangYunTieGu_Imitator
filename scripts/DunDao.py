@@ -16,6 +16,7 @@ tSkillCoolDown = {
 tSkillName = '盾刀母技能'
 tDesc = '盾刀母技能脚本'
 nNeedGcdType = [0, 1, 2, 3, 4, 5]
+nNeedPosState = 0
 
 
 def SubEvent_ChuChen(nParry) -> bool:
@@ -33,7 +34,7 @@ def Apply(player: Player, target: Target):
     dundao_b_3 = player.IsHaveBuff(8262, 1)
     dundao_b_4 = player.IsHaveBuff(8263, 1)
 
-    if player.GetSkillLevel('#强袭') == 1 and dundao_b_4:
+    if player.GetSkillLevel('强袭') == 1 and dundao_b_4:
         # 四段盾刀
         player.DelBuff(8263)
         player.CastSkill(13119, 1)
@@ -44,12 +45,12 @@ def Apply(player: Player, target: Target):
         # 三段盾刀
         player.DelBuff(8262)
         player.CastSkill(13060, 1)
-        if player.GetSkillLevel('#强袭') == 1:
+        if player.GetSkillLevel('强袭') == 1:
             player.AddBuff(8263, 1)
-        if player.GetSkillLevel('#出尘') == 1:
+        if player.GetSkillLevel('出尘') == 1:
             if SubEvent_ChuChen(player.ParryPercent):
                 player.CastSkill(13164, 1)
-        if player.IsSkillRecipeActive('#盾刀加怒气', 1):
+        if player.IsSkillRecipeActive(1866):
             player.rage += 10
         else:
             player.rage += 5
@@ -71,10 +72,17 @@ def Apply(player: Player, target: Target):
         player.AddPublicCoolDown(1, 1*16)
 
     target.AddBuff(8398, 1)   # 卷云
+
     # 盾压重置
     parry = player.ParryPercent
     if not isinstance(parry, float):
         return
+
+    if player.IsSkillRecipeActive(1858):
+        parry += 0.05
+    if player.IsSkillRecipeActive(1859):
+        parry += 0.05
+
     rand = random.randint(1, 10000)
     if rand/10000 <= parry:
         player.ClearCDTime(13045)

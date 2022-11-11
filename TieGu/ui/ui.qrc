@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="main">
+    <file>source/border_qx_wide.png</file>
     <file>source/border_qx.png</file>
+    <file>source/border_skill_wide.png</file>
   </qresource>
 </RCC>

@@ -15,6 +15,7 @@ tSkillCoolDown = {
 tSkillName = '盾猛延迟添加击倒buff'
 tDesc = '盾猛击倒子技能'
 nNeedGcdType = []
+nNeedPosState = 0
 
 
 def Apply(player: Player, target: Target):

@@ -30,17 +30,17 @@ def Apply(player: Player, target: Target):
         nFlag = 0
 
     # 招架后加寒甲buff
-    if nFlag and player.GetSkillLevel('#寒甲') == 1:
+    if nFlag and player.GetSkillLevel('寒甲') == 1:
         player.CastSkill(13135, 1)
 
     # 坚铁buff判定
-    if player.GetSkillLevel('#坚铁') == 1:
+    if player.GetSkillLevel('坚铁') == 1:
         player.CastSkill(13139, 1)
         if nFlag:
             player.CastSkill(13140, 1)
 
     # 崇云buff判定
-    if player.GetSkillLevel('#崇云') == 1:
+    if player.GetSkillLevel('崇云') == 1:
         player.CastSkill(21749, 1)
 
     return 1

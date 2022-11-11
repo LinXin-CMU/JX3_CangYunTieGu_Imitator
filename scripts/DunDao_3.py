@@ -15,6 +15,7 @@ tSkillCoolDown = {
 tSkillName = '盾刀'
 tDesc = '盾刀三段伤害子技能'
 nNeedGcdType = [0, 1, 2, 3, 4, 5]
+nNeedPosState = 0
 
 
 def Apply(player: Player, target):

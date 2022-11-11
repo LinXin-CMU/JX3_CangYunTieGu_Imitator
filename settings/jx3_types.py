@@ -202,10 +202,9 @@ class Player:
         :return:
         """
 
-    def IsSkillRecipeActive(self, recipe_id, recipe_level):
+    def IsSkillRecipeActive(self, recipe_id):
         """
         :param recipe_id:
-        :param recipe_level:
         :return:
         """
         pass

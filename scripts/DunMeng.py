@@ -15,6 +15,7 @@ tSkillCoolDown = {
 tSkillName = '盾猛'
 tDesc = '盾猛母技能'
 nNeedGcdType = [0, 1, 2, 3, 4, 5]
+nNeedPosState = 0
 
 
 def Apply(player: Player, target):
@@ -43,6 +44,12 @@ def Apply(player: Player, target):
     parry = player.ParryPercent
     if not isinstance(parry, float):
         return
+
+    if player.IsSkillRecipeActive(1858):
+        parry += 0.05
+    if player.IsSkillRecipeActive(1859):
+        parry += 0.05
+
     rand = random.randint(1, 10000)
     if rand/10000 <= parry:
         player.ClearCDTime(13045)

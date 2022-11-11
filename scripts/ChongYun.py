@@ -25,7 +25,7 @@ def Apply(player: Player, target: Target):
         player.DelBuff(50009)
 
         # 加血怒持续时间
-        if player.GetSkillLevel('#愤恨') == 1:
+        if player.GetSkillLevel('愤恨') == 1:
             buff_xn = player.GetBuff(8386)
             buff_xn_id = 8386
         else:

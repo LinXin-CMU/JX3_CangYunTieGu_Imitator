@@ -15,10 +15,18 @@ tSkillCoolDown = {
 tSkillName = '盾压'
 tDesc = '盾压母技能'
 nNeedGcdType = [0, 1, 2, 3, 4, 5]
+nNeedPosState = 0
 
 
 def Apply(player: Player, target):
-    player.AddSkillCoolDown(13045, 12*16)
+
+    nCoolDown = 12
+    if player.IsSkillRecipeActive(1856):
+        nCoolDown -= 1
+    if player.IsSkillRecipeActive(1857):
+        nCoolDown -= 1
+
+    player.AddSkillCoolDown(13045, nCoolDown*16)
     player.AddPublicCoolDown(0, 1.5*16)
 
     # 回怒

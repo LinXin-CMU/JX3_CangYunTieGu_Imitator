@@ -25,7 +25,7 @@ def Apply(player: Player, target: Target):
 
     nCostRage = 10
     # 绝刀减消耗秘籍
-    if player.IsSkillRecipeActive('#绝刀减消耗', 1):
+    if player.IsSkillRecipeActive(1836):
         nCostRage -= 5
     if player.rage < nCostRage:
         return

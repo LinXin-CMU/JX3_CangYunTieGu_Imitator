@@ -22,7 +22,7 @@ def Apply(player: Player, target: Target):
     if not player:
         return
 
-    if player.GetSkillLevel('#怒炎') == 1 and not player.IsHaveBuff(24756):
+    if player.GetSkillLevel('怒炎') == 1 and not player.IsHaveBuff(24756):
         # 怒炎重置绝刀被消耗时，要检测绝刀是否进cd，若未进cd则要手动添加cd
         if not player.GetSkillCoolDown(13055):
             # 绝刀进cd

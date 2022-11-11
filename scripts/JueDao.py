@@ -24,22 +24,22 @@ def Apply(player: Player, target: Target):
         return
 
     # 检查怒气需求
-    if player.IsSkillRecipeActive('#绝刀减消耗', 1):
+    if player.IsSkillRecipeActive(1850):
         nCostRage = 10
     else:
         nCostRage = 25
 
-    # 调试用！
-    nCostRage = 10
+    # # 调试用！
+    # nCostRage = 10
 
     if player.rage < nCostRage:
         return
 
     # 绝刀cd
     cd_juedao = 10
-    if player.IsSkillRecipeActive('#绝刀减cd1s', 1):
+    if player.IsSkillRecipeActive(1895):
         cd_juedao -= 1
-    if player.IsSkillRecipeActive('#绝刀减cd2s', 1):
+    if player.IsSkillRecipeActive(1896):
         cd_juedao -= 2
     player.AddPublicCoolDown(0, 1.5*16)
     player.AddSkillCoolDown(13055, cd_juedao*16)

@@ -15,6 +15,7 @@ tSkillCoolDown = {
 tSkillName = '盾飞'
 tDesc = '盾飞母技能'
 nNeedGcdType = [6]
+nNeedPosState = 0
 
 
 def Apply(player: Player, target: Target):
@@ -24,9 +25,9 @@ def Apply(player: Player, target: Target):
     if not nTime:
         return
     nTime = nTime.nMaxTime
-    if player.IsSkillRecipeActive('#盾飞加时间1', 1):
+    if player.IsSkillRecipeActive(1957):
         nTime += 5
-    if player.IsSkillRecipeActive('#盾飞加时间2', 1):
+    if player.IsSkillRecipeActive(1958):
         nTime += 5
     player.AddBuff(8391, 1, lasting=nTime)
 
@@ -40,7 +41,7 @@ def Apply(player: Player, target: Target):
     target.AddBuff(8248, 1)
 
     # 怒炎
-    if player.GetSkillLevel('#怒炎') == 1:
+    if player.GetSkillLevel('怒炎') == 1:
         # 加怒炎buff
         player.AddBuff(8276, 1)
         player.ClearCDTime(13054, 5*16)

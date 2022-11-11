@@ -1,4 +1,4 @@
-# coding: utf-8
+   # coding: utf-8
 # author: LinXin
 
 from scripts.Default import *
@@ -30,16 +30,16 @@ def Apply(player: Player, target: Target):
     # 流血部分
     # 获取加速
     # haste = player.HastePercent
-    if player.GetSkillLevel('#炼狱') == 1:
+    if player.GetSkillLevel('炼狱') == 1:
         lx_itv = 1 * 16
     else:
         lx_itv = 2 * 16
 
     # 怒炎-命中虚弱目标添加怒炎buff
     if target.IsHaveBuff(8248):
-        # if player.GetSkillLevel('#怒炎') == 1:
-        player.AddBuff(24755, 1)
-        player.AddBuff(24756, 1)
+        if player.GetSkillLevel('怒炎') == 1:
+            player.AddBuff(24755, 1)
+            player.AddBuff(24756, 1)
 
         # 斩刀命中虚弱buff添加流血
         target.DelBuff(8248)
@@ -51,7 +51,7 @@ def Apply(player: Player, target: Target):
             # 仅有虚弱目标
             target.AddBuff(8249, 1, lasting=(25 * lx_itv))
             # 添加流血间隔技能自身监控
-            if player.GetSkillLevel('#炼狱') == 1:
+            if player.GetSkillLevel('炼狱') == 1:
                 player.CastSkill(50002, 1)
             else:
                 player.CastSkill(50001, 1)
