@@ -10,7 +10,7 @@ damage_data = namedtuple('skill_damage', ['nDamageBase', 'nDamageRand', 'nAttack
 
 cooldown_data = namedtuple('cooldown_data', ['nSingleCoolDown', 'nMaxStackNum'])
 
-buff = namedtuple('buff', ['id', 'level', 'layer', 'desc', 'lasting', 'script'])
+buff = namedtuple('buff', ['id', 'level', 'layer', 'desc', 'lasting', 'script', 'attrib'])
 
 GCD_TYPE = {
     0: 'normal_24',     # 常规1.5s
@@ -29,6 +29,9 @@ class Target:
     buffs: Dict[int, buff]
     talents: List
     recipes: List
+    # 攻击频率
+    attack_cooldown: int
+    attack_per_count: int
     def __init__(self, talents: list, recipes: list): ...
     # ————————————————————怒气部分————————————————————
     @property
@@ -154,6 +157,7 @@ class Target:
 
 class Player:
     casted: List
+    damage: int
     buffs: Dict[int, buff]
     talents: List
     recipes: List
@@ -210,12 +214,13 @@ class Player:
         pass
 
     # ————————————————————气劲部分————————————————————
-    def AddBuff(self, buff_id, level, desc=None, lasting=None):
+    def AddBuff(self, buff_id, level, desc=None, lasting=None, attrib=None):
         """
         :param buff_id:
         :param level:
         :param desc:
         :param lasting:
+        :param attrib:
         :return:
         """
 

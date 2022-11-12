@@ -23,6 +23,8 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     13059: scripts.DunDao_2,
     13060: scripts.DunDao_3,
     13119: scripts.DunDao_4,
+    13127: scripts.LianZhan,
+    13128: scripts.LianZhanStop,
     13135: scripts.HanJia,
     13139: scripts.JianTie,
     13140: scripts.JianTieStop,

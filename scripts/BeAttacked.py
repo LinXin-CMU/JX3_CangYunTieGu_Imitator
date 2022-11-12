@@ -24,7 +24,7 @@ def Apply(player: Player, target: Target):
     # 是否招架的判定
     nParry = player.ParryPercent
 
-    if random.randint(1, 10000) <= nParry * 1000:
+    if random.randint(1, 10000) <= nParry * 10000:
         nFlag = 1
     else:
         nFlag = 0

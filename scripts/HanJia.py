@@ -24,9 +24,9 @@ def Apply(player: Player, target: Target):
     if player.IsHaveBuff(8462) and (player.IsHaveBuff(8271) or player.IsHaveBuff(8437) or player.IsHaveBuff(17772)):
         return
 
-    player.DelBuff(8271)
-    player.DelBuff(8437)
-    player.DelBuff(17772)
+    player.DelBuff(8271, all_layer=True)
+    player.DelBuff(8437, all_layer=True)
+    player.DelBuff(17772, all_layer=True)
 
     nParryValue = player.ParryValue
 
@@ -36,7 +36,7 @@ def Apply(player: Player, target: Target):
     if nLargeLayer > 0:
         for _ in range(nLargeLayer):
             player.AddBuff(17772, 1)
-        nLayer -= nLargeLayer * 100
+        nLayer -= (nLargeLayer * 100)
 
     if nLayer > 0:
         for _ in range(nLayer):

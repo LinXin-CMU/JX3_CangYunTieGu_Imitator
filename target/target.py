@@ -41,7 +41,13 @@ class Target:
         }
         # 当前时间
         self._timer = -1
+        # 攻击频率
+        self.attack_cooldown = None
+        self.attack_per_count = None
         # ————————————————————体态部分————————————————————
+
+        #
+        self.player = None
 
     # ————————————————————怒气部分————————————————————
 
@@ -152,7 +158,9 @@ class Target:
         # if _skill.nNeedPosState != n_state:
         #     return
 
-        state = _skill.Apply(self, self)
+        if not self.player:
+            return
+        state = _skill.Apply(self.player, self)
         # 技能伤害
         if state:
             self._damage += state
@@ -179,8 +187,9 @@ class Target:
 
     # ————————————————————气劲部分————————————————————
 
-    def AddBuff(self, buff_id, level, desc=None, lasting=None):
+    def AddBuff(self, buff_id, level, desc=None, lasting=None, attrib=None):
         """
+        :param attrib:
         :param buff_id:
         :param level:
         :param desc:
@@ -198,6 +207,8 @@ class Target:
             lasting = _buff_data.nMaxTime
         if desc is None:
             desc = _buff_data.Desc
+        if attrib is None:
+            attrib = _buff_data.Attrib
 
         if buff_id in self.buffs:
             _buff: buff = self.buffs.get(buff_id)
@@ -205,13 +216,13 @@ class Target:
                 return
             if level == _buff.level:
                 layer = _buff.layer + 1
-                self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting, _buff.script)
+                self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting, _buff.script, _buff.attrib)
                 return
             # 等级大于的情况
-            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff.script)
+            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff.script, _buff.attrib)
 
         else:
-            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff_data.Script)
+            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff_data.Script, attrib)
 
 
     def IsHaveBuff(self, buff_id, buff_level=None) -> Union[buff, None]:
@@ -241,16 +252,16 @@ class Target:
         :return:
         """
         if not buff_id:
-            return buff(0, 0, 0, '', 0, None)
+            return buff(0, 0, 0, '', 0, None, None)
         if buff_id not in self.buffs:
-            return buff(0, 0, 0, '', 0, None)
+            return buff(0, 0, 0, '', 0, None, None)
 
         _buff = self.buffs[buff_id]
         if buff_level is not None:
             if _buff.level == buff_level:
                 return _buff
             else:
-                return buff(0, 0, 0, '', 0, None)
+                return buff(0, 0, 0, '', 0, None, None)
         else:
             return _buff
 
@@ -276,7 +287,7 @@ class Target:
                 del self.buffs[buff_id]
                 return 1
             else:
-                self.buffs[buff_id] = buff(_buff.id, _buff.level, new_layer, _buff.desc, _buff.lasting, _buff.script)
+                self.buffs[buff_id] = buff(_buff.id, _buff.level, new_layer, _buff.desc, _buff.lasting, _buff.script, _buff.attrib)
                 return 1
         else:
             return
@@ -319,7 +330,7 @@ class Target:
             if not new_lasting:
                 _del.append(buff_id)
             else:
-                self.buffs[buff_id] = buff(*_buff_data[:-2], new_lasting, _buff_data.script)
+                self.buffs[buff_id] = buff(*_buff_data[:-3], new_lasting, *_buff_data[-2:])
         for buff_id in _del:
             _script = self.buffs[buff_id].script
             if _script is not None:

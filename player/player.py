@@ -1,5 +1,6 @@
 # coding: utf-8
 # author: LinXin
+import random
 
 from settings.jx3_types import *
 from settings.jx3_collections import recipe
@@ -18,7 +19,7 @@ class Player:
         self._rage = 0
 
         self.casted = None
-        self._damage = 0
+        self.damage = 0
         # ————————————————————属性部分————————————————————
         self._attribute = Attribute(self)
         # ————————————————————气劲部分————————————————————
@@ -164,7 +165,9 @@ class Player:
         state = _skill.Apply(self, self._target)
         # 技能伤害
         if state:
-            self._damage += state
+            dmg, isCritical = self.CallPhysicsDamage(skill_id, _damage_data=_skill.tSkillData[skill_level])
+            self.damage += dmg
+
             # 记录技能
             if self.casted is None:
                 self.casted = [{
@@ -173,6 +176,8 @@ class Player:
                     'name': _skill.tSkillName,
                     'desc': _skill.tDesc,
                     'rage': self._rage,
+                    'damage': dmg,
+                    'critical': isCritical,
                     'buff': {i: j for i, j in self.buffs.items()},
                     'tbuff': {i: j for i, j in self._target.buffs.items()}
                 }]
@@ -183,6 +188,8 @@ class Player:
                     'name': _skill.tSkillName,
                     'desc': _skill.tDesc,
                     'rage': self._rage,
+                    'damage': dmg,
+                    'critical': isCritical,
                     'buff': {i: j for i, j in self.buffs.items()},
                     'tbuff': {i: j for i, j in self._target.buffs.items()}
                 })
@@ -214,11 +221,98 @@ class Player:
 
         return 1
 
+    def CallPhysicsDamage(self, skill_id, *, nBaseDamage=None, nAttackRate=None, nWeaponDamagePercent=None, _damage_data: damage_data=None):
+        """
+        :param _damage_data:
+        :param skill_id:
+        :param nBaseDamage:
+        :param nAttackRate:
+        :param nWeaponDamagePercent:
+        :return:
+        """
+        if not skill_id:
+            if not nBaseDamage and not nAttackRate and not nWeaponDamagePercent:
+                if not _damage_data:
+                    return 0
+
+        # 秘籍
+        recipe_data = self.GetRecipeData(skill_id)
+
+        # 有data的情况
+        nBaseDamage = int(_damage_data.nDamageBase + 0.5 * _damage_data.nDamageRand)
+        nAttackRate = _damage_data.nAttackRate
+        nWeaponDamagePercent = _damage_data.nWeaponDamagePercent
+
+        if not skill_id == 32745:
+            nDamage = int(nBaseDamage + nAttackRate * self._attribute.PhysicsAttackPower + nWeaponDamagePercent)
+        else:
+            nDamage = int(nAttackRate * self._attribute.SurplusValue)
+
+        if nDamage > 0:
+            # 会心判定
+            nCritical = self._attribute.PhysicsCriticalPercent
+            nCritical += recipe_data['atRecipePhysicsCriticalPercent']
+            if random.randint(1, 10000) <= nCritical * 10000:
+                nFlag = True
+            else:
+                nFlag = False
+
+            # 恋战
+            if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316, 25215]:
+                self.CastSkill(13127, 1)
+                if nFlag:
+                    self.CastSkill(13128, 1)
+        else:
+            nFlag = False
+
+        return nDamage, nFlag
+
+    def GetRecipeData(self, skill_id):
+        """
+        返回某个技能的会心和伤害秘籍类加成\n
+        :param skill_id:
+        :return:
+        """
+        recipe_data = {
+            'atRecipeDamagePercent': 0,
+            'atRecipePhysicsCriticalPercent': 0
+        }
+        recipes = None
+
+        # 真秘籍
+        match skill_id:
+            case 'DunDao_1' | 13059 | 13060 | 13119:
+                recipes = [1860, 1861, 1862, 1863, 1864, 1865]
+            case 13045:
+                recipes = [1852, 1853, 1854, 1855]
+            case 13052:
+                recipes = [1830, 1831, 1832, 1833, 1834, 1835]
+            case 13054:
+                recipes = [1838, 1839, 1840, 1841, 1842, 1843]
+            case 13055:
+                recipes = [1846, 1847, 1848, 1849]
+            case 13050:
+                recipes = [1953, 1954, 1955, 1956]
+            # case
+        if recipes:
+            for recipe_id in recipes:
+                if recipe_id not in recipe:
+                    continue
+                slot = recipe[recipe_id].slot
+                if slot not in recipe_data:
+                    continue
+                if self.IsSkillRecipeActive(recipe_id):
+                    recipe_data[slot] += recipe[recipe_id].value
+
+        # 奇穴秘籍
+
+        return recipe_data
 
     # ————————————————————气劲部分————————————————————
 
-    def AddBuff(self, buff_id, level, desc=None, lasting=None):
+    def AddBuff(self, buff_id, level, desc=None, lasting=None, attrib=None):
         """
+        :param attrib:
         :param buff_id:
         :param level:
         :param desc:
@@ -236,6 +330,8 @@ class Player:
             lasting = _buff_data.nMaxTime
         if desc is None:
             desc = _buff_data.Desc
+        if attrib is None:
+            attrib = _buff_data.Attrib
 
         if buff_id in self.buffs:
             _buff: buff = self.buffs.get(buff_id)
@@ -243,13 +339,13 @@ class Player:
                 return
             if level == _buff.level:
                 layer = _buff.layer + 1
-                self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting, _buff.script)
+                self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting, _buff.script, _buff.attrib)
                 return
             # 等级大于的情况
-            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff.script)
+            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff.script, _buff.attrib)
 
         else:
-            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff_data.Script)
+            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff_data.Script, attrib)
 
 
     def IsHaveBuff(self, buff_id, buff_level=None) -> Union[buff, None]:
@@ -279,16 +375,16 @@ class Player:
         :return:
         """
         if not buff_id:
-            return buff(0, 0, 0, '', 0, None)
+            return buff(0, 0, 0, '', 0, None, None)
         if buff_id not in self.buffs:
-            return buff(0, 0, 0, '', 0, None)
+            return buff(0, 0, 0, '', 0, None, None)
 
         _buff = self.buffs[buff_id]
         if buff_level is not None:
             if _buff.level == buff_level:
                 return _buff
             else:
-                return buff(0, 0, 0, '', 0, None)
+                return buff(0, 0, 0, '', 0, None, None)
         else:
             return _buff
 
@@ -314,7 +410,7 @@ class Player:
                 del self.buffs[buff_id]
                 return 1
             else:
-                self.buffs[buff_id] = buff(_buff.id, _buff.level, new_layer, _buff.desc, _buff.lasting, _buff.script)
+                self.buffs[buff_id] = buff(_buff.id, _buff.level, new_layer, _buff.desc, _buff.lasting, _buff.script, _buff.attrib)
                 return 1
         else:
             return
@@ -357,7 +453,7 @@ class Player:
             if not new_lasting:
                 _del.append(buff_id)
             else:
-                self.buffs[buff_id] = buff(*_buff_data[:-2], new_lasting, _buff_data.script)
+                self.buffs[buff_id] = buff(*_buff_data[:-3], new_lasting, *_buff_data[-2:])
         for buff_id in _del:
             _script = self.buffs[buff_id].script
             # 先移除再调用！以免自循环buff被移除

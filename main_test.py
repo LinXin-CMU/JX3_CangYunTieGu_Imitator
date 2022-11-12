@@ -9,6 +9,8 @@ from TieGu.ui.ui_main import MainUI
 
 target = Target()
 player = Player([], [], target)
+target.player = player
+
 app = QApplication([])
 ui = MainUI()
 
@@ -22,6 +24,8 @@ def run():
     for i in range(300 * 16):
         player.Timer(i)
         target.Timer(i)
+
+        target.CastSkill(1, 1)
 
         player.CastSkill(13045, 1)  # /cast 盾压
 
@@ -61,6 +65,7 @@ def run():
 
     ui.label_info.setText(f"[{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 模拟完成！")
     print(*[f"{i}: {j}\n" for i, j in skills.items()])
+    print(int(player.damage / 300))
 
 
 def get_csv():
@@ -69,7 +74,7 @@ def get_csv():
 
     with open(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}-player.csv", 'w', encoding='gbk',
               newline='') as f:
-        csv_writer = csv.DictWriter(f, fieldnames=['second', 'frame', 'name', 'desc', 'rage', 'buff', 'tbuff'])
+        csv_writer = csv.DictWriter(f, fieldnames=['second', 'frame', 'name', 'desc', 'rage', 'damage', 'critical', 'buff', 'tbuff'])
         csv_writer.writeheader()
         csv_writer.writerows(player.casted)
 
@@ -80,6 +85,8 @@ def main():
     global ui, app
     player.talents = ui.get_talent()
     player.recipes = ui.get_recipe()
+    target.attack_cooldown = 2.25*16
+    target.attack_per_count = 1
 
     ui.button_main.clicked.connect(run)
     ui.button_tocsv.clicked.connect(get_csv)

@@ -38,6 +38,8 @@ from .HanJia import HanJia
 from .HanJiaDisappear import HanJiaDisappear
 from .JianTie import JianTie
 from .JianTieStop import JianTieStop
-from .JianTieDisappear import JianTieDisappear
+from .LianZhan import LianZhan
+from .LianZhanStop import LianZhanStop
 from .ChongYun import ChongYun
 from .BeAttacked import BeAttacked
+from .NpcAttack import NpcAttack

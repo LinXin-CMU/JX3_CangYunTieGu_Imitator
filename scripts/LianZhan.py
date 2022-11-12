@@ -11,8 +11,8 @@ tSkillCoolDown = {
     1: cooldown_data(nSingleCoolDown=0, nMaxStackNum=1),
 }
 
-tSkillName = '坚铁删buff子技能'
-tDesc = '坚铁_消失后删除buff'
+tSkillName = '恋战叠加buff'
+tDesc = '恋战_施展技能加buff子技能'
 nNeedGcdType = []
 nNeedMinRage = 0
 nNeedPosState = None
@@ -20,11 +20,11 @@ nNeedPosState = None
 
 def Apply(player: Player, target: Target):
 
-    player.DelBuff(8272)
-    # 不能删8321
+    if not player.IsHaveBuff(8320):
+        player.AddBuff(8267, 1)
 
     return 1
 
 
-JianTieDisappear = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState,
+LianZhan = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState,
                           Apply)
