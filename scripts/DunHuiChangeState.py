@@ -13,7 +13,7 @@ tSkillCoolDown = {
 }
 
 tSkillName = '盾回切换姿态'
-tDesc = '盾飞切姿态子技能'
+tDesc = '盾回切姿态子技能'
 nNeedGcdType = [6]
 nNeedPosState = 1
 
@@ -25,12 +25,12 @@ def Apply(player: Player, target):
     player.AddBuff(8277, 1)
 
     # 清除盾飞buff
-    player.DelBuff(8391, 1)
-    player.DelBuff(13352, 1)
-    player.DelBuff(50000, 1)
-    player.DelBuff(50001, 1)
-    player.DelBuff(50002, 1)
-    player.DelBuff(50003, 1)
+    player.DelBuff(8391, 1, all_layer=True)
+    player.DelBuff(13352, 1, all_layer=True)
+    player.DelBuff(50000, 1, all_layer=True)
+    player.DelBuff(50001, 1, all_layer=True)
+    player.DelBuff(50002, 1, all_layer=True)
+    player.DelBuff(50003, 1, all_layer=True)
 
     # 盾飞保护gcd
     player.AddPublicCoolDown(6, 1*16)

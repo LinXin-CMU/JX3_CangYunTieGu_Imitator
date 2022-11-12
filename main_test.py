@@ -39,8 +39,8 @@ def run():
             player.CastSkill(13391, 1)  # /cast [rage>109] 盾挡
         if player.rage >= 65 and (player.IsHaveBuff(8499) or player.IsHaveBuff(8448)):
             player.CastSkill(13050, 1)  # /cast [rage>=65&buff:盾挡] 盾飞
-        if 0 < player.GetBuff(8391, 1).lasting < 10 * 16:
-            player.CastSkill(13051, 1)  # /cast [bufftime:盾飞<5] 盾回
+        if 0 < player.GetBuff(8391, 1).lasting < 9 * 16:
+            player.CastSkill(13051, 1)  # /cast [bufftime:盾飞<9] 盾回
 
         player.CastSkill(13054, 1)  # /cast 斩刀
 
