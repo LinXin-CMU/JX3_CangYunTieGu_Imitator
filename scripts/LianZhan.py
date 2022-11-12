@@ -22,6 +22,8 @@ def Apply(player: Player, target: Target):
 
     if not player.IsHaveBuff(8320):
         player.AddBuff(8267, 1)
+    else:
+        return
 
     return 1
 

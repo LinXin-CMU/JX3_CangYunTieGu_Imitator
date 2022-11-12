@@ -23,6 +23,8 @@ def Apply(player: Player, target: Target):
     if player.IsHaveBuff(50001) and player.IsHaveBuff(8278):
         target.AddBuff(8248, 1)
         pass
+    else:
+        return
 
     return 1
 
