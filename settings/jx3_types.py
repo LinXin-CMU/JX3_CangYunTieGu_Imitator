@@ -161,6 +161,7 @@ class Player:
     buffs: Dict[int, buff]
     talents: List
     recipes: List
+    life: float
     def __init__(self, talents: list, recipes: list, target: Target): ...
     # ————————————————————怒气部分————————————————————
     @property
@@ -203,6 +204,13 @@ class Player:
     def GetSkillLevel(self, skill_id):
         """
         :param skill_id:
+        :return:
+        """
+
+    def SetSkillRecipeActive(self, recipe_id, isActive=True):
+        """
+        :param recipe_id:
+        :param isActive:
         :return:
         """
 

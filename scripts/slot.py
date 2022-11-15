@@ -54,6 +54,8 @@ attribute_value = {
     46: _attrib_data('atPhysicsAttackPowerBase', 300),
     47: _attrib_data('atPhysicsAttackPowerBase', 30000),
     48: _attrib_data('atPhysicsCriticalStrikeBaseRate', 30/1024),
+    49: _attrib_data('atPhysicsAttackPowerPercent', 205),
+    50: _attrib_data('atSurplusValueAddPercent', 102),
 
 
 

@@ -41,5 +41,6 @@ from .JianTieStop import JianTieStop
 from .LianZhan import LianZhan
 from .LianZhanStop import LianZhanStop
 from .ChongYun import ChongYun
+from .CongRongDisappear import CongRongDisappear
 from .BeAttacked import BeAttacked
 from .NpcAttack import NpcAttack

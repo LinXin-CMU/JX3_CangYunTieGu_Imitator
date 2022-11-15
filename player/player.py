@@ -3,7 +3,7 @@
 import random
 
 from settings.jx3_types import *
-from settings.jx3_collections import recipe
+from settings.jx3_collections import recipe, global_params
 from .player_attribute import Attribute
 from .player_skill import skill_id_to_script
 from scripts.buff import buff_data
@@ -14,7 +14,7 @@ from typing import Dict, Union
 
 class Player:
 
-    def __init__(self, talents: Dict, recipes: Dict, target: Target):
+    def __init__(self, talents: Dict, recipes: List, target: Target):
         # ————————————————————怒气部分————————————————————
         self._rage = 0
 
@@ -22,6 +22,7 @@ class Player:
         self.damage = 0
         # ————————————————————属性部分————————————————————
         self._attribute = Attribute(self)
+        self.life = 1.0
         # ————————————————————气劲部分————————————————————
         self.buffs: Dict[int, buff] = {
         }
@@ -46,6 +47,8 @@ class Player:
         # ————————————————————体态部分————————————————————
         # 默认添加盾姿态buff
         self.AddBuff(8277, 1)
+        # 默认添加从容buff
+        self.AddBuff(8423, 1)
         # ————————————————————目标部分————————————————————
         self._target = target
 
@@ -80,8 +83,8 @@ class Player:
         return self._attribute.PhysicsCriticalDamagePowerPercent
 
     @property
-    def OvercomePercent(self):
-        return self._attribute.OvercomePercent
+    def PhysicsOvercomePercent(self):
+        return self._attribute.PhysicsOvercomePercent
 
     @property
     def StrainPercent(self):
@@ -106,6 +109,10 @@ class Player:
     @property
     def ParryValue(self):
         return self._attribute.ParryValue
+
+    @property
+    def WeaponDamage(self):
+        return self._attribute.WeaponDamage
 
     # ————————————————————技能部分————————————————————
 
@@ -207,19 +214,24 @@ class Player:
         :param recipe_id:
         :return:
         """
-        if recipe_id not in recipe:
-            return
+        if recipe_id in self.recipes:
+            return 1
 
-        recipe_data = recipe.get(recipe_id)
-
-        for skill_recipe in self.recipes.values():
-            if recipe_data.index in skill_recipe:
-                break
+    def SetSkillRecipeActive(self, recipe_id, isActive=True):
+        """
+        :param recipe_id:
+        :param isActive:
+        :return:
+        """
+        if isActive:
+            if recipe_id in self.recipes:
+                return
+            else:
+                if recipe_id in recipe:
+                    self.recipes.append(recipe_id)
         else:
-            # 没有找到该秘籍
-            return
-
-        return 1
+            if recipe_id in self.recipes:
+                del self.recipes[recipe_id]
 
     def CallPhysicsDamage(self, skill_id, *, nBaseDamage=None, nAttackRate=None, nWeaponDamagePercent=None, _damage_data: damage_data=None):
         """
@@ -243,27 +255,42 @@ class Player:
         nAttackRate = _damage_data.nAttackRate
         nWeaponDamagePercent = _damage_data.nWeaponDamagePercent
 
+        # 基础伤害
         if not skill_id == 32745:
-            nDamage = int(nBaseDamage + nAttackRate * self._attribute.PhysicsAttackPower + nWeaponDamagePercent)
+            nDamage = int(nBaseDamage + nAttackRate * self.PhysicsAttackPower + nWeaponDamagePercent * self.WeaponDamage)
         else:
-            nDamage = int(nAttackRate * self._attribute.SurplusValue)
+            nDamage = int(nAttackRate * self.SurplusValue * global_params['fSurplusParam'])
+
+        # 秘籍增伤
+        nDamage = int(nDamage * (1 + recipe_data['atRecipeDamagePercent']))
+
+        # 破防无双
+        nDamage = int(nDamage * (1 + self.PhysicsOvercomePercent) * (1 + self.StrainPercent))
 
         if nDamage > 0:
             # 会心判定
-            nCritical = self._attribute.PhysicsCriticalPercent
-            nCritical += recipe_data['atRecipePhysicsCriticalPercent']
-            if random.randint(1, 10000) <= nCritical * 10000:
+            fCritical = self.PhysicsCriticalPercent
+            fCritical += recipe_data['atRecipePhysicsCriticalPercent']
+            if random.randint(1, 10000) <= fCritical * 10000:
                 nFlag = True
             else:
                 nFlag = False
 
+            # 会心伤害
+            if nFlag:
+                fCriticalPower = self.PhysicsCriticalDamagePowerPercent
+                nDamage = int(nDamage * fCriticalPower)
+
             # 恋战
-            if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316, 25215]:
-                self.CastSkill(13127, 1)
-                if nFlag:
-                    self.CastSkill(13128, 1)
+            if self.GetSkillLevel('恋战') == 1:
+                if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316, 25215]:
+                    self.CastSkill(13127, 1)
+                    if nFlag:
+                        self.CastSkill(13128, 1)
         else:
             nFlag = False
+
+
 
         return nDamage, nFlag
 
@@ -288,9 +315,9 @@ class Player:
             case 13052:
                 recipes = [1830, 1831, 1832, 1833, 1834, 1835]
             case 13054:
-                recipes = [1838, 1839, 1840, 1841, 1842, 1843]
+                recipes = [1838, 1839, 1840, 1841, 1842, 1843, 4409]
             case 13055:
-                recipes = [1846, 1847, 1848, 1849]
+                recipes = [1846, 1847, 1848, 1849, 4918, 4919, 4920, 4921, 1879]
             case 13050:
                 recipes = [1953, 1954, 1955, 1956]
             # case

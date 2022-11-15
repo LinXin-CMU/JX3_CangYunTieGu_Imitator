@@ -338,8 +338,39 @@ recipe = {
     1869: _recipe(78, "atSkillEventHandler", "血怒+1s持续", None),
     1873: _recipe(76, "atSkillEventHandler", "血怒2%回血", None),
     1874: _recipe(72, "atSkillEventHandler", "血怒3%回血", None),
+    # 其他秘籍
+    1879: _recipe(None, "atRecipeDamagePercent", "绝刀+30%", 306/1024),
+    4409: _recipe(None, "atRecipeDamagePercent", "斩刀+30%", 306/1024),
+    4918: _recipe(None, "atRecipeDamagePercent", "绝刀+20%", 205/1024),
+    4919: _recipe(None, "atRecipeDamagePercent", "绝刀+40%", 410/1024),
+    4920: _recipe(None, "atRecipeDamagePercent", "绝刀+60%", 614/1024),
+    4921: _recipe(None, "atRecipeDamagePercent", "绝刀+80%", 819/1024),
 }
 
 
 
+special_stones = {
+    5599: ('atVitalityBasePercentAdd', 81),
+    5598: ('atVitalityBasePercentAdd', 71),
+    5597: ('atVitalityBasePercentAdd', 61),
+    5610: ('atStrengthBasePercentAdd', 81),
+    5609: ('atStrengthBasePercentAdd', 71),
+    5608: ('atStrengthBasePercentAdd', 61),
+    5613: ('atAgilityBasePercentAdd', 81),
+    5612: ('atAgilityBasePercentAdd', 71),
+    5611: ('atAgilityBasePercentAdd', 61),
+}
 
+global_params = {
+    'fCriticalStrikeParam': 9.53,
+    'fCriticalStrikePowerParam': 3.335,
+    'fOvercomeParam': 9.53,
+    'fInsightParam': 9.189,
+    'fHasteRate': 11.695,
+    'fParryParam': 4.345,
+    'fSurplusParam': 13.192,
+
+}
+
+LEVEL_RATE = 450
+LEVEL_CONST = 45750

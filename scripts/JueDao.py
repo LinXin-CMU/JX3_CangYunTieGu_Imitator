@@ -47,8 +47,16 @@ def Apply(player: Player, target: Target):
     # 绝刀消耗怒气加伤害
     current_rage = player.rage
     lv_juedao = min((current_rage - nCostRage) // 10, 4)
+
     if lv_juedao:
         player.AddBuff(9052, lv_juedao)
+        for i in range(5):
+            if i == lv_juedao:
+                player.SetSkillRecipeActive(4917+i)
+            else:
+                player.SetSkillRecipeActive(4917+i, isActive=False)
+
+
     nCostRage += lv_juedao * 10
 
     # 怒炎重置cd

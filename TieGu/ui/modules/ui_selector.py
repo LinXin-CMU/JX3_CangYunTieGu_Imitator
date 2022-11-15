@@ -94,7 +94,7 @@ class TalentSelector:
             return
         self.set_data_by_json(data)
 
-    def set_data_by_json(self, qx_data, rc_data):
+    def set_data_by_json(self, qx_data, rc_data=None):
         """
         通过config中的默认值设置奇穴和秘籍\n
         :param rc_data:
@@ -161,6 +161,7 @@ class TalentSelector:
         # 记录当前奇穴
         self.talent[pos] = data.get('name')
 
+
     def _talent_clicked(self, index):
         """
         展开和关闭奇穴选择框\n
@@ -186,6 +187,12 @@ class TalentSelector:
         """
         # 做一个接口，方便通过json导入奇穴时的方法复用
         self._set_qx_data(pos, idx)
+        # 隐藏奇穴页
+        gb: QGroupBox = getattr(self.ui, f'groupBox_{pos}')
+        if not gb:
+            return
+        gb.setVisible(False)
+
 
     def _skill_clicked(self, index):
         """
