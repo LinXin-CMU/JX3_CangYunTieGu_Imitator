@@ -27,9 +27,9 @@ def Apply(player: Player, target: Target):
         if not player.GetSkillCoolDown(13055):
             # 绝刀进cd
             cd_juedao = 10
-            if player.IsSkillRecipeActive('#绝刀减cd1s', 1):
+            if player.IsSkillRecipeActive(1895):
                 cd_juedao -= 1
-            if player.IsSkillRecipeActive('#绝刀减cd2s', 1):
+            if player.IsSkillRecipeActive(1896):
                 cd_juedao -= 2
             player.AddSkillCoolDown(13055, cd_juedao)
 

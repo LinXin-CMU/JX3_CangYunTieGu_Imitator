@@ -45,6 +45,9 @@ def Apply(player: Player, target: Target):
         # 加怒炎buff
         player.AddBuff(8276, 1)
         player.ClearCDTime(13054, 5*16)
+        # 怒炎加绝刀斩刀伤害
+        player.SetSkillRecipeActive(1879)
+        player.SetSkillRecipeActive(4409)
 
     # 0.5s内无法施展盾猛
     player.AddBuff(8873, 1)

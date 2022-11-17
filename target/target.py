@@ -20,6 +20,7 @@ class Target:
         self._damage = 0
         # ————————————————————属性部分————————————————————
         self._attribute = Attribute(self)
+
         # ————————————————————气劲部分————————————————————
         self.buffs: Dict[int, buff] = {
         }
@@ -45,9 +46,10 @@ class Target:
         self.attack_cooldown = None
         self.attack_per_count = None
         # ————————————————————体态部分————————————————————
-
+        self.level = None
         #
         self.player = None
+
 
     # ————————————————————怒气部分————————————————————
 
@@ -103,6 +105,17 @@ class Target:
     # @property
     # def ParryValue(self):
     #     return self._attribute.ParryValue
+
+    @property
+    def PhysicsShieldValue(self):
+        return self._attribute.PhysicsShieldValue
+
+    def GetPhysicsShieldPercent(self, value):
+        return self._attribute.GetPhysicsShieldPercent(value)
+
+    def SetNpcAttributeValueByLevel(self):
+        self._attribute.SetNpcAttributeValueByLevel()
+
 
     # ————————————————————技能部分————————————————————
 

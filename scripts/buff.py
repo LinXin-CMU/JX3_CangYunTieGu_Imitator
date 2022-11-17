@@ -10,7 +10,7 @@ buff_data = {
     994: _buff_data(994, 1*16, 1, '倒地', None, None),
     8232: _buff_data(8232, 16*3, 1, '盾刀二段标记buff', None, None),
     8245: _buff_data(8245, 10*16, 3, '血怒防御buff', 'XueNuDisappear', None),
-    8248: _buff_data(8248, 25*16, 1, '虚弱', None, None),
+    8248: _buff_data(8248, 25*16, 1, '虚弱', None, [52]),
     8249: _buff_data(8249, 25*16, 1, '流血', 'LiuXueDisappear', None),
     8253: _buff_data(8253, 8*16, 1, '雄峦', None, None),
     8262: _buff_data(8262, 16*4, 1, '盾刀三段标记buff', None, None),
@@ -18,7 +18,7 @@ buff_data = {
     8267: _buff_data(8267, 8*16, 10, '恋战', None, [48]),
     8271: _buff_data(8271, 8*16, 125, '寒甲_300AP', None, [46]),
     8272: _buff_data(8272, 8*16, 5, '坚铁', None, [1]),
-    8276: _buff_data(8276, 15*16, 1, '怒炎', None, None),
+    8276: _buff_data(8276, 15*16, 1, '怒炎', 'NuYanMajorDisappear', None),
     8277: _buff_data(8277, 999999*16, 1, '切换至盾姿态', None, None),
     8278: _buff_data(8278, 999999*16, 1, '切换至刀姿态', None, None),
     8320: _buff_data(8320, 8.25*16, 1, '恋战_会心后停止叠加cd', None, None),
@@ -41,6 +41,7 @@ buff_data = {
     8738: _buff_data(8738, 16*12, 1, '缓深', None, None),
     8873: _buff_data(8873, 0.5*16, 1, '盾飞0.5s内无法施展盾猛', None, None),
     9052: _buff_data(9052, 999999*16, 1, '绝刀耗怒增伤标记buff', None, None),
+    9889: _buff_data(9889, 10*16, 1, '蔑视', None, [51]),
     13352: _buff_data(13352, 0.375*16, 1, '盾飞延迟切姿态', 'DunFeiChangeState', None),
     13934: _buff_data(13934, 3*16, 1, '戍卫', None, None),
     14964: _buff_data(14964, 999999*16, 1, '崇云', None, None),
@@ -60,6 +61,7 @@ buff_data = {
     50007: _buff_data(50007, 2*16, 1, '流血_无炼狱有割裂', 'LiuXueInterval_3', None),
     50008: _buff_data(50008, 1*16, 1, '流血_有炼狱有割裂', 'LiuXueInterval_4', None),
     50009: _buff_data(50009, 999999*16, 3, '崇云_次数检测', None, None),
+    50010: _buff_data(50010, 1, 1, '盾击无视防御目标标记buff', None, [53])
 }
 
 

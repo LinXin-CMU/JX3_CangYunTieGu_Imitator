@@ -40,6 +40,9 @@ def Apply(player: Player, target):
     if rand/10000 <= parry:
         player.ClearCDTime(13045)
 
+    # 盾击无视目标50%防御
+    target.AddBuff(50010, 1)
+
     return 1
 
 

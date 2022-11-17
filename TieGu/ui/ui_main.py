@@ -30,6 +30,9 @@ class MainUI(Ui_MainWindow, QMainWindow):
 
         return recipes
 
+    def get_level(self) -> int:
+        return self.Level_spinBox.value()
+
 
 
 

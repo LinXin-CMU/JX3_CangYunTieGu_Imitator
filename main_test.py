@@ -25,6 +25,8 @@ def run():
         my_target.player = my_player
         my_player.talents = ui.get_talent()
         my_player.recipes = ui.get_recipe()
+        my_target.level = ui.get_level()
+        my_target.SetNpcAttributeValueByLevel()
         my_target.attack_cooldown = 2.25 * 16
         my_target.attack_per_count = 1
 

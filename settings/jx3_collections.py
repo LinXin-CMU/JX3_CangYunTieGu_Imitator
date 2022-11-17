@@ -369,8 +369,19 @@ global_params = {
     'fHasteRate': 11.695,
     'fParryParam': 4.345,
     'fSurplusParam': 13.192,
+    'fPhysicsShieldParam': 5.091,
 
 }
 
 LEVEL_RATE = 450
 LEVEL_CONST = 45750
+
+
+_npc_attribs = namedtuple('npc_attrib', ['defense', 'critical'])
+npc_attribute_data = {
+    120: _npc_attribs(7412, 3930),
+    121: _npc_attribs(11073, 4146),
+    122: _npc_attribs(15528, 4360),
+    123: _npc_attribs(26317, 4574),
+    124: _npc_attribs(27550, 4789),
+}

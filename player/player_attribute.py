@@ -31,45 +31,41 @@ class Attribute:
             'WeaponDamage': 0,
         }
 
-        self.origin_data = {
-            "Vitality": 54352, "Agility": 206, "Spirit": 206, "Spunk": 206, "Strength": 206,
-            "PhysicsAttackPowerBase": 30, "PhysicsAttackPower": 2206,
-            "PhysicsCriticalStrikeRate": 0.0016661897039651498,
-            "PhysicsCriticalDamagePowerPercent": 1.75, "PhysicsOvercomePercent": 0.019180260103659894,
-            "StrainPercent": 0.21642477665984033, "HastePercent": 0.03273090028113543,
-            "SurplusValue": 10742,
-            "MaxHealth": 852122, "PhysicsShieldPercent": 0.24553729808378877,
-            "LunarShieldPercent": 0.06063283141456105,
-            "ToughnessDefCriticalPercent": 0.0321282075741677, "DecriticalDamagePercent": 0,
-            "DodgePercent": 0.0030349756467679956, "ParryPercent": 0.4960989495868723,
-            "ParryValue": 187298,
-            "ActiveThreatCoefficient": 12823, "MeleeWeaponAttackSpeed": 24, "MeleeWeaponDamage": 2233,
-            "MeleeWeaponDamageRand": 1488, "EquipList": {
-                "HAT": {"id": "7_94050", "stone": "", "enchant": "", "enhance": 11557, "strength": 6,
-                        "embedding": [6, 6]},
-                "BELT": {"id": "7_90783", "stone": "", "enchant": "", "enhance": 11561, "strength": 6,
-                         "embedding": [6, 6]},
-                "SHOES": {"id": "7_90812", "stone": "", "enchant": "", "enhance": 11612, "strength": 6,
-                          "embedding": [6, 6]},
-                "WRIST": {"id": "7_90740", "stone": "", "enchant": "", "enhance": 11605, "strength": 6,
-                          "embedding": [6, 6]},
-                "JACKET": {"id": "7_90870", "stone": "", "enchant": "", "enhance": 11616, "strength": 6,
-                           "embedding": [6, 6]},
-                "RING_1": {"id": "8_34446", "stone": "", "enchant": "", "enhance": 11662, "strength": 6,
-                           "embedding": []},
-                "RING_2": {"id": "8_34222", "stone": "", "enchant": "", "enhance": 11662, "strength": 6,
-                           "embedding": []},
-                "BOTTOMS": {"id": "7_90350", "stone": "", "enchant": "", "enhance": 11550, "strength": 6,
-                            "embedding": [6, 6]},
-                "PENDANT": {"id": "8_34252", "stone": "", "enchant": "", "enhance": 11654, "strength": 6,
-                            "embedding": [6]},
-                "NECKLACE": {"id": "8_34312", "stone": "", "enchant": "", "enhance": 11652, "strength": 6,
-                             "embedding": [6]},
-                "PRIMARY_WEAPON": {"id": "6_34334", "stone": 5599, "enchant": "", "enhance": "", "strength": 6,
-                                   "embedding": [6, 6, 6]},
-                "SECONDARY_WEAPON": {"id": "6_32591", "stone": "", "enchant": "", "enhance": 11667, "strength": 6,
-                                     "embedding": [6]}},
-                "Title": "test"}
+        self.origin_data = {"Vitality": 46762, "Agility": 41, "Spirit": 41, "Spunk": 41, "Strength": 41,
+                            "PhysicsAttackPowerBase": 8487, "PhysicsAttackPower": 12058,
+                            "PhysicsCriticalStrikeRate": 0.00033069413971827403,
+                            "PhysicsCriticalDamagePowerPercent": 1.75, "PhysicsOvercomePercent": 0.13488505198893447,
+                            "StrainPercent": 0.49497917470493374, "HastePercent": 0.017412258540946014,
+                            "SurplusValue": 9170, "MaxHealth": 742104, "PhysicsShieldPercent": 0.226188447384057,
+                            "LunarShieldPercent": 0.07095971465700777,
+                            "ToughnessDefCriticalPercent": 0.03399790136411333, "DecriticalDamagePercent": 0,
+                            "DodgePercent": 0, "ParryPercent": 0.42866635911845496, "ParryValue": 165494,
+                            "ActiveThreatCoefficient": 7505, "MeleeWeaponAttackSpeed": 24, "MeleeWeaponDamage": 2628,
+                            "MeleeWeaponDamageRand": 1752, "EquipList": {
+                "HAT": {"id": "7_91258", "strength": 6, "embedding": [6, 6], "stone": "", "enhance": 11534,
+                        "enchant": 11689},
+                "JACKET": {"id": "7_91183", "strength": 6, "embedding": [6, 6], "stone": "", "enhance": 11593,
+                           "enchant": 11688},
+                "BELT": {"id": "7_91272", "strength": 4, "embedding": [6, 6], "stone": "", "enhance": 11538,
+                         "enchant": 11695},
+                "WRIST": {"id": "7_91277", "strength": 4, "embedding": [6, 6], "stone": "", "enhance": 11582,
+                          "enchant": 11697},
+                "BOTTOMS": {"id": "7_91288", "strength": 4, "embedding": [6, 6], "stone": "", "enhance": 11527,
+                            "enchant": ""},
+                "SHOES": {"id": "7_91111", "strength": 6, "embedding": [6, 6], "stone": "", "enhance": 11589,
+                          "enchant": 11686},
+                "NECKLACE": {"id": "8_34366", "strength": 6, "embedding": [6], "stone": "", "enhance": 11652,
+                             "enchant": ""},
+                "PENDANT": {"id": "8_34372", "strength": 6, "embedding": [6], "stone": "", "enhance": 11654,
+                            "enchant": ""},
+                "RING_1": {"id": "8_34392", "strength": 4, "embedding": [], "stone": "", "enhance": 11662,
+                           "enchant": ""},
+                "RING_2": {"id": "8_34392", "strength": 4, "embedding": [], "stone": "", "enhance": 11662,
+                           "enchant": ""},
+                "PRIMARY_WEAPON": {"id": "6_33012", "strength": 6, "embedding": [6, 6, 6], "stone": 4269,
+                                   "enhance": 420, "enchant": ""},
+                "SECONDARY_WEAPON": {"id": "6_32917", "strength": 6, "embedding": [6], "stone": "", "enhance": 11667,
+                                     "enchant": ""}}, "Title": "横刀断浪2"}
 
         self._player = player
         self._get_origin_attributes_value()
@@ -175,9 +171,7 @@ class Attribute:
 
         # print()
 
-
-
-    def _get_buff_attribute_value(self, slots) -> Dict[str, int]:
+    def get_buff_attribute_value(self, slots) -> Dict[str, int]:
 
         for buff in self._player.buffs.values():
             if not buff.attrib:
@@ -262,7 +256,7 @@ class Attribute:
             'atPhysicsAttackPowerBase': 0,
             'atPhysicsAttackPowerPercent': 0,
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
 
         value = self.base_attributes['PhysicsAttackPowerBase']
         value += slots['atPhysicsAttackPowerBase']
@@ -282,7 +276,7 @@ class Attribute:
             'atPhysicsCriticalStrikeBaseRate': 0
         }
 
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
 
         value = self.base_attributes['PhysicsCriticalStrike']
         # 身法转化
@@ -298,7 +292,7 @@ class Attribute:
     def PhysicsCriticalDamagePowerPercent(self):
         slots = {
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['PhysicsCriticalDamagePower']
 
         # 转化为百分比
@@ -310,7 +304,7 @@ class Attribute:
     def PhysicsOvercomePercent(self):
         slots = {
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['PhysicsOvercome']
         # 力道转化
         value += int(self.Strength * 0.3)
@@ -323,7 +317,7 @@ class Attribute:
     def StrainPercent(self):
         slots = {
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['Strain']
 
         # 转化为百分比
@@ -335,7 +329,7 @@ class Attribute:
         slots = {
             'atSurplusValueAddPercent': 0,
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['SurplusValue']
 
         value += int(value * slots['atSurplusValueAddPercent'] / 1024)
@@ -346,7 +340,7 @@ class Attribute:
     def HastePercent(self):
         slots = {
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['Haste']
 
         # 转化为百分比
@@ -360,9 +354,8 @@ class Attribute:
             'atParryBaseRate': 0,
         }
 
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.ParryPercentValue
-
 
         # 转化为百分比
         value = value / (value + (global_params['fParryParam'] * (LEVEL_RATE * 120 - LEVEL_CONST)))
@@ -378,7 +371,7 @@ class Attribute:
         slots = {
             'atParryPercent': 0,
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['Parry']
 
         # 增益值
@@ -393,7 +386,7 @@ class Attribute:
         slots = {
             'atParryValuePercent': 0,
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['ParryValue']
 
         # 增益值
@@ -408,8 +401,7 @@ class Attribute:
     def WeaponDamage(self):
         slots = {
         }
-        slots = self._get_buff_attribute_value(slots)
+        slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['WeaponDamage']
 
         return value
-

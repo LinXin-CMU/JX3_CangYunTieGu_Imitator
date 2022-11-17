@@ -42,5 +42,7 @@ from .LianZhan import LianZhan
 from .LianZhanStop import LianZhanStop
 from .ChongYun import ChongYun
 from .CongRongDisappear import CongRongDisappear
+from .NuYanDisappear import NuYanDisappear
+from .NuYanMajorDisappear import NuYanMajorDisappear
 from .BeAttacked import BeAttacked
 from .NpcAttack import NpcAttack

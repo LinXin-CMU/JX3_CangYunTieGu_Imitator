@@ -35,6 +35,9 @@ def Apply(player: Player, target: Target):
     else:
         lx_itv = 2 * 16
 
+    # 命中后刷新dot快照, 注意先记录快照后添加dot, 避免第一跳查找不到快照属性
+    player.SetSnapShot(13054)
+
     # 怒炎-命中虚弱目标添加怒炎buff
     if target.IsHaveBuff(8248):
         if player.GetSkillLevel('怒炎') == 1:

@@ -25,6 +25,9 @@ def Apply(player: Player, target):
     player.AddBuff(50000, 1)
     # 盾飞延迟0.125s刷新虚弱buff
     player.AddBuff(50002, 1)
+    # 盾飞刷新盾威
+    if target.IsHaveBuff(8397):
+        target.AddBuff(8397, 1)
 
     # 盾飞检查是否满足50次伤害
     b_count = player.IsHaveBuff(50000)

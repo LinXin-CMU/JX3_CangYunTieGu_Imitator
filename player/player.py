@@ -23,6 +23,9 @@ class Player:
         # ————————————————————属性部分————————————————————
         self._attribute = Attribute(self)
         self.life = 1.0
+        self.level = 120
+        self._snapshot: Dict[int, Dict] = {
+        }
         # ————————————————————气劲部分————————————————————
         self.buffs: Dict[int, buff] = {
         }
@@ -114,6 +117,33 @@ class Player:
     def WeaponDamage(self):
         return self._attribute.WeaponDamage
 
+    def SetSnapShot(self, skill_id):
+        """
+        # 记录攻击，会心，会效，无双，增伤
+        :param skill_id:
+        :return:
+        """
+        recipe_data = self.GetRecipeData(skill_id)
+        self._snapshot[skill_id] = {
+            'PhysicsAttackPower': self.PhysicsAttackPower,
+            'PhysicsCriticalPercent': self.PhysicsCriticalPercent + recipe_data['atRecipePhysicsCriticalPercent'],
+            'PhysicsCriticalDamagePowerPercent': self.PhysicsCriticalDamagePowerPercent,
+            'StrainPercent': self.StrainPercent,
+            'AllDamageAddPercent': 0,
+        }
+
+    def GetSnapShot(self, skill_id):
+        if skill_id in self._snapshot:
+            return self._snapshot[skill_id]
+        else:
+            return {
+                'PhysicsAttackPower': 0,
+                'PhysicsCriticalPercent': 0,
+                'PhysicsCriticalDamagePowerPercent': 0,
+                'StrainPercent': 0,
+                'AllDamageAddPercent': 0,
+            }
+
     # ————————————————————技能部分————————————————————
 
     def CastSkill(self, skill_id, skill_level):
@@ -169,37 +199,46 @@ class Player:
             if _skill.nNeedPosState != n_state:
                 return
 
+        # 技能自身效果
         state = _skill.Apply(self, self._target)
-        # 技能伤害
-        if state:
-            dmg, isCritical = self.CallPhysicsDamage(skill_id, _damage_data=_skill.tSkillData[skill_level])
-            self.damage += dmg
+        if not state:
+            return
 
-            # 记录技能
-            if self.casted is None:
-                self.casted = [{
-                    'second': self._timer/16,
-                    'frame': self._timer,
-                    'name': _skill.tSkillName,
-                    'desc': _skill.tDesc,
-                    'rage': self._rage,
-                    'damage': dmg,
-                    'critical': isCritical,
-                    'buff': {i: j for i, j in self.buffs.items()},
-                    'tbuff': {i: j for i, j in self._target.buffs.items()}
-                }]
-            else:
-                self.casted.append({
-                    'second': self._timer/16,
-                    'frame': self._timer,
-                    'name': _skill.tSkillName,
-                    'desc': _skill.tDesc,
-                    'rage': self._rage,
-                    'damage': dmg,
-                    'critical': isCritical,
-                    'buff': {i: j for i, j in self.buffs.items()},
-                    'tbuff': {i: j for i, j in self._target.buffs.items()}
-                })
+        # 技能伤害
+        dmg, isCritical = self.CallPhysicsDamage(skill_id, _damage_data=_skill.tSkillData[skill_level])
+        self.damage += dmg
+
+        # 通用技能效果
+        # 蔑视
+        if skill_id in {13044, 13045, 13046, 13047, 13052, 13053, 13054, 13055, 25213}:
+            # 判断血量
+            self.AddBuff(9889, 1)
+
+        # 记录技能
+        if self.casted is None:
+            self.casted = [{
+                'second': self._timer / 16,
+                'frame': self._timer,
+                'name': _skill.tSkillName,
+                'desc': _skill.tDesc,
+                'rage': self._rage,
+                'damage': dmg,
+                'critical': isCritical,
+                'buff': {i: j for i, j in self.buffs.items()},
+                'tbuff': {i: j for i, j in self._target.buffs.items()}
+            }]
+        else:
+            self.casted.append({
+                'second': self._timer / 16,
+                'frame': self._timer,
+                'name': _skill.tSkillName,
+                'desc': _skill.tDesc,
+                'rage': self._rage,
+                'damage': dmg,
+                'critical': isCritical,
+                'buff': {i: j for i, j in self.buffs.items()},
+                'tbuff': {i: j for i, j in self._target.buffs.items()}
+            })
 
     def GetSkillLevel(self, skill_id):
         """
@@ -231,9 +270,10 @@ class Player:
                     self.recipes.append(recipe_id)
         else:
             if recipe_id in self.recipes:
-                del self.recipes[recipe_id]
+                self.recipes = [i for i in self.recipes if i != recipe_id]
 
-    def CallPhysicsDamage(self, skill_id, *, nBaseDamage=None, nAttackRate=None, nWeaponDamagePercent=None, _damage_data: damage_data=None):
+    def CallPhysicsDamage(self, skill_id, *, nBaseDamage=None, nAttackRate=None, nWeaponDamagePercent=None,
+                          _damage_data: damage_data = None):
         """
         :param _damage_data:
         :param skill_id:
@@ -255,21 +295,49 @@ class Player:
         nAttackRate = _damage_data.nAttackRate
         nWeaponDamagePercent = _damage_data.nWeaponDamagePercent
 
+        # 判断是否是快照机制
+        if skill_id in {
+            # 斩刀附带流血dot
+            50001, 50002, 50003, 50004,
+            'LiuXueInterval_1', 'LiuXueInterval_2', 'LiuXueInterval_3', 'LiuXueInterval_4'
+        }:
+            nPhysicsAttackPower, fPhysicsCriticalPercent, fPhysicsCriticalDamagePowerPercent, \
+            fStrainPercent, fAllDamageAddPercent = self.GetSnapShot(13054).values()
+        else:
+            nPhysicsAttackPower = self.PhysicsAttackPower
+            fPhysicsCriticalPercent = self.PhysicsCriticalPercent
+            fPhysicsCriticalDamagePowerPercent = self.PhysicsCriticalDamagePowerPercent
+            fStrainPercent = self.StrainPercent
+            fAllDamageAddPercent = 0
+
         # 基础伤害
         if not skill_id == 32745:
-            nDamage = int(nBaseDamage + nAttackRate * self.PhysicsAttackPower + nWeaponDamagePercent * self.WeaponDamage)
+            nDamage = int(nBaseDamage + nAttackRate * nPhysicsAttackPower + nWeaponDamagePercent * self.WeaponDamage)
         else:
             nDamage = int(nAttackRate * self.SurplusValue * global_params['fSurplusParam'])
 
-        # 秘籍增伤
-        nDamage = int(nDamage * (1 + recipe_data['atRecipeDamagePercent']))
-
-        # 破防无双
-        nDamage = int(nDamage * (1 + self.PhysicsOvercomePercent) * (1 + self.StrainPercent))
-
         if nDamage > 0:
+
+            # 秘籍增伤
+            nDamage = int(nDamage * (1 + recipe_data['atRecipeDamagePercent']))
+
+            # 破防无双
+            nDamage = int(nDamage * (1 + self.PhysicsOvercomePercent) * (1 + fStrainPercent))
+
+            # 目标防御
+            nTargetDefense = self._target.PhysicsShieldValue
+            slots = {
+                'atAllShieldIgnorePercent': 0,
+            }
+            slots = self._attribute.get_buff_attribute_value(slots)
+            nTargetDefense -= int(nTargetDefense * slots['atAllShieldIgnorePercent'] / 1024)
+            nTargetDefensePercent = self._target.GetPhysicsShieldPercent(nTargetDefense)
+            nDamage = int(nDamage * (1 - nTargetDefensePercent))
+
+            self._target.DelBuff(50010)  # 删除盾击无视buff, 确保不会被其他技能利用
+
             # 会心判定
-            fCritical = self.PhysicsCriticalPercent
+            fCritical = fPhysicsCriticalPercent
             fCritical += recipe_data['atRecipePhysicsCriticalPercent']
             if random.randint(1, 10000) <= fCritical * 10000:
                 nFlag = True
@@ -278,19 +346,26 @@ class Player:
 
             # 会心伤害
             if nFlag:
-                fCriticalPower = self.PhysicsCriticalDamagePowerPercent
+                fCriticalPower = fPhysicsCriticalDamagePowerPercent
                 nDamage = int(nDamage * fCriticalPower)
+
+            # 等级减伤
+            nLevel = self.level - self._target.level
+            if nLevel > 0:
+                fLevelDamageParam = min(abs(nLevel), 10) * 0.15
+            else:
+                fLevelDamageParam = min(abs(nLevel), 10) * -0.05
+            nDamage += int(nDamage * fLevelDamageParam)
 
             # 恋战
             if self.GetSkillLevel('恋战') == 1:
-                if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316, 25215]:
+                if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316,
+                                25215]:
                     self.CastSkill(13127, 1)
                     if nFlag:
                         self.CastSkill(13128, 1)
         else:
             nFlag = False
-
-
 
         return nDamage, nFlag
 
@@ -366,14 +441,14 @@ class Player:
                 return
             if level == _buff.level:
                 layer = _buff.layer + 1
-                self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting, _buff.script, _buff.attrib)
+                self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting,
+                                           _buff.script, _buff.attrib)
                 return
             # 等级大于的情况
             self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff.script, _buff.attrib)
 
         else:
             self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff_data.Script, attrib)
-
 
     def IsHaveBuff(self, buff_id, buff_level=None) -> Union[buff, None]:
         """
@@ -437,7 +512,8 @@ class Player:
                 del self.buffs[buff_id]
                 return 1
             else:
-                self.buffs[buff_id] = buff(_buff.id, _buff.level, new_layer, _buff.desc, _buff.lasting, _buff.script, _buff.attrib)
+                self.buffs[buff_id] = buff(_buff.id, _buff.level, new_layer, _buff.desc, _buff.lasting, _buff.script,
+                                           _buff.attrib)
                 return 1
         else:
             return
@@ -488,8 +564,6 @@ class Player:
                 del self.buffs[buff_id]
             if _script is not None:
                 self.CastSkill(_script, 1)
-
-
 
     def AddSkillCoolDown(self, skill_id, period):
         """

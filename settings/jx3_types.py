@@ -29,6 +29,7 @@ class Target:
     buffs: Dict[int, buff]
     talents: List
     recipes: List
+    level: int
     # 攻击频率
     attack_cooldown: int
     attack_per_count: int
@@ -40,27 +41,8 @@ class Target:
     def rage(self, value): ...
     # ————————————————————属性部分————————————————————
     @property
-    def Vitality(self): return ...
-    @property
-    def PhysicsAttackPower(self): return ...
-    @property
-    def PhysicsCriticalPercent(self): return ...
-    @property
-    def PhysicsCriticalDamagePowerPercent(self): return ...
-    @property
-    def OvercomePercent(self): return ...
-    @property
-    def StrainPercent(self): return ...
-    @property
-    def SurplusValue(self): return ...
-    @property
-    def HastePercent(self): return ...
-    @property
-    def ParryPercent(self): return ...
-    @property
-    def ParryPercentValue(self): return ...
-    @property
-    def ParryValue(self): return ...
+    def PhysicsShieldValue(self): ...
+    def GetPhysicsShieldPercent(self, value): ...
 
     # ————————————————————技能部分————————————————————
 
@@ -162,6 +144,7 @@ class Player:
     talents: List
     recipes: List
     life: float
+    level: int
     def __init__(self, talents: list, recipes: list, target: Target): ...
     # ————————————————————怒气部分————————————————————
     @property
@@ -192,6 +175,14 @@ class Player:
     @property
     def ParryValue(self): return ...
 
+    def SetSnapShot(self, skill_id):
+        """
+        # 记录攻击，会心，会效，无双，增伤
+        :param skill_id:
+        :return:
+        """
+
+    def GetSnapShot(self, skill_id): ...
     # ————————————————————技能部分————————————————————
 
     def CastSkill(self, skill_id, skill_level):
