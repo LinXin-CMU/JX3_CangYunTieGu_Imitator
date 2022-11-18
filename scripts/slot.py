@@ -60,4 +60,8 @@ attribute_value = {
     52: _attrib_data('atPhysicsShieldPercent', -51),
     53: _attrib_data('atPhysicsShieldPercent', -512),
     54: _attrib_data('atHasteBasePercentAdd', 102),
+    55: _attrib_data('atVitalityToPhysicsAttackPowerCof', 41),
+    56: _attrib_data('atVitalityToPhysicsAttackPowerCof', 66),
+    57: _attrib_data('atVitalityToPhysicsOverComeCof', 21),
+    58: _attrib_data('atVitalityToPhysicsOverComeCof', 31),
 }

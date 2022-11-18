@@ -2771,10 +2771,10 @@ color: rgb(255, 255, 255);</string>
    <widget class="QLabel" name="label_info">
     <property name="geometry">
      <rect>
-      <x>870</x>
+      <x>980</x>
       <y>770</y>
-      <width>331</width>
-      <height>20</height>
+      <width>241</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -2920,6 +2920,31 @@ color: rgb(255, 255, 255);</string>
       <string>铁骨气劲</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QProgressBar" name="progressBar">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>770</y>
+      <width>171</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <number>300</number>
+    </property>
+    <property name="value">
+     <number>0</number>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+    <property name="textDirection">
+     <enum>QProgressBar::TopToBottom</enum>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

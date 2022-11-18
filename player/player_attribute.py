@@ -255,6 +255,7 @@ class Attribute:
         slots = {
             'atPhysicsAttackPowerBase': 0,
             'atPhysicsAttackPowerPercent': 0,
+            'atVitalityToPhysicsAttackPowerCof': 0,
         }
         slots = self.get_buff_attribute_value(slots)
 
@@ -266,7 +267,9 @@ class Attribute:
         value += int(value * slots['atPhysicsAttackPowerPercent'] / 1024)
         # 体质转化
         # 默认铁骨
-        value += int(self.Vitality * 0.04)
+        nVitality = self.Vitality
+        value += int(nVitality * 0.04)
+        value += int(nVitality * slots['atVitalityToPhysicsAttackPowerCof'] / 1024)
 
         return value
 
@@ -303,11 +306,15 @@ class Attribute:
     @property
     def PhysicsOvercomePercent(self):
         slots = {
+            'atVitalityToPhysicsOverComeCof': 0
         }
         slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['PhysicsOvercome']
         # 力道转化
         value += int(self.Strength * 0.3)
+
+        # 体质转化
+        value += int(self.Vitality * slots['atVitalityToPhysicsOverComeCof'] / 1024)
 
         # 转化为百分比
         value /= global_params['fOvercomeParam'] * (LEVEL_RATE * 120 - LEVEL_CONST)

@@ -43,6 +43,10 @@ def Apply(player: Player, target: Target):
     if player.GetSkillLevel('崇云') == 1:
         player.CastSkill(21749, 1)
 
+    # 被击后加铁骨气劲
+    if player.GetSetting('QiJin'):
+        player.CastSkill(50005, 1)
+
     return 1
 
 

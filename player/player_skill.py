@@ -45,5 +45,5 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     50002: scripts.LiuXueInterval_2,
     50003: scripts.LiuXueInterval_3,
     50004: scripts.LiuXueInterval_4,
-
+    50005: scripts.TieGu,
 }

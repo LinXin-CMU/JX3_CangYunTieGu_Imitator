@@ -74,6 +74,9 @@ def run():
         print(my_player.buffs)
         print(my_target.buffs)
 
+        # 设置进度条
+        ui.progressBar.setValue(i//16)
+
     for i in my_player.casted:
         if i['name'] not in skills:
             skills[i['name']] = {'count': 1, 'damage': i['damage'], 'critical': i['critical']}
@@ -85,6 +88,7 @@ def run():
     ui.label_info.setText(f"[{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 模拟完成！")
     ui.set_skill_data_table(skills)
     print(int(my_player.damage / 300))
+    ui.progressBar.setValue(300)
 
 
 def get_csv():
