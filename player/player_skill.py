@@ -9,6 +9,7 @@ import scripts
 # 建立变量名和技能脚本的关系
 
 skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int, str]]] = {
+    13039: scripts.JuanXueDao,
     13040: scripts.XueNu,
     13044: scripts.DunDao,
     13045: scripts.DunYa,

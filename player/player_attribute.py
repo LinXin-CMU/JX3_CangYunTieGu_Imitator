@@ -345,7 +345,18 @@ class Attribute:
 
         # 转化为百分比
         value /= global_params['fHasteRate'] * (LEVEL_RATE * 120 - LEVEL_CONST)
-        return
+        return value
+
+    @property
+    def HasteValueGuo(self):
+        slot = {
+            'atHasteBasePercentAdd': 0,
+        }
+        # 取郭氏值
+        value = int((self.base_attributes['Haste'] * 1024) / (global_params['fHasteRate'] * (LEVEL_RATE * 120 - LEVEL_CONST)))
+        # 增益
+        value += slot['atHasteBasePercentAdd']
+        return value
 
     @property
     def ParryPercent(self):
@@ -404,4 +415,9 @@ class Attribute:
         slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['WeaponDamage']
 
+        return value
+
+    @property
+    def WeaponAttackSpeed(self):
+        value = self.origin_data['MeleeWeaponAttackSpeed']
         return value

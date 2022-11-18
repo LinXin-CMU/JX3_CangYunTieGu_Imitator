@@ -11,7 +11,7 @@ tSkillCoolDown = {
     1: cooldown_data(nSingleCoolDown=35*16, nMaxStackNum=1),
 }
 
-tSkillName = '断马摧城'
+tSkillName = '断马摧城母技能'
 tDesc = '断马摧城母技能'
 nNeedGcdType = [0, 1, 2, 3, 4, 5]
 nNeedPosState = 0

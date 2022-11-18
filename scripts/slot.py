@@ -59,4 +59,5 @@ attribute_value = {
     51: _attrib_data('atAllShieldIgnorePercent', 512),
     52: _attrib_data('atPhysicsShieldPercent', -51),
     53: _attrib_data('atPhysicsShieldPercent', -512),
+    54: _attrib_data('atHasteBasePercentAdd', 102),
 }

@@ -18,7 +18,7 @@ tSkillCoolDown = {
     4: cooldown_data(nSingleCoolDown=0, nMaxStackNum=1)
 }
 
-tSkillName = '破招'
+tSkillName = '破'
 tDesc = '苍云破招子技能'
 nNeedGcdType = []
 nNeedPosState = None

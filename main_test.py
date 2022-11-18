@@ -1,5 +1,6 @@
 # coding: utf-8
 # author: LinXin
+# 这一堆大部分都是测试代码~
 from PyQt5.QtWidgets import QApplication
 import datetime
 
@@ -26,6 +27,7 @@ def run():
         my_player.talents = ui.get_talent()
         my_player.recipes = ui.get_recipe()
         my_target.level = ui.get_level()
+        my_player.settings = ui.get_settings()
         my_target.SetNpcAttributeValueByLevel()
         my_target.attack_cooldown = 2.25 * 16
         my_target.attack_per_count = 1
@@ -43,6 +45,9 @@ def run():
 
         if not (my_player.IsHaveBuff(8499) or my_player.IsHaveBuff(8448)):
             my_player.CastSkill(13046, 1)  # /cast [nobuff:盾挡] 盾猛
+
+        if my_player.rage > 80 and True:
+            my_player.CastSkill(25213, 1) # /cast 断马摧城
 
         my_player.CastSkill(13047, 1)  # /cast 盾击
         my_player.CastSkill(13044, 1)  # /cast 盾刀
@@ -71,12 +76,14 @@ def run():
 
     for i in my_player.casted:
         if i['name'] not in skills:
-            skills[i['name']] = 1
+            skills[i['name']] = {'count': 1, 'damage': i['damage'], 'critical': i['critical']}
         else:
-            skills[i['name']] += 1
+            skills[i['name']]['count'] += 1
+            skills[i['name']]['damage'] += i['damage']
+            skills[i['name']]['critical'] += i['critical']
 
     ui.label_info.setText(f"[{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 模拟完成！")
-    print(*[f"{i}: {j}\n" for i, j in skills.items()])
+    ui.set_skill_data_table(skills)
     print(int(my_player.damage / 300))
 
 

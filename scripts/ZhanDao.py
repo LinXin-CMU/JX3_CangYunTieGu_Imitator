@@ -34,6 +34,9 @@ def Apply(player: Player, target: Target):
         lx_itv = 1 * 16
     else:
         lx_itv = 2 * 16
+    # 计算实际帧数
+    nHasteGuo = player.GetSnapShot(13054)['HasteValueGuo']
+    lx_itv = int(1024 * lx_itv / (1024 + nHasteGuo))
 
     # 命中后刷新dot快照, 注意先记录快照后添加dot, 避免第一跳查找不到快照属性
     player.SetSnapShot(13054)

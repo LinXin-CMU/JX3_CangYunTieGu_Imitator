@@ -52,8 +52,14 @@ class Player:
         self.AddBuff(8277, 1)
         # 默认添加从容buff
         self.AddBuff(8423, 1)
+        # 默认添加卷雪刀buff
+        self.AddBuff(50011, 1, lasting=1)
         # ————————————————————目标部分————————————————————
         self._target = target
+        # ————————————————————环境部分————————————————————
+        self.settings = {
+            'QiJin': 0,
+        }
 
     # ————————————————————怒气部分————————————————————
 
@@ -102,6 +108,10 @@ class Player:
         return self._attribute.HastePercent
 
     @property
+    def HasteValueGuo(self):
+        return self._attribute.HasteValueGuo
+
+    @property
     def ParryPercent(self):
         return self._attribute.ParryPercent
 
@@ -117,6 +127,10 @@ class Player:
     def WeaponDamage(self):
         return self._attribute.WeaponDamage
 
+    @property
+    def WeaponAttackSpeed(self):
+        return self._attribute.WeaponAttackSpeed
+
     def SetSnapShot(self, skill_id):
         """
         # 记录攻击，会心，会效，无双，增伤
@@ -130,6 +144,7 @@ class Player:
             'PhysicsCriticalDamagePowerPercent': self.PhysicsCriticalDamagePowerPercent,
             'StrainPercent': self.StrainPercent,
             'AllDamageAddPercent': 0,
+            'HasteValueGuo': self.HasteValueGuo,
         }
 
     def GetSnapShot(self, skill_id):
@@ -142,6 +157,7 @@ class Player:
                 'PhysicsCriticalDamagePowerPercent': 0,
                 'StrainPercent': 0,
                 'AllDamageAddPercent': 0,
+                'HasteValueGuo': 0,
             }
 
     # ————————————————————技能部分————————————————————
@@ -302,7 +318,7 @@ class Player:
             'LiuXueInterval_1', 'LiuXueInterval_2', 'LiuXueInterval_3', 'LiuXueInterval_4'
         }:
             nPhysicsAttackPower, fPhysicsCriticalPercent, fPhysicsCriticalDamagePowerPercent, \
-            fStrainPercent, fAllDamageAddPercent = self.GetSnapShot(13054).values()
+            fStrainPercent, fAllDamageAddPercent, nHasteValueGuo = self.GetSnapShot(13054).values()
         else:
             nPhysicsAttackPower = self.PhysicsAttackPower
             fPhysicsCriticalPercent = self.PhysicsCriticalPercent
@@ -340,9 +356,9 @@ class Player:
             fCritical = fPhysicsCriticalPercent
             fCritical += recipe_data['atRecipePhysicsCriticalPercent']
             if random.randint(1, 10000) <= fCritical * 10000:
-                nFlag = True
+                nFlag = 1
             else:
-                nFlag = False
+                nFlag = 0
 
             # 会心伤害
             if nFlag:
@@ -381,7 +397,7 @@ class Player:
         }
         recipes = None
 
-        # 真秘籍
+        # 秘籍
         match skill_id:
             case 'DunDao_1' | 13059 | 13060 | 13119:
                 recipes = [1860, 1861, 1862, 1863, 1864, 1865]
@@ -395,7 +411,7 @@ class Player:
                 recipes = [1846, 1847, 1848, 1849, 4918, 4919, 4920, 4921, 1879]
             case 13050:
                 recipes = [1953, 1954, 1955, 1956]
-            # case
+
         if recipes:
             for recipe_id in recipes:
                 if recipe_id not in recipe:
@@ -405,8 +421,6 @@ class Player:
                     continue
                 if self.IsSkillRecipeActive(recipe_id):
                     recipe_data[slot] += recipe[recipe_id].value
-
-        # 奇穴秘籍
 
         return recipe_data
 
@@ -602,7 +616,13 @@ class Player:
             return
         if cooldown_type not in GCD_TYPE:
             return
-        self._gcd_list[cooldown_type] = period
+        # 计算受加速影响后的gcd
+        # 先计算加速郭氏值
+        nHasteGuo = self.HasteValueGuo
+        nOriginFrame = int(period)
+
+        nNewFrame = int(1024 * nOriginFrame / (1024 + nHasteGuo))
+        self._gcd_list[cooldown_type] = nNewFrame
 
     def ClearCDTime(self, skill_id, period=None):
         """
@@ -620,3 +640,16 @@ class Player:
                 del self._cooldown[skill_id]
             else:
                 self._cooldown[skill_id] = cd - period
+
+    # ————————————————————环境部分————————————————————
+    def GetSetting(self, slot):
+        """
+        :param slot:
+        :return:
+        """
+        if slot in self.settings:
+            return self.settings[slot]
+        else:
+            return 0
+
+

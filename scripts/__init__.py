@@ -46,3 +46,4 @@ from .NuYanDisappear import NuYanDisappear
 from .NuYanMajorDisappear import NuYanMajorDisappear
 from .BeAttacked import BeAttacked
 from .NpcAttack import NpcAttack
+from .JuanXueDao import JuanXueDao

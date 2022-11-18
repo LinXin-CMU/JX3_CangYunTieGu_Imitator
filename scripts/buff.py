@@ -46,6 +46,8 @@ buff_data = {
     13934: _buff_data(13934, 3*16, 1, '戍卫', None, None),
     14964: _buff_data(14964, 999999*16, 1, '崇云', None, None),
     17772: _buff_data(17772, 8*16, 125, '寒甲_3万AP', None, [47]),
+    17885: _buff_data(17885, 12*16, 15, '铁骨', None, []),
+    17886: _buff_data(17886, 12*16, 20, '铁骨', None, []),
     18222: _buff_data(18222, 12*16, 5, '严阵', None, [50]),
     21308: _buff_data(21308, 999999*16, 1, '割裂', None, None),
     24755: _buff_data(24755, 4*16, 1, '怒炎标记buff', 'NuYanDisappear', None),
@@ -61,7 +63,8 @@ buff_data = {
     50007: _buff_data(50007, 2*16, 1, '流血_无炼狱有割裂', 'LiuXueInterval_3', None),
     50008: _buff_data(50008, 1*16, 1, '流血_有炼狱有割裂', 'LiuXueInterval_4', None),
     50009: _buff_data(50009, 999999*16, 3, '崇云_次数检测', None, None),
-    50010: _buff_data(50010, 1, 1, '盾击无视防御目标标记buff', None, [53])
+    50010: _buff_data(50010, 1, 1, '盾击无视防御目标标记buff', None, [53]),
+    50011: _buff_data(50011, 1.5*16, 1, '卷雪刀内置cd', 'JuanXueDao', None),
 }
 
 

@@ -145,6 +145,7 @@ class Player:
     recipes: List
     life: float
     level: int
+    settings: Dict[str, int]
     def __init__(self, talents: list, recipes: list, target: Target): ...
     # ————————————————————怒气部分————————————————————
     @property
@@ -169,11 +170,17 @@ class Player:
     @property
     def HastePercent(self): return ...
     @property
+    def HasteValueGuo(self): return ...
+    @property
     def ParryPercent(self): return ...
     @property
     def ParryPercentValue(self): return ...
     @property
     def ParryValue(self): return ...
+    @property
+    def WeaponDamage(self): return ...
+    @property
+    def WeaponAttackSpeed(self): return ...
 
     def SetSnapShot(self, skill_id):
         """
@@ -288,4 +295,9 @@ class Player:
         :return:
         """
 
+    def GetSetting(self, slot):
+        """
+        :param slot:
+        :return:
+        """
 

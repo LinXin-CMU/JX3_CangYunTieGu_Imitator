@@ -22,10 +22,15 @@ nNeedPosState = None
 def Apply(player: Player, target: Target):
 
     if target.IsHaveBuff(8249):
+        # 先计算实际帧数
+        nHasteGuo = player.GetSnapShot(13054)['HasteValueGuo']
+        nOriginFrame = 32
+        nNewFrame = int(1024 * nOriginFrame / (1024 + nHasteGuo))
+
         if target.IsHaveBuff(21308):
-            player.AddBuff(50005, 1)
+            player.AddBuff(50005, 1, lasting=nNewFrame)
         else:
-            player.AddBuff(50007, 1)
+            player.AddBuff(50007, 1, lasting=nNewFrame)
 
     return 1
 
