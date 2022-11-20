@@ -19,8 +19,8 @@ nNeedGcdType = [0, 1, 2, 3, 4, 5]
 nNeedPosState = 0
 
 
-def SubEvent_ChuChen(nParry) -> bool:
-    if random.randint(1, 10000) <= nParry * 1000:
+def SubEvent_ChuChen(fParry) -> bool:
+    if random.randint(1, 10000) <= fParry * 10000:
         return True
 
 

@@ -294,12 +294,14 @@ class Attribute:
     @property
     def PhysicsCriticalDamagePowerPercent(self):
         slots = {
+            'atPhysicsCriticalDamagePowerBaseKiloNumRate': 0,
         }
         slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['PhysicsCriticalDamagePower']
 
         # 转化为百分比
         value /= global_params['fCriticalStrikePowerParam'] * (LEVEL_RATE * 120 - LEVEL_CONST)
+        value += slots['atPhysicsCriticalDamagePowerBaseKiloNumRate']
         value += 1.75
         return value
 

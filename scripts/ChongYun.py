@@ -20,6 +20,9 @@ nNeedPosState = None
 
 def Apply(player: Player, target: Target):
 
+    if not player.GetSkillLevel('崇云') == 1:
+        return
+
     if player.IsHaveBuff(50009):
         # 删一层崇云buff
         player.DelBuff(50009)

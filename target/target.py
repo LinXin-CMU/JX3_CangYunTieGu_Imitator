@@ -42,14 +42,20 @@ class Target:
         }
         # 当前时间
         self._timer = -1
-        # 攻击频率
-        self.attack_cooldown = None
-        self.attack_per_count = None
+
         # ————————————————————体态部分————————————————————
         self.level = None
         #
         self.player = None
 
+        # ————————————————————环境部分————————————————————
+        self.settings = {
+            'QiJin': 0,
+            'CriticalByExpect': 0,
+            'AttackFreq': 0,
+            'AttackCount': 0,
+            'Halo': None,
+        }
 
     # ————————————————————怒气部分————————————————————
 
@@ -396,3 +402,14 @@ class Target:
                 del self._cooldown[skill_id]
             else:
                 self._cooldown[skill_id] = cd - period
+
+    # ————————————————————环境部分————————————————————
+    def GetSetting(self, slot):
+        """
+        :param slot:
+        :return:
+        """
+        if slot in self.settings:
+            return self.settings[slot]
+        else:
+            return 0

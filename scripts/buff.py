@@ -23,6 +23,7 @@ buff_data = {
     8278: _buff_data(8278, 999999*16, 1, '切换至刀姿态', None, None),
     8320: _buff_data(8320, 8.25*16, 1, '恋战_会心后停止叠加cd', None, None),
     8321: _buff_data(8321, 8.25*16, 1, '坚铁_招架后停止叠加cd', None, None),
+    8337: _buff_data(8337, 999999*16, 1, '临川列山阵', None, [67, 68, 69]),
     8382: _buff_data(8382, 1*16, 1, '血怒连按第二层需求buff', None, None),
     8383: _buff_data(8383, 1*16, 1, '血怒连按第三层需求buff', None, None),
     8384: _buff_data(8384, 1*16, 1, '血怒连按需求buff', None, None),
@@ -45,6 +46,13 @@ buff_data = {
     13352: _buff_data(13352, 0.375*16, 1, '盾飞延迟切姿态', 'DunFeiChangeState', None),
     13934: _buff_data(13934, 3*16, 1, '戍卫', None, None),
     14964: _buff_data(14964, 999999*16, 1, '崇云', None, None),
+    15413: _buff_data(15413, 8*16, 1, '御帽', None, None),
+    15414: _buff_data(15414, 30*16, 1, '御帽内置cd', None, None),
+    15453: _buff_data(15453, 10*16, 1, '伤腕内置cd', None, None),
+    15455: _buff_data(15455, 8*16, 1, '伤腰', None, None),
+    15456: _buff_data(15456, 30*16, 1, '伤腰内置cd', None, None),
+    15955: _buff_data(15955, 999999*16, 1, '龙皇雪风阵', None, [70, 71, 72]),
+    15961: _buff_data(15961, 7.5*16, 1, '龙皇雪风五阵', None, [73]),
     17772: _buff_data(17772, 8*16, 125, '寒甲_3万AP', None, [47]),
     17885: _buff_data(17885, 12*16, 15, '铁骨', None, [55, 57]),
     17886: _buff_data(17886, 12*16, 20, '铁骨', None, [56, 58]),
@@ -52,6 +60,9 @@ buff_data = {
     21308: _buff_data(21308, 999999*16, 1, '割裂', None, None),
     24755: _buff_data(24755, 4*16, 1, '怒炎标记buff', 'NuYanDisappear', None),
     24756: _buff_data(24756, 4*16, 1, '怒炎重置绝刀标记', None, None),
+    24767: _buff_data(24767, 3*16, 1, '御腕', None, [65, 66]),
+    24791: _buff_data(24791, 25*16, 1, '御腕内置cd', None, None),
+    24774: _buff_data(24774, 10*16, 1, '伤鞋内置cd', None, None),
     # 以下是自定义功能的buff
     50000: _buff_data(50000, 25*16, 50, '盾飞跳数监控', None, None),
     50001: _buff_data(50001, 25*16, 1, '盾飞后监控虚弱是否被流血覆盖', None, None),
@@ -65,6 +76,9 @@ buff_data = {
     50009: _buff_data(50009, 999999*16, 3, '崇云_次数检测', None, None),
     50010: _buff_data(50010, 1, 1, '盾击无视防御目标标记buff', None, [53]),
     50011: _buff_data(50011, 1.5*16, 1, '卷雪刀内置cd', 'JuanXueDao', None),
+    50012: _buff_data(50012, 15*16, 1, '乱天狼模拟内置cd', 'Halo_LingXue_5', None),
+    50013: _buff_data(50013, 7*16, 1, '乱天狼模拟起手时间', 'Halo_LingXue_5', None),
+
 }
 
 

@@ -80,10 +80,11 @@ def Apply(player: Player, target: Target):
     player.AddBuff(8384, 1)
 
     # 崇云buff
-    player.AddBuff(14964, 1)
-    # 崇云次数检测buff
-    for i in range(3):
-        player.AddBuff(50009, 1)
+    if player.GetSkillLevel('崇云') == 1:
+        player.AddBuff(14964, 1)
+        # 崇云次数检测buff
+        for i in range(3):
+            player.AddBuff(50009, 1)
 
 
 

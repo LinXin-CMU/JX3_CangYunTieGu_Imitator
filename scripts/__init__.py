@@ -48,3 +48,11 @@ from .BeAttacked import BeAttacked
 from .NpcAttack import NpcAttack
 from .JuanXueDao import JuanXueDao
 from .TieGu import TieGu
+from .enchant.Enchant_YuMao import YuMao
+from .enchant.Enchant_YuWan import YuWan
+from .enchant.Enchant_ShangWan import ShangWan
+from .enchant.Enchant_ShangXie import ShangXie
+from .enchant.Enchant_ShangYao import ShangYao
+from .zhenfa.Halo_TieGu import Halo_TieGu
+from .zhenfa.Halo_LingXue import Halo_LingXue
+from .zhenfa.Halo_LingXue_5 import Halo_LingXue_5

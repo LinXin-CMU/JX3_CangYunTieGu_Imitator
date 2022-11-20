@@ -136,6 +136,11 @@ class Target:
         :return:
         """
 
+    def GetSetting(self, slot):
+        """
+        :param slot:
+        :return:
+        """
 
 class Player:
     casted: List

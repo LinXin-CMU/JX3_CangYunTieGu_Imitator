@@ -7,7 +7,12 @@ from functools import reduce
 from .ui import Ui_MainWindow
 from settings.jx3_collections import recipe
 from .modules.ui_selector import TalentSelector
+from .modules.ui_setter import UiSetter
 
+HALO_TO_ID = {
+    '铁骨阵': 'Halo_TieGu',
+    '凌雪阵': 'Halo_LingXue',
+}
 
 
 class MainUI(Ui_MainWindow, QMainWindow):
@@ -16,8 +21,14 @@ class MainUI(Ui_MainWindow, QMainWindow):
         super(MainUI, self).__init__()
         self.setupUi(self)
         self._selector = TalentSelector(self)
+        self._setter = UiSetter(self)
 
         self.skill_data_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+
+        self.groupBox_15.move(90, 260)
+        self.groupBox_15.setVisible(False)
+        self.groupBox_16.move(90, 300)
+        self.groupBox_16.setVisible(False)
 
     def get_talent(self) -> List[int]:
         return self._selector.talent
@@ -37,13 +48,31 @@ class MainUI(Ui_MainWindow, QMainWindow):
     def get_settings(self) -> Dict:
         ret = {
             'QiJin': 0,
+            'CriticalByExpect': 0,
+            'AttackFreq': 0,
+            'AttackCount': 0,
+            'Halo': None,
         }
         item_to_key = {
             self.qijin_checkBox: 'QiJin',
+            self.setting_critical_checkbox: 'CriticalByExpect',
         }
         for box, key in item_to_key.items():
             if box.isChecked():
                 ret[key] = 1
+        match self.envior_button.text():
+            case '副本':
+                ret['AttackFreq'] = 2.25 * 16
+                ret['AttackCount'] = 1
+            case '地鼠门':
+                ret['AttackFreq'] = 2.25 * 16
+                ret['AttackCount'] = 6
+            case '木桩':
+                ret['AttackFreq'] = 1 * 16
+                ret['AttackCount'] = 1
+
+        if self.halo_button.text() in HALO_TO_ID:
+            ret['Halo'] = HALO_TO_ID[self.halo_button.text()]
 
         return ret
 

@@ -1,6 +1,7 @@
 # coding: utf-8
 # author: LinXin
 import random
+from typing import Dict, Union
 
 from settings.jx3_types import *
 from settings.jx3_collections import recipe, global_params
@@ -8,8 +9,6 @@ from .player_attribute import Attribute
 from .player_skill import skill_id_to_script
 from scripts.buff import buff_data
 import scripts
-
-from typing import Dict, Union
 
 
 class Player:
@@ -59,6 +58,10 @@ class Player:
         # ————————————————————环境部分————————————————————
         self.settings = {
             'QiJin': 0,
+            'CriticalByExpect': 0,
+            'AttackFreq': 0,
+            'AttackCount': 0,
+            'Halo': None,
         }
 
     # ————————————————————怒气部分————————————————————
@@ -306,10 +309,22 @@ class Player:
         # 秘籍
         recipe_data = self.GetRecipeData(skill_id)
 
-        # 有data的情况
+        # 技能伤害
         nBaseDamage = int(_damage_data.nDamageBase + 0.5 * _damage_data.nDamageRand)
-        nAttackRate = _damage_data.nAttackRate
         nWeaponDamagePercent = _damage_data.nWeaponDamagePercent
+
+        # 奇穴系数修饰
+        nAttackRate = _damage_data.nAttackRate
+        if self.GetSkillLevel('卷云') == 1:
+            match skill_id:
+                case 'DunDao_1':
+                    nAttackRate *= 1.05
+                case 13059:
+                    nAttackRate *= 1.1
+                case 13060:
+                    nAttackRate *= 1.15
+                case 13119:
+                    nAttackRate *= 1.2
 
         # 判断是否是快照机制
         if skill_id in {
@@ -361,8 +376,10 @@ class Player:
                 nFlag = 0
 
             # 会心伤害
-            if nFlag:
-                fCriticalPower = fPhysicsCriticalDamagePowerPercent
+            fCriticalPower = fPhysicsCriticalDamagePowerPercent
+            if self.GetSetting('CriticalByExpect'):
+                nDamage = int(nDamage * fCriticalPower * fCritical + nDamage * (1 - fCritical))
+            elif nFlag:
                 nDamage = int(nDamage * fCriticalPower)
 
             # 等级减伤
@@ -373,15 +390,34 @@ class Player:
                 fLevelDamageParam = min(abs(nLevel), 10) * -0.05
             nDamage += int(nDamage * fLevelDamageParam)
 
-            # 恋战
-            if self.GetSkillLevel('恋战') == 1:
-                if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316,
-                                25215]:
+            # 施展招式后的判定
+            if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316,
+                            25215]:
+                if self.GetSkillLevel('恋战') == 1:
                     self.CastSkill(13127, 1)
                     if nFlag:
                         self.CastSkill(13128, 1)
+
+                # # 这里应该是附魔判定条件
+                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                #     self.CastSkill(22166, 1)
+                # if random.randint(1, 10000) / 10000 <= 205 / 1024:
+                #     self.CastSkill(22169, 1)
+                # if nFlag:
+                #     self.CastSkill(33257, 1)
+                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                #     self.CastSkill(22122, 1)
+                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                #     self.CastSkill(33249, 1)
+
+
+
+            # 会心率用会心期望计算时, 要将nFlag设置为期望会心率
+            if self.GetSetting('CriticalByExpect'):
+                nFlag = fCritical
+
         else:
-            nFlag = False
+            nFlag = 0
 
         return nDamage, nFlag
 
@@ -651,5 +687,18 @@ class Player:
             return self.settings[slot]
         else:
             return 0
+
+    # ————————————————————特殊部分————————————————————
+
+    def ActiveHaloByID(self, halo_id=None):
+        """
+        激活阵法\n
+        :param halo_id:
+        :return:
+        """
+        if not halo_id:
+            halo_id = self.GetSetting('Halo')
+
+        self.CastSkill(halo_id, 1)
 
 

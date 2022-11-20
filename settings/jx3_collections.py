@@ -385,3 +385,5 @@ npc_attribute_data = {
     123: _npc_attribs(26317, 4574),
     124: _npc_attribs(27550, 4789),
 }
+
+

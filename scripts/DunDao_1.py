@@ -19,10 +19,10 @@ nNeedPosState = 0
 
 
 def Apply(player: Player, target):
+
     player.AddPublicCoolDown(2, 0.5*16)
+
     return 1
-
-
 
 
 DunDao_1 = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState, Apply)

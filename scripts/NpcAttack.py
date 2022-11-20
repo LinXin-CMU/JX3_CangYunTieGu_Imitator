@@ -21,14 +21,9 @@ nNeedPosState = None
 
 def Apply(player: Player, target: Target):
 
-    if not target.attack_cooldown:
-        return
-    if not target.attack_per_count:
-        return
+    target.AddPublicCoolDown(0, target.GetSetting('AttackFreq'))
 
-    target.AddPublicCoolDown(0, target.attack_cooldown)
-
-    for i in range(target.attack_per_count):
+    for i in range(target.GetSetting('AttackCount')):
         player.CastSkill(50000, 1)
 
     return 1
