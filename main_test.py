@@ -23,6 +23,8 @@ class Main:
         self.player = None
 
     def run(self):
+        nTime = time.time()
+
         self.target = Target()
         self.player = Player([], [], self.target)
         self.target.player = self.player
@@ -35,13 +37,12 @@ class Main:
         self.player.ActiveHaloByID()
 
         skills = {}
-    
-        for i in range(300 * 16):
+        i = 0
+        while i < 300*16:
+
             self.player.Timer(i)
             self.target.Timer(i)
-    
-            self.target.CastSkill(1, 1)
-    
+
             self.player.CastSkill(13045, 1)  # /cast 盾压
     
             if not (self.player.IsHaveBuff(8499) or self.player.IsHaveBuff(8448)):
@@ -77,7 +78,9 @@ class Main:
     
             # 设置进度条
             ui.progressBar.setValue(i//16)
-    
+
+            i += int(self.player.GetLatestStep())
+
         for i in self.player.casted:
             if i['name'] not in skills:
                 skills[i['name']] = {'count': 1, 'damage': i['damage'], 'critical': i['critical']}
@@ -90,7 +93,8 @@ class Main:
         ui.set_skill_data_table(skills)
         print(int(self.player.damage / 300))
         ui.progressBar.setValue(300)
-    
+
+        print(time.time() - nTime)
         return int(self.player.damage / 300)
 
     def get_csv(self):

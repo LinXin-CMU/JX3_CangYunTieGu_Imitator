@@ -5,7 +5,7 @@
 from settings.jx3_types import Player
 from settings.jx3_collections import special_stones, LEVEL_CONST, LEVEL_RATE, global_params
 from scripts.buff import buff_data
-from scripts.slot import attribute_value
+from scripts.slot import attribute_value, _attrib_data
 
 from typing import Dict
 from math import ceil
@@ -177,7 +177,10 @@ class Attribute:
             if not buff.attrib:
                 continue
             for attrib_data in buff.attrib:
-                attrib_data = attribute_value[attrib_data]
+                if isinstance(attrib_data, _attrib_data):
+                    pass    # 如果是给定属性字段和值，那么不作查找
+                else:
+                    attrib_data = attribute_value[attrib_data]
                 if attrib_data.slot in slots:
                     slots[attrib_data.slot] += attrib_data.value * buff.layer
 

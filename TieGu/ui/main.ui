@@ -2930,7 +2930,7 @@ color: rgb(255, 255, 255);</string>
       </rect>
      </property>
      <property name="text">
-      <string>铁骨阵</string>
+      <string>无阵眼</string>
      </property>
     </widget>
     <widget class="QPushButton" name="envior_button">
@@ -3035,15 +3035,34 @@ color: rgb(255, 255, 255);</string>
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>111</width>
+       <width>161</width>
        <height>16</height>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;勾选后，将用每次技能的实际会心率计算伤害期望和平均会心率，以减少会心对输出的波动。&lt;/p&gt;&lt;p&gt;不会影响恋战的计算方式。（默认开启）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;勾选后，将把实际会心率替换为该技能的期望会心率，并用期望会心率参与计算，以减少会心对输出的波动。&lt;/p&gt;&lt;p&gt;（默认开启）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>以期望计算会心</string>
+      <string>以期望计算会心和恋战</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="setting_parry_checkbox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>141</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;勾选后，会利用面板招架率计算坚铁、寒甲、盾压重置率的期望，以提高期望DPS稳定性。&lt;/p&gt;&lt;p&gt;（默认勾选）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>以期望计算招架</string>
      </property>
      <property name="checked">
       <bool>true</bool>

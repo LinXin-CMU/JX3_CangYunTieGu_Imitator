@@ -33,6 +33,7 @@ class Target:
     # 攻击频率
     attack_cooldown: int
     attack_per_count: int
+    gcd_list: Dict
     def __init__(self, talents: list, recipes: list): ...
     # ————————————————————怒气部分————————————————————
     @property
@@ -41,7 +42,7 @@ class Target:
     def rage(self, value): ...
     # ————————————————————属性部分————————————————————
     @property
-    def PhysicsShieldValue(self): ...
+    def PhysicsShieldValue(self): return ...
     def GetPhysicsShieldPercent(self, value): ...
 
     # ————————————————————技能部分————————————————————

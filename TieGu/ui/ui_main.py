@@ -52,10 +52,12 @@ class MainUI(Ui_MainWindow, QMainWindow):
             'AttackFreq': 0,
             'AttackCount': 0,
             'Halo': None,
+            'HanJiaByExcept': 0,
         }
         item_to_key = {
             self.qijin_checkBox: 'QiJin',
             self.setting_critical_checkbox: 'CriticalByExpect',
+            self.setting_parry_checkbox: 'HanJiaByExcept',
         }
         for box, key in item_to_key.items():
             if box.isChecked():

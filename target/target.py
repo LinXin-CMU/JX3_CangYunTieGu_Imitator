@@ -30,7 +30,7 @@ class Target:
         # ————————————————————技能cd部分————————————————————
         self._cooldown = {
         }
-        self._gcd_list = {
+        self.gcd_list = {
             0: 0,  # 'normal_24',  # 常规1.5s
             1: 0,  # 'normal_16',  # 常规1s
             2: 0,  # 'dundang_8',  # 盾挡进入的0.5s
@@ -146,9 +146,9 @@ class Target:
         # 检查gcd
         gcd_type_list = _skill.nNeedGcdType
         for gcd_type in gcd_type_list:
-            if gcd_type not in self._gcd_list:
+            if gcd_type not in self.gcd_list:
                 return
-            if self._gcd_list[gcd_type] > 0:
+            if self.gcd_list[gcd_type] > 0:
                 return
 
         # 检查cd
@@ -318,7 +318,9 @@ class Target:
         :return:
         """
         # 更新时间，记录用
+        nPassedTime = 0
         if value > self._timer:
+            nPassedTime = value - self._timer
             self._timer = value
         else:
             return
@@ -326,7 +328,7 @@ class Target:
         # 减cd
         _del = []
         for skill_id, skill_cd in self._cooldown.items():
-            skill_cd -= 1
+            skill_cd -= nPassedTime
             if skill_cd > 0:
                 self._cooldown[skill_id] = skill_cd
             else:
@@ -335,17 +337,17 @@ class Target:
             del self._cooldown[skill_id]
 
         # 减gcd
-        for gcd_type, gcd_value in self._gcd_list.items():
-            gcd_value -= 1
+        for gcd_type, gcd_value in self.gcd_list.items():
+            gcd_value -= nPassedTime
             if gcd_value > 0:
-                self._gcd_list[gcd_type] = gcd_value
+                self.gcd_list[gcd_type] = gcd_value
             else:
-                self._gcd_list[gcd_type] = 0
+                self.gcd_list[gcd_type] = 0
 
         # 减buff持续时间
         _del = []
         for buff_id, _buff_data in self.buffs.items():
-            new_lasting = max(_buff_data.lasting - 1, 0)
+            new_lasting = max(_buff_data.lasting - nPassedTime, 0)
             if not new_lasting:
                 _del.append(buff_id)
             else:
@@ -384,7 +386,7 @@ class Target:
             return
         if cooldown_type not in GCD_TYPE:
             return
-        self._gcd_list[cooldown_type] = period
+        self.gcd_list[cooldown_type] = period
 
     def ClearCDTime(self, skill_id, period=None):
         """

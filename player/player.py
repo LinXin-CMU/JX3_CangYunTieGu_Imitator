@@ -8,6 +8,7 @@ from settings.jx3_collections import recipe, global_params
 from .player_attribute import Attribute
 from .player_skill import skill_id_to_script
 from scripts.buff import buff_data
+from scripts.slot import _attrib_data
 import scripts
 
 
@@ -62,6 +63,7 @@ class Player:
             'AttackFreq': 0,
             'AttackCount': 0,
             'Halo': None,
+            'HanJiaByExcept': 0,
         }
 
     # ————————————————————怒气部分————————————————————
@@ -390,27 +392,40 @@ class Player:
                 fLevelDamageParam = min(abs(nLevel), 10) * -0.05
             nDamage += int(nDamage * fLevelDamageParam)
 
+            # 全局增伤
+            slots = {
+                'atAllDamageAddPercent': 0,
+                'atAllPhysicsDamageAddPercent': 0,
+            }
+            slots = self._attribute.get_buff_attribute_value(slots)
+            nDamage += int(nDamage * slots['atAllDamageAddPercent'] / 1024)
+            nDamage += int(nDamage * slots['atAllPhysicsDamageAddPercent'] / 1024)
+
             # 施展招式后的判定
             if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316,
                             25215]:
                 if self.GetSkillLevel('恋战') == 1:
-                    self.CastSkill(13127, 1)
-                    if nFlag:
-                        self.CastSkill(13128, 1)
+                    if self.GetSetting('CriticalByExpect'):
+                        # 直接计算恋战期望，并添加对应数值的buff
+                        self.DelBuff(8267, all_layer=True)
+                        value = self.GetLianZhanExceptByCritical(self.PhysicsCriticalPercent)
+                        self.AddBuff(8267, 1, attrib=[_attrib_data('atPhysicsCriticalStrikeBaseRate', value * (30 / 1024))])
+                    else:
+                        self.CastSkill(13127, 1)
+                        if nFlag:
+                            self.CastSkill(13128, 1)
 
-                # # 这里应该是附魔判定条件
-                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                #     self.CastSkill(22166, 1)
-                # if random.randint(1, 10000) / 10000 <= 205 / 1024:
-                #     self.CastSkill(22169, 1)
-                # if nFlag:
-                #     self.CastSkill(33257, 1)
-                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                #     self.CastSkill(22122, 1)
-                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                #     self.CastSkill(33249, 1)
-
-
+                # 这里应该是附魔判定条件
+                if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                    self.CastSkill(22166, 1)
+                if random.randint(1, 10000) / 10000 <= 205 / 1024:
+                    self.CastSkill(22169, 1)
+                if nFlag:
+                    self.CastSkill(33257, 1)
+                if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                    self.CastSkill(22122, 1)
+                if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                    self.CastSkill(33249, 1)
 
             # 会心率用会心期望计算时, 要将nFlag设置为期望会心率
             if self.GetSetting('CriticalByExpect'):
@@ -489,13 +504,14 @@ class Player:
             _buff: buff = self.buffs.get(buff_id)
             if level < _buff.level:
                 return
-            if level == _buff.level:
+            elif level == _buff.level:
                 layer = _buff.layer + 1
                 self.buffs[buff_id] = buff(buff_id, level, min(_buff_data.nMaxStackNum, layer), desc, lasting,
-                                           _buff.script, _buff.attrib)
+                                           _buff.script, attrib)
                 return
             # 等级大于的情况
-            self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff.script, _buff.attrib)
+            else:
+                self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff.script, attrib)
 
         else:
             self.buffs[buff_id] = buff(buff_id, level, 1, desc, lasting, _buff_data.Script, attrib)
@@ -574,8 +590,11 @@ class Player:
         """
         :return:
         """
+        self._target.CastSkill(1, 1)
         # 更新时间，记录用
+        nPassedTime = 0
         if value > self._timer:
+            nPassedTime = value - self._timer
             self._timer = value
         else:
             return
@@ -583,7 +602,7 @@ class Player:
         # 减cd
         _del = []
         for skill_id, skill_cd in self._cooldown.items():
-            skill_cd -= 1
+            skill_cd -= nPassedTime
             if skill_cd > 0:
                 self._cooldown[skill_id] = skill_cd
             else:
@@ -593,7 +612,7 @@ class Player:
 
         # 减gcd
         for gcd_type, gcd_value in self._gcd_list.items():
-            gcd_value -= 1
+            gcd_value -= nPassedTime
             if gcd_value > 0:
                 self._gcd_list[gcd_type] = gcd_value
             else:
@@ -602,7 +621,7 @@ class Player:
         # 减buff持续时间
         _del = []
         for buff_id, _buff_data in self.buffs.items():
-            new_lasting = max(_buff_data.lasting - 1, 0)
+            new_lasting = max(_buff_data.lasting - nPassedTime, 0)
             if not new_lasting:
                 _del.append(buff_id)
             else:
@@ -677,6 +696,42 @@ class Player:
             else:
                 self._cooldown[skill_id] = cd - period
 
+    def GetLatestStep(self):
+        """
+        读取下一次可能需要进行操作的最短时间间隔\n
+        :return:
+        """
+        nLatestFrame = 999999
+        # 读取出下一次会被移除的最短buff时间
+        for _buff_data in self.buffs.values():
+            if _buff_data.lasting < nLatestFrame:
+                nLatestFrame = _buff_data.lasting
+
+        # 读取出下一次结束的最短技能cd
+        for _cooldown in self._cooldown.values():
+            if _cooldown < nLatestFrame:
+                nLatestFrame = _cooldown
+
+        # 读取出下一次结束的最短gcd
+        for _global_cooldown in self._gcd_list.values():
+            if 0 < _global_cooldown < nLatestFrame:
+                nLatestFrame = _global_cooldown
+
+        # 读取出下一次会被移除的最短buff时间
+        for _buff_data in self._target.buffs.values():
+            if _buff_data.lasting < nLatestFrame:
+                nLatestFrame = _buff_data.lasting
+
+        # 读取出下一次结束的最短gcd
+        for _global_cooldown in self._target.gcd_list.values():
+            if 0 < _global_cooldown < nLatestFrame:
+                nLatestFrame = _global_cooldown
+
+        if nLatestFrame == 999999:
+            nLatestFrame = 1
+
+        return nLatestFrame
+
     # ————————————————————环境部分————————————————————
     def GetSetting(self, slot):
         """
@@ -700,5 +755,41 @@ class Player:
             halo_id = self.GetSetting('Halo')
 
         self.CastSkill(halo_id, 1)
+
+    @staticmethod
+    def GetLianZhanExceptByCritical(fCritical):
+        """
+        :param fCritical:
+        :return:
+        """
+        nLayerExcept = 0
+        for i in range(1, 11):
+            nSingleLayerExcept = 1
+            for j in range(i):
+                if j > 0:
+                    nSingleLayerExcept *= (1 - fCritical - j * (30/1024))
+                else:
+                    nSingleLayerExcept *= 1
+            nLayerExcept += nSingleLayerExcept
+
+        return nLayerExcept
+
+    @staticmethod
+    def GetJianTieExceptByParry(fParry):
+        """
+        :param fParry:
+        :return:
+        """
+        nLayerExcept = 0
+        for i in range(1, 6):
+            nSingleLayerExcept = 1
+            for j in range(i):
+                if j > 0:
+                    nSingleLayerExcept *= (1 - fParry - j * (60/1024))
+                else:
+                    nSingleLayerExcept *= 1
+            nLayerExcept += nSingleLayerExcept
+
+        return nLayerExcept
 
 
