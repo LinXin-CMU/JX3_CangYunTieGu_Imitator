@@ -79,5 +79,6 @@ attribute_value = {
     71: _attrib_data('atPhysicsCriticalStrikeBaseRate', 30/1024),
     72: _attrib_data('atPhysicsCriticalDamagePowerBaseKiloNumRate', 154/1024),
     73: _attrib_data('atPhysicsAttackPowerPercent', 102),
+    74: _attrib_data('atParryValuePercent', 154),
 
 }

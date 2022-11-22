@@ -2,6 +2,7 @@
 # author: LinXin
 
 from scripts.Default import *
+from scripts.slot import _attrib_data
 
 
 tSkillData = {
@@ -22,22 +23,33 @@ nNeedPosState = None
 def Apply(player: Player, target: Target):
 
     # 是否招架的判定
-    nParry = player.ParryPercent
+    fParry = player.ParryPercent
 
-    if random.randint(1, 10000) <= nParry * 10000:
+    if random.randint(1, 10000) <= fParry * 10000:
         nFlag = 1
     else:
         nFlag = 0
 
     # 招架后加寒甲buff
-    if nFlag and player.GetSkillLevel('寒甲') == 1:
-        player.CastSkill(13135, 1)
+    if not player.GetSetting('ParryByExpect'):
+        if nFlag and player.GetSkillLevel('寒甲') == 1:
+            player.CastSkill(13135, 1)
+    else:
+        # 寒甲在招架之后，因此累计概率会包含自身这次
+        player.SetExpectParry(fParry)
+        if player.GetSkillLevel('寒甲') == 1:
+            player.CastSkill(13135, 1)
 
     # 坚铁buff判定
     if player.GetSkillLevel('坚铁') == 1:
-        player.CastSkill(13139, 1)
-        if nFlag:
-            player.CastSkill(13140, 1)
+        if player.GetSetting('ParryByExpect'):
+            player.DelBuff(8272)
+            fLayerExpect = player.GetJianTieExpectByParry(player.ParryPercent)
+            player.AddBuff(8272, 1, attrib=[_attrib_data('atParryBaseRate', fLayerExpect*(60/1024))])
+        else:
+            player.CastSkill(13139, 1)
+            if nFlag:
+                player.CastSkill(13140, 1)
 
     # 崇云buff判定
     if player.GetSkillLevel('崇云') == 1:

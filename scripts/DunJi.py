@@ -27,17 +27,20 @@ def Apply(player: Player, target):
     player.rage += 10
 
     # 盾压重置
-    parry = player.ParryPercent
-    if not isinstance(parry, float):
-        return
+    if not player.GetSetting('ParryByExpect'):
+        fParry = player.ParryPercent
+        if not isinstance(fParry, float):
+            return
 
-    if player.IsSkillRecipeActive(1858):
-        parry += 0.05
-    if player.IsSkillRecipeActive(1859):
-        parry += 0.05
+        if player.IsSkillRecipeActive(1858):
+            fParry += 0.05
+        if player.IsSkillRecipeActive(1859):
+            fParry += 0.05
 
-    rand = random.randint(1, 10000)
-    if rand/10000 <= parry:
+        rand = random.randint(1, 10000)
+        if rand/10000 <= fParry:
+            player.ClearCDTime(13045)
+    else:
         player.ClearCDTime(13045)
 
     # 盾击无视目标50%防御

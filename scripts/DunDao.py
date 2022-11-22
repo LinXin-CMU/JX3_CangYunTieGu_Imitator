@@ -74,17 +74,20 @@ def Apply(player: Player, target: Target):
     target.AddBuff(8398, 1)   # 卷云
 
     # 盾压重置
-    parry = player.ParryPercent
-    if not isinstance(parry, float):
-        return
+    if not player.GetSetting('ParryByExpect'):
+        parry = player.ParryPercent
+        if not isinstance(parry, float):
+            return
 
-    if player.IsSkillRecipeActive(1858):
-        parry += 0.05
-    if player.IsSkillRecipeActive(1859):
-        parry += 0.05
+        if player.IsSkillRecipeActive(1858):
+            parry += 0.05
+        if player.IsSkillRecipeActive(1859):
+            parry += 0.05
 
-    rand = random.randint(1, 10000)
-    if rand/10000 <= parry:
+        rand = random.randint(1, 10000)
+        if rand/10000 <= parry:
+            player.ClearCDTime(13045)
+    else:
         player.ClearCDTime(13045)
 
     return 1

@@ -433,3 +433,14 @@ class Attribute:
     def WeaponAttackSpeed(self):
         value = self.origin_data['MeleeWeaponAttackSpeed']
         return value
+
+    @property
+    def AllDamageAddPercent(self):
+        slots = {
+            'atAllDamageAddPercent': 0,
+            'atAllPhysicsDamageAddPercent': 0,
+        }
+        value = 1
+        value *= (1 + slots['atAllDamageAddPercent'] / 1024)
+        value *= (1 + slots['atAllPhysicsDamageAddPercent'] / 1024)
+        return value

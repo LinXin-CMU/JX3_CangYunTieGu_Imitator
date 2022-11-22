@@ -34,6 +34,7 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     13352: scripts.DunFeiChangeState,
     13391: scripts.DunDang,
     13540: scripts.DunFeiAddXuRuo,
+    19409: scripts.DunYaDamage,
     21749: scripts.ChongYun,
     22122: scripts.YuMao,
     22166: scripts.ShangWan,
@@ -43,7 +44,6 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     32745: scripts.PoZhao,
     33249: scripts.YuWan,
     33257: scripts.ShangXie,
-
     # 以下是自定义技能
     50000: scripts.BeAttacked,
     50001: scripts.LiuXueInterval_1,
@@ -51,4 +51,5 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     50003: scripts.LiuXueInterval_3,
     50004: scripts.LiuXueInterval_4,
     50005: scripts.TieGu,
+    50006: scripts.DunYaDamageExcept,
 }

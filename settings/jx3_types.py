@@ -152,6 +152,7 @@ class Player:
     life: float
     level: int
     settings: Dict[str, int]
+    expect_parry: Dict[int, float]
     def __init__(self, talents: list, recipes: list, target: Target): ...
     # ————————————————————怒气部分————————————————————
     @property
@@ -198,8 +199,10 @@ class Player:
     def GetSnapShot(self, skill_id): ...
     # ————————————————————技能部分————————————————————
 
-    def CastSkill(self, skill_id, skill_level):
+    def CastSkill(self, skill_id, skill_level, *, _damage_data=None, _fExpect=None):
         """
+        :param _fExpect:
+        :param _damage_data:
         :param skill_id:
         :param skill_level:
         :return:
@@ -307,3 +310,30 @@ class Player:
         :return:
         """
 
+    @staticmethod
+    def GetLianZhanExpectByCritical(fCritical):
+        """
+        :param fCritical:
+        :return:
+        """
+
+    @staticmethod
+    def GetJianTieExpectByParry(fParry):
+        """
+        :param fParry:
+        :return:
+        """
+
+    def SetExpectParry(self, fParry):
+        """
+        记录当前招架率便于累计计算
+        :param fParry:
+        :return:
+        """
+
+    def GetCumulativeExpectParry(self, nDuring):
+        """
+        获取在nDuring期间内的累计招架率
+        :param nDuring:
+        :return:
+        """

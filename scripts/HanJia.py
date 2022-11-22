@@ -2,6 +2,7 @@
 # author: LinXin
 
 from scripts.Default import *
+from scripts.slot import _attrib_data
 
 tSkillData = {
     1: damage_data(nDamageBase=0, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0),
@@ -33,17 +34,25 @@ def Apply(player: Player, target: Target):
     nLayer = nParryValue // 600
     nLargeLayer = min(nLayer // 100, 125)
 
-    if nLargeLayer > 0:
-        for _ in range(nLargeLayer):
-            player.AddBuff(17772, 1)
-        nLayer -= (nLargeLayer * 100)
+    if not player.GetSetting('ParryByExpect'):
+        if nLargeLayer > 0:
+            for _ in range(nLargeLayer):
+                player.AddBuff(17772, 1)
+            nLayer -= (nLargeLayer * 100)
 
-    if nLayer > 0:
-        for _ in range(nLayer):
-            player.AddBuff(8271, 1)
+        if nLayer > 0:
+            for _ in range(nLayer):
+                player.AddBuff(8271, 1)
 
-    player.AddBuff(8437, 1)
-    player.AddBuff(8462, 1)
+        player.AddBuff(8437, 1)
+        player.AddBuff(8462, 1)
+
+    else:
+        nAttack = nLargeLayer * 30000 + (nLayer - (nLargeLayer * 100)) * 300
+        fExpectParry = player.GetCumulativeExpectParry(8*16)
+        player.AddBuff(50014, 1, attrib=[_attrib_data('atPhysicsAttackPowerBase', int(nAttack * fExpectParry))])
+
+
 
 
     return 1

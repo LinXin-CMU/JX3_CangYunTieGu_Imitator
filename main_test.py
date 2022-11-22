@@ -83,9 +83,9 @@ class Main:
 
         for i in self.player.casted:
             if i['name'] not in skills:
-                skills[i['name']] = {'count': 1, 'damage': i['damage'], 'critical': i['critical']}
+                skills[i['name']] = {'count': i['fExpect'], 'damage': i['damage'], 'critical': i['critical']}
             else:
-                skills[i['name']]['count'] += 1
+                skills[i['name']]['count'] += i['fExpect']
                 skills[i['name']]['damage'] += i['damage']
                 skills[i['name']]['critical'] += i['critical']
     
@@ -103,7 +103,7 @@ class Main:
         with open(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}-player.csv", 'w', encoding='gbk',
                   newline='') as f:
             csv_writer = csv.DictWriter(f, fieldnames=['second', 'frame', 'name', 'desc', 'rage', 'damage', 'critical',
-                                                       'buff', 'tbuff'])
+                                                       'buff', 'tbuff', 'fExpect'])
             csv_writer.writeheader()
             csv_writer.writerows(self.player.casted)
 

@@ -45,7 +45,7 @@ buff_data = {
     9889: _buff_data(9889, 10*16, 1, '蔑视', None, [51]),
     13352: _buff_data(13352, 0.375*16, 1, '盾飞延迟切姿态', 'DunFeiChangeState', None),
     13934: _buff_data(13934, 3*16, 1, '戍卫', None, None),
-    14964: _buff_data(14964, 999999*16, 1, '崇云', None, None),
+    14964: _buff_data(14964, 999999*16, 1, '崇云', None, [74]),
     15413: _buff_data(15413, 8*16, 1, '御帽', None, None),
     15414: _buff_data(15414, 30*16, 1, '御帽内置cd', None, None),
     15453: _buff_data(15453, 10*16, 1, '伤腕内置cd', None, None),
@@ -78,7 +78,7 @@ buff_data = {
     50011: _buff_data(50011, 1.5*16, 1, '卷雪刀内置cd', 'JuanXueDao', None),
     50012: _buff_data(50012, 15*16, 1, '乱天狼模拟内置cd', 'Halo_LingXue_5', None),
     50013: _buff_data(50013, 7*16, 1, '乱天狼模拟起手时间', 'Halo_LingXue_5', None),
-
+    50014: _buff_data(50014, 8*16, 1, '寒甲AP期望buff', 'HanJiaDisappear', None),
 }
 
 

@@ -63,7 +63,9 @@ class Player:
             'AttackFreq': 0,
             'AttackCount': 0,
             'Halo': None,
-            'HanJiaByExcept': 0,
+            'ParryByExpect': 0,
+        }
+        self.expect_parry: Dict[int, float] = {     # 用于计算累计寒甲概率
         }
 
     # ————————————————————怒气部分————————————————————
@@ -74,7 +76,6 @@ class Player:
 
     @rage.setter
     def rage(self, value):
-        assert isinstance(value, int), '怒气必须为整数'
         self._rage = min(110, value)
         if self._rage < 0:
             self._rage = 0
@@ -136,6 +137,10 @@ class Player:
     def WeaponAttackSpeed(self):
         return self._attribute.WeaponAttackSpeed
 
+    @property
+    def AllDamageAddPercent(self):
+        return self._attribute.AllDamageAddPercent
+
     def SetSnapShot(self, skill_id):
         """
         # 记录攻击，会心，会效，无双，增伤
@@ -148,7 +153,7 @@ class Player:
             'PhysicsCriticalPercent': self.PhysicsCriticalPercent + recipe_data['atRecipePhysicsCriticalPercent'],
             'PhysicsCriticalDamagePowerPercent': self.PhysicsCriticalDamagePowerPercent,
             'StrainPercent': self.StrainPercent,
-            'AllDamageAddPercent': 0,
+            'AllDamageAddPercent': self.AllDamageAddPercent,
             'HasteValueGuo': self.HasteValueGuo,
         }
 
@@ -167,7 +172,14 @@ class Player:
 
     # ————————————————————技能部分————————————————————
 
-    def CastSkill(self, skill_id, skill_level):
+    def CastSkill(self, skill_id, skill_level, *, _damage_data=None, _fExpect=1):
+        """
+        :param skill_id:
+        :param skill_level:
+        :param _damage_data:
+        :param _fExpect:
+        :return:
+        """
         # 1. 获取到对应脚本
         # 2. 执行对应脚本的Apply方法
         # 3. 检查释放结果，记录释放信息
@@ -226,8 +238,11 @@ class Player:
             return
 
         # 技能伤害
-        dmg, isCritical = self.CallPhysicsDamage(skill_id, _damage_data=_skill.tSkillData[skill_level])
-        self.damage += dmg
+        if not _damage_data:
+            _damage_data = _skill.tSkillData[skill_level]
+        if _fExpect < 1:
+            _damage_data = damage_data(*[i*_fExpect for i in _damage_data])
+        dmg, isCritical = self.CallPhysicsDamage(skill_id, _damage_data=_damage_data)
 
         # 通用技能效果
         # 蔑视
@@ -246,7 +261,8 @@ class Player:
                 'damage': dmg,
                 'critical': isCritical,
                 'buff': {i: j for i, j in self.buffs.items()},
-                'tbuff': {i: j for i, j in self._target.buffs.items()}
+                'tbuff': {i: j for i, j in self._target.buffs.items()},
+                'fExpect': _fExpect,
             }]
         else:
             self.casted.append({
@@ -258,7 +274,8 @@ class Player:
                 'damage': dmg,
                 'critical': isCritical,
                 'buff': {i: j for i, j in self.buffs.items()},
-                'tbuff': {i: j for i, j in self._target.buffs.items()}
+                'tbuff': {i: j for i, j in self._target.buffs.items()},
+                'fExpect': _fExpect,
             })
 
     def GetSkillLevel(self, skill_id):
@@ -341,7 +358,7 @@ class Player:
             fPhysicsCriticalPercent = self.PhysicsCriticalPercent
             fPhysicsCriticalDamagePowerPercent = self.PhysicsCriticalDamagePowerPercent
             fStrainPercent = self.StrainPercent
-            fAllDamageAddPercent = 0
+            fAllDamageAddPercent = self.AllDamageAddPercent
 
         # 基础伤害
         if not skill_id == 32745:
@@ -393,13 +410,7 @@ class Player:
             nDamage += int(nDamage * fLevelDamageParam)
 
             # 全局增伤
-            slots = {
-                'atAllDamageAddPercent': 0,
-                'atAllPhysicsDamageAddPercent': 0,
-            }
-            slots = self._attribute.get_buff_attribute_value(slots)
-            nDamage += int(nDamage * slots['atAllDamageAddPercent'] / 1024)
-            nDamage += int(nDamage * slots['atAllPhysicsDamageAddPercent'] / 1024)
+            nDamage = int(nDamage * fAllDamageAddPercent)
 
             # 施展招式后的判定
             if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316,
@@ -408,24 +419,24 @@ class Player:
                     if self.GetSetting('CriticalByExpect'):
                         # 直接计算恋战期望，并添加对应数值的buff
                         self.DelBuff(8267, all_layer=True)
-                        value = self.GetLianZhanExceptByCritical(self.PhysicsCriticalPercent)
+                        value = self.GetLianZhanExpectByCritical(self.PhysicsCriticalPercent)
                         self.AddBuff(8267, 1, attrib=[_attrib_data('atPhysicsCriticalStrikeBaseRate', value * (30 / 1024))])
                     else:
                         self.CastSkill(13127, 1)
                         if nFlag:
                             self.CastSkill(13128, 1)
 
-                # 这里应该是附魔判定条件
-                if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                    self.CastSkill(22166, 1)
-                if random.randint(1, 10000) / 10000 <= 205 / 1024:
-                    self.CastSkill(22169, 1)
-                if nFlag:
-                    self.CastSkill(33257, 1)
-                if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                    self.CastSkill(22122, 1)
-                if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                    self.CastSkill(33249, 1)
+                # # 这里应该是附魔判定条件
+                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                #     self.CastSkill(22166, 1)
+                # if random.randint(1, 10000) / 10000 <= 205 / 1024:
+                #     self.CastSkill(22169, 1)
+                # if nFlag:
+                #     self.CastSkill(33257, 1)
+                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                #     self.CastSkill(22122, 1)
+                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+                #     self.CastSkill(33249, 1)
 
             # 会心率用会心期望计算时, 要将nFlag设置为期望会心率
             if self.GetSetting('CriticalByExpect'):
@@ -433,6 +444,9 @@ class Player:
 
         else:
             nFlag = 0
+
+        # 伤害统计
+        self.damage += nDamage
 
         return nDamage, nFlag
 
@@ -706,26 +720,36 @@ class Player:
         for _buff_data in self.buffs.values():
             if _buff_data.lasting < nLatestFrame:
                 nLatestFrame = _buff_data.lasting
+        if nLatestFrame == 1:
+            return 1
 
         # 读取出下一次结束的最短技能cd
         for _cooldown in self._cooldown.values():
             if _cooldown < nLatestFrame:
                 nLatestFrame = _cooldown
+        if nLatestFrame == 1:
+            return 1
 
         # 读取出下一次结束的最短gcd
         for _global_cooldown in self._gcd_list.values():
             if 0 < _global_cooldown < nLatestFrame:
                 nLatestFrame = _global_cooldown
+        if nLatestFrame == 1:
+            return 1
 
         # 读取出下一次会被移除的最短buff时间
         for _buff_data in self._target.buffs.values():
             if _buff_data.lasting < nLatestFrame:
                 nLatestFrame = _buff_data.lasting
+        if nLatestFrame == 1:
+            return 1
 
         # 读取出下一次结束的最短gcd
         for _global_cooldown in self._target.gcd_list.values():
             if 0 < _global_cooldown < nLatestFrame:
                 nLatestFrame = _global_cooldown
+        if nLatestFrame == 1:
+            return 1
 
         if nLatestFrame == 999999:
             nLatestFrame = 1
@@ -757,39 +781,65 @@ class Player:
         self.CastSkill(halo_id, 1)
 
     @staticmethod
-    def GetLianZhanExceptByCritical(fCritical):
+    def GetLianZhanExpectByCritical(fCritical):
         """
         :param fCritical:
         :return:
         """
-        nLayerExcept = 0
+        nLayerExpect = 0
         for i in range(1, 11):
-            nSingleLayerExcept = 1
+            nSingleLayerExpect = 1
             for j in range(i):
                 if j > 0:
-                    nSingleLayerExcept *= (1 - fCritical - j * (30/1024))
+                    nSingleLayerExpect *= (1 - fCritical - j * (30/1024))
                 else:
-                    nSingleLayerExcept *= 1
-            nLayerExcept += nSingleLayerExcept
+                    nSingleLayerExpect *= 1
+            nLayerExpect += nSingleLayerExpect
 
-        return nLayerExcept
+        return nLayerExpect
 
     @staticmethod
-    def GetJianTieExceptByParry(fParry):
+    def GetJianTieExpectByParry(fParry):
         """
         :param fParry:
         :return:
         """
-        nLayerExcept = 0
+        nLayerExpect = 0
         for i in range(1, 6):
-            nSingleLayerExcept = 1
+            nSingleLayerExpect = 1
             for j in range(i):
                 if j > 0:
-                    nSingleLayerExcept *= (1 - fParry - j * (60/1024))
+                    nSingleLayerExpect *= (1 - fParry - j * (60/1024))
                 else:
-                    nSingleLayerExcept *= 1
-            nLayerExcept += nSingleLayerExcept
+                    nSingleLayerExpect *= 1
+            nLayerExpect += nSingleLayerExpect
 
-        return nLayerExcept
+        return nLayerExpect
+
+    def SetExpectParry(self, fParry):
+        """
+        记录当前招架率便于累计计算
+        :param fParry:
+        :return:
+        """
+        assert isinstance(fParry, float), '招架率必须为小数'
+        self.expect_parry[self._timer] = fParry
+
+    def GetCumulativeExpectParry(self, nDuring):
+        """
+        获取在nDuring期间内的累计招架率
+        :param nDuring:
+        :return:
+        """
+        assert nDuring > 0.9999, '需要计算累计概率的时间段至少要有1帧'
+        nEarliest = max(0, self._timer - nDuring)
+
+        ret = 0
+        for nTime, fParry in self.expect_parry.items():
+            if nTime >= nEarliest:
+                ret = (1 - (1 - ret) * (1 - fParry))
+
+        return ret
+
 
 

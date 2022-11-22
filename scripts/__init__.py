@@ -10,6 +10,8 @@ from .DunDao_3 import DunDao_3
 from .DunDao_4 import DunDao_4
 from .DunDao_ChuChen import DunDao_ChuChen
 from .DunYa import DunYa
+from .DunYaDamage import DunYaDamage
+from .DunYaDamageExcept import DunYaDamageExcept
 from .DunJi import DunJi
 from .DunMeng import DunMeng
 from .DunMengJiDao import DunMengJiDao

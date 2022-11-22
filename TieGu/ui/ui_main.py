@@ -52,12 +52,12 @@ class MainUI(Ui_MainWindow, QMainWindow):
             'AttackFreq': 0,
             'AttackCount': 0,
             'Halo': None,
-            'HanJiaByExcept': 0,
+            'ParryByExpect': 0,
         }
         item_to_key = {
             self.qijin_checkBox: 'QiJin',
             self.setting_critical_checkbox: 'CriticalByExpect',
-            self.setting_parry_checkbox: 'HanJiaByExcept',
+            self.setting_parry_checkbox: 'ParryByExpect',
         }
         for box, key in item_to_key.items():
             if box.isChecked():
@@ -92,7 +92,7 @@ class MainUI(Ui_MainWindow, QMainWindow):
         for skill_name, skill_data in data.items():
             list_data.append({
                 'name': skill_name,
-                'count': skill_data['count'],
+                'count': int(skill_data['count']),
                 'damage': skill_data['damage'],
                 'percent': '',
                 'critical': f"{skill_data['critical'] / skill_data['count']:.2%}",
