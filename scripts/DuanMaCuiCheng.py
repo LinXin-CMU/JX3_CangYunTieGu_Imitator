@@ -18,6 +18,13 @@ nNeedPosState = 0
 
 
 def Apply(player: Player, target):
+
+    if not player:
+        return
+
+    if not player.GetSkillLevel('断马摧城') == 1:
+        return
+
     player.AddPublicCoolDown(1, 1 * 16)
     player.AddSkillCoolDown(25213, 35 * 16)
 
