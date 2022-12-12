@@ -5,7 +5,7 @@ from scripts.Default import *
 
 
 tSkillData = {
-    1: damage_data(nDamageBase=180, nDamageRand=12, nAttackRate=max(0.1, 250*0.75*0.9*1.1*1.05*1.05*1.05*1.22*1.05*1.05/160), nWeaponDamagePercent=0)
+    1: damage_data(nDamageBase=180, nDamageRand=12, nAttackRate=max(0.1, 250*0.75*0.9*1.1*1.05*1.05*1.05*1.22*1.05*1.05*1.1/160), nWeaponDamagePercent=0)
 }
 
 tSkillCoolDown = {
