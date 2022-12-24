@@ -2,7 +2,7 @@
 # author: LinXin
 
 from scripts.Default import *
-from scripts.slot import _attrib_data
+from scripts.include.slot import _attrib_data
 
 
 tSkillData = {

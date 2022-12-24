@@ -1,27 +1,26 @@
 # coding: utf-8
 # author: LinXin
 import random
-from typing import Dict, Union
 
 from settings.jx3_types import *
 from settings.jx3_collections import recipe, global_params
 from .player_attribute import Attribute
 from .player_skill import skill_id_to_script
-from scripts.buff import buff_data
-from scripts.slot import _attrib_data
+from scripts.include.buff import buff_data
+from scripts.include.slot import _attrib_data
 import scripts
 
 
 class Player:
 
-    def __init__(self, talents: Dict, recipes: List, target: Target):
+    def __init__(self, talents: Dict, recipes: List, target: Target, attrs: Dict):
         # ————————————————————怒气部分————————————————————
         self._rage = 0
-
+        self.mount = 10389
         self.casted = None
         self.damage = 0
         # ————————————————————属性部分————————————————————
-        self._attribute = Attribute(self)
+        self._attribute = Attribute(self, attrs)
         self.life = 1.0
         self.level = 120
         self._snapshot: Dict[int, Dict] = {
@@ -246,7 +245,7 @@ class Player:
 
         # 通用技能效果
         # 蔑视
-        if skill_id in {13044, 13045, 13046, 13047, 13052, 13053, 13054, 13055, 25213}:
+        if self.GetSkillLevel('蔑视') and skill_id in {13044, 13045, 13046, 13047, 13052, 13053, 13054, 13055, 25213}:
             # 判断血量
             self.AddBuff(9889, 1)
 

@@ -29,8 +29,8 @@ def Apply(player: Player, target: Target):
 
     # 割裂buff
     if player.GetSkillLevel('割裂') == 1:
-        if player.IsHaveBuff(8249):
-            player.AddBuff(21308, 1)
+        if target.IsHaveBuff(8249):
+            target.AddBuff(21308, 1)
             # 命中后刷新dot快照
             player.SetSnapShot(13054)
 

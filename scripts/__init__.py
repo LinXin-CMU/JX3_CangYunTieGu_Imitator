@@ -58,3 +58,17 @@ from .enchant.Enchant_ShangYao import ShangYao
 from .zhenfa.Halo_TieGu import Halo_TieGu
 from .zhenfa.Halo_LingXue import Halo_LingXue
 from .zhenfa.Halo_LingXue_5 import Halo_LingXue_5
+from .zhenfa.Halo_JianChun import Halo_JianChun
+from .zhenfa.Halo_JianChun_5 import Halo_JianChun_5
+from .zhenfa.Halo_DaoZong import Halo_DaoZong
+from .zhenfa.Halo_BaDao import Halo_BaDao
+from .zhenfa.Halo_CangJian import Halo_CangJian
+from .zhenfa.Halo_PengLai import Halo_PengLai
+from .zhenfa.Halo_GaiBang import Halo_GaiBang
+from .zhenfa.Halo_GaiBang_5 import Halo_GaiBang_5
+from .zhenfa.Halo_TianLuo import Halo_TianLuo
+from .zhenfa.Halo_JingYu import Halo_JingYu
+from .zhenfa.Halo_AoXue import Halo_AoXue
+from .zhenfa.Halo_AoXue_5 import Halo_AoXue_5
+from .zhenfa.Halo_FenShan import Halo_FenShan
+from .zhenfa.Halo_FenShan_5 import Halo_FenShan_5

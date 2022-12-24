@@ -4,8 +4,7 @@
 
 from settings.jx3_types import Player
 from settings.jx3_collections import special_stones, LEVEL_CONST, LEVEL_RATE, global_params
-from scripts.buff import buff_data
-from scripts.slot import attribute_value, _attrib_data
+from scripts.include.slot import attribute_value, _attrib_data
 
 from typing import Dict
 from math import ceil
@@ -13,7 +12,7 @@ from math import ceil
 
 class Attribute:
 
-    def __init__(self, player: Player):
+    def __init__(self, player: Player, origin_data: Dict):
         # 这里要先做一步转换成基础值
         self.base_attributes = {
             'Vitality': 0,
@@ -31,41 +30,7 @@ class Attribute:
             'WeaponDamage': 0,
         }
 
-        self.origin_data = {"Vitality": 46762, "Agility": 41, "Spirit": 41, "Spunk": 41, "Strength": 41,
-                            "PhysicsAttackPowerBase": 8487, "PhysicsAttackPower": 12058,
-                            "PhysicsCriticalStrikeRate": 0.00033069413971827403,
-                            "PhysicsCriticalDamagePowerPercent": 1.75, "PhysicsOvercomePercent": 0.13488505198893447,
-                            "StrainPercent": 0.49497917470493374, "HastePercent": 0.017412258540946014,
-                            "SurplusValue": 9170, "MaxHealth": 742104, "PhysicsShieldPercent": 0.226188447384057,
-                            "LunarShieldPercent": 0.07095971465700777,
-                            "ToughnessDefCriticalPercent": 0.03399790136411333, "DecriticalDamagePercent": 0,
-                            "DodgePercent": 0, "ParryPercent": 0.42866635911845496, "ParryValue": 165494,
-                            "ActiveThreatCoefficient": 7505, "MeleeWeaponAttackSpeed": 24, "MeleeWeaponDamage": 2628,
-                            "MeleeWeaponDamageRand": 1752, "EquipList": {
-                "HAT": {"id": "7_91258", "strength": 6, "embedding": [6, 6], "stone": "", "enhance": 11534,
-                        "enchant": 11689},
-                "JACKET": {"id": "7_91183", "strength": 6, "embedding": [6, 6], "stone": "", "enhance": 11593,
-                           "enchant": 11688},
-                "BELT": {"id": "7_91272", "strength": 4, "embedding": [6, 6], "stone": "", "enhance": 11538,
-                         "enchant": 11695},
-                "WRIST": {"id": "7_91277", "strength": 4, "embedding": [6, 6], "stone": "", "enhance": 11582,
-                          "enchant": 11697},
-                "BOTTOMS": {"id": "7_91288", "strength": 4, "embedding": [6, 6], "stone": "", "enhance": 11527,
-                            "enchant": ""},
-                "SHOES": {"id": "7_91111", "strength": 6, "embedding": [6, 6], "stone": "", "enhance": 11589,
-                          "enchant": 11686},
-                "NECKLACE": {"id": "8_34366", "strength": 6, "embedding": [6], "stone": "", "enhance": 11652,
-                             "enchant": ""},
-                "PENDANT": {"id": "8_34372", "strength": 6, "embedding": [6], "stone": "", "enhance": 11654,
-                            "enchant": ""},
-                "RING_1": {"id": "8_34392", "strength": 4, "embedding": [], "stone": "", "enhance": 11662,
-                           "enchant": ""},
-                "RING_2": {"id": "8_34392", "strength": 4, "embedding": [], "stone": "", "enhance": 11662,
-                           "enchant": ""},
-                "PRIMARY_WEAPON": {"id": "6_33012", "strength": 6, "embedding": [6, 6, 6], "stone": 4269,
-                                   "enhance": 420, "enchant": ""},
-                "SECONDARY_WEAPON": {"id": "6_32917", "strength": 6, "embedding": [6], "stone": "", "enhance": 11667,
-                                     "enchant": ""}}, "Title": "横刀断浪2"}
+        self.origin_data = origin_data
 
         self._player = player
         self._get_origin_attributes_value()
@@ -178,7 +143,7 @@ class Attribute:
                 continue
             for attrib_data in buff.attrib:
                 if isinstance(attrib_data, _attrib_data):
-                    pass    # 如果是给定属性字段和值，那么不作查找
+                    pass  # 如果是给定属性字段和值，那么不作查找
                 else:
                     attrib_data = attribute_value[attrib_data]
                 if attrib_data.slot in slots:
@@ -365,7 +330,8 @@ class Attribute:
             'atHasteBasePercentAdd': 0,
         }
         # 取郭氏值
-        value = int((self.base_attributes['Haste'] * 1024) / (global_params['fHasteRate'] * (LEVEL_RATE * 120 - LEVEL_CONST)))
+        value = int(
+            (self.base_attributes['Haste'] * 1024) / (global_params['fHasteRate'] * (LEVEL_RATE * 120 - LEVEL_CONST)))
         # 增益
         value += slot['atHasteBasePercentAdd']
         return value

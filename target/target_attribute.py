@@ -5,7 +5,7 @@ from typing import Dict
 
 from settings.jx3_types import Target
 from settings.jx3_collections import npc_attribute_data, LEVEL_CONST, LEVEL_RATE, global_params
-from scripts.slot import attribute_value
+from scripts.include.slot import attribute_value
 
 
 class Attribute:
