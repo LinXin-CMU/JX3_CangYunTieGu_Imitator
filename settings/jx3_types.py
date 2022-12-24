@@ -153,6 +153,7 @@ class Player:
     level: int
     settings: Dict[str, int]
     expect_parry: Dict[int, float]
+    mount: int
     def __init__(self, talents: list, recipes: list, target: Target): ...
     # ————————————————————怒气部分————————————————————
     @property
