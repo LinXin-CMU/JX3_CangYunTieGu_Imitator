@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QGroupBox, QPushButton, QLabel, QInputDialog, QMainW
 from PyQt5.QtCore import Qt
 from typing import Union
 
-from TieGu.ui.ui import Ui_MainWindow
+from ui.ui import Ui_MainWindow
 from settings.config import ConfigSetting
 from settings.jx3_collections import talent
 
