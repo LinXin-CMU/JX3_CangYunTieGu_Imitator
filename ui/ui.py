@@ -9,7 +9,6 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtChart import QChartView
 
 
 class Ui_MainWindow(object):
@@ -19,7 +18,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.tabWidget_2 = QtWidgets.QTabWidget(self.centralwidget)
-        self.tabWidget_2.setGeometry(QtCore.QRect(0, -2, 1251, 851))
+        self.tabWidget_2.setGeometry(QtCore.QRect(0, -2, 2101, 851))
         self.tabWidget_2.setObjectName("tabWidget_2")
         self.tab_7 = QtWidgets.QWidget()
         self.tab_7.setObjectName("tab_7")
@@ -309,7 +308,7 @@ class Ui_MainWindow(object):
         self.groupBox_8.setTitle("")
         self.groupBox_8.setObjectName("groupBox_8")
         self.groupBox_16 = QtWidgets.QGroupBox(self.tab_7)
-        self.groupBox_16.setGeometry(QtCore.QRect(1250, 30, 371, 271))
+        self.groupBox_16.setGeometry(QtCore.QRect(1520, 30, 371, 271))
         self.groupBox_16.setStyleSheet("QGroupBox{\n"
 "    border-color: rgb(65, 54, 100);\n"
 "    border: 2px solid;\n"
@@ -3315,7 +3314,6 @@ class Ui_MainWindow(object):
         self.groupBox_skill_3.raise_()
         self.progressBar.raise_()
         self.groupBox_8.raise_()
-        self.groupBox_16.raise_()
         self.groupBox_skill_4.raise_()
         self.groupBox_2.raise_()
         self.groupBox_10.raise_()
@@ -3333,7 +3331,6 @@ class Ui_MainWindow(object):
         self.groupBox_skill_2.raise_()
         self.groupBox_skill_1.raise_()
         self.button_ImportJsonTalent.raise_()
-        self.groupBox_15.raise_()
         self.groupBox_0.raise_()
         self.groupBox_7.raise_()
         self.groupBox_skill_8.raise_()
@@ -3354,9 +3351,7 @@ class Ui_MainWindow(object):
         self.checkBox_33.raise_()
         self.checkBox_34.raise_()
         self.pushButton_125.raise_()
-        self.groupBox_25.raise_()
         self.line_15.raise_()
-        self.groupBox_14.raise_()
         self.label_179.raise_()
         self.label_180.raise_()
         self.line_12.raise_()
@@ -3378,6 +3373,10 @@ class Ui_MainWindow(object):
         self.label_201.raise_()
         self.spinBox_6.raise_()
         self.label_202.raise_()
+        self.groupBox_25.raise_()
+        self.groupBox_14.raise_()
+        self.groupBox_16.raise_()
+        self.groupBox_15.raise_()
         self.tabWidget_2.addTab(self.tab_7, "")
         self.tab_8 = QtWidgets.QWidget()
         self.tab_8.setObjectName("tab_8")
@@ -3903,5 +3902,6 @@ class Ui_MainWindow(object):
         self.comboBox_6.setItemText(2, _translate("MainWindow", "同分收益(其他增益)"))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_9), _translate("MainWindow", "属性收益"))
         self.setting_button.setText(_translate("MainWindow", "设置"))
+from PyQt5.QtChart import QChartView
 from ui.modules.ui_other import ClickableComboBox, StarLabel
 import ui_rc

@@ -66,6 +66,8 @@ def Apply(player: Player, target: Target, dwSkillLevel):
         player.CastSkill(13391, 1)
     if player.rage <= 60 and player.GetSkillCoolDown(13040) <= 25*2*16 and cd_duanma < 2*16:
         player.CastSkill(13040, 1)
+    if player.GetSkillLevel("鸿烈"):
+        player.CastSkill(26897, 1)
 
     return 1
 

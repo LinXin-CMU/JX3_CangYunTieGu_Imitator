@@ -374,7 +374,7 @@ class MainUI(Ui_MainWindow, QMainWindow):
         self._selector.set_data_by_json(szTalentCode)
 
 
-    def set_skill_data_table(self, data: Dict, nFightTime):
+    def set_skill_data_table(self, data: Dict, nFightTime=None, nDps=None):
         """
         设置输出统计表格\n
         :param data:
@@ -400,7 +400,12 @@ class MainUI(Ui_MainWindow, QMainWindow):
         list_data.sort(key=lambda i: i['damage'], reverse=True)
 
         self.skill_data_table.setRowCount(len([i for i in list_data if i['damage'] > 0]))
-        self.dps_label.setText(f'{int(nTotalDamage / (nFightTime / 16))}')
+
+        if nFightTime:
+            self.dps_label.setText(f'{int(nTotalDamage / (nFightTime / 16))}')
+        if nDps:
+            self.dps_label.setText(f"{nDps}")
+
         for index, item in enumerate(list_data):
             self.skill_data_table.setItem(index, 0, QTableWidgetItem(f'{item["name"]}'))
             self.skill_data_table.setItem(index, 1, QTableWidgetItem(f'{item["count"]}'))
@@ -500,7 +505,9 @@ class MainUI(Ui_MainWindow, QMainWindow):
         except IndexError:
             return
 
-        self.set_skill_data_table(dwHistory)
+        nDps = self.tableWidget.item(index, 1).text()
+
+        self.set_skill_data_table(dwHistory, nDps=nDps)
 
     def set_enchant_select_box(self):
         try:

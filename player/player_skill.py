@@ -50,6 +50,7 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     26060: scripts.FeiJian_Dps_Active,
     26140: scripts.FeiJian_MT_Passive,
     26141: scripts.FeiJian_MT_Active,
+    26897: scripts.HongLie,
     28678: scripts.Advance_PiaoHuang,
     29541: scripts.Advance_PiaoHuangDmg,
     29919: scripts.FeiJian_Dps_Passive,

@@ -19,7 +19,7 @@
      <rect>
       <x>0</x>
       <y>-2</y>
-      <width>1251</width>
+      <width>2101</width>
       <height>851</height>
      </rect>
     </property>
@@ -914,7 +914,7 @@ color: rgb(255, 255, 255);</string>
      <widget class="QGroupBox" name="groupBox_16">
       <property name="geometry">
        <rect>
-        <x>1250</x>
+        <x>1520</x>
         <y>30</y>
         <width>371</width>
         <height>271</height>
@@ -9785,7 +9785,6 @@ QPushButton:hover{
      <zorder>groupBox_skill_3</zorder>
      <zorder>progressBar</zorder>
      <zorder>groupBox_8</zorder>
-     <zorder>groupBox_16</zorder>
      <zorder>groupBox_skill_4</zorder>
      <zorder>groupBox_2</zorder>
      <zorder>groupBox_10</zorder>
@@ -9803,7 +9802,6 @@ QPushButton:hover{
      <zorder>groupBox_skill_2</zorder>
      <zorder>groupBox_skill_1</zorder>
      <zorder>button_ImportJsonTalent</zorder>
-     <zorder>groupBox_15</zorder>
      <zorder>groupBox_0</zorder>
      <zorder>groupBox_7</zorder>
      <zorder>groupBox_skill_8</zorder>
@@ -9824,9 +9822,7 @@ QPushButton:hover{
      <zorder>checkBox_33</zorder>
      <zorder>checkBox_34</zorder>
      <zorder>pushButton_125</zorder>
-     <zorder>groupBox_25</zorder>
      <zorder>line_15</zorder>
-     <zorder>groupBox_14</zorder>
      <zorder>label_179</zorder>
      <zorder>label_180</zorder>
      <zorder>line_12</zorder>
@@ -9848,6 +9844,10 @@ QPushButton:hover{
      <zorder>label_201</zorder>
      <zorder>spinBox_6</zorder>
      <zorder>label_202</zorder>
+     <zorder>groupBox_25</zorder>
+     <zorder>groupBox_14</zorder>
+     <zorder>groupBox_16</zorder>
+     <zorder>groupBox_15</zorder>
     </widget>
     <widget class="QWidget" name="tab_8">
      <attribute name="title">
