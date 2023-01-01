@@ -142,6 +142,7 @@ class EquipAttribute:
 
     def update(self, equip_list: Dict) -> Dict:
         self.attributes = {}
+        self.set_data = {}
         self.equip_list = equip_list
         self.read_equip_base_attr()
         self.read_stone_attr()
@@ -362,10 +363,17 @@ class EquipAttribute:
                 if int(key[0]) <= nCount:
                     szSetSlot = attrs['attr'][0]
                     nSetValue = max([int(attrs['attr'][j]) for j in range(1, 5) if attrs['attr'][j] is not None])
-                    if szSetSlot not in self.attributes:
-                        self.attributes[szSetSlot] = nSetValue
+
+                    if szSetSlot in {'atSkillEventHandler', 'atSetEquipmentRecipe'}:
+                        if szSetSlot not in self.attributes:
+                            self.attributes[szSetSlot] = [nSetValue]
+                        else:
+                            self.attributes[szSetSlot].append(nSetValue)
                     else:
-                        self.attributes[szSetSlot] += nSetValue
+                        if szSetSlot not in self.attributes:
+                            self.attributes[szSetSlot] = nSetValue
+                        else:
+                            self.attributes[szSetSlot] += nSetValue
                     # 将套装数据写入EquipList
 
 
@@ -383,7 +391,7 @@ class EquipAttribute:
             },
             10389: {
                 'atVitalityBase': 41,
-                'atAgilityBase': 41,
+                 'atAgilityBase': 41,
                 'atStrengthBase': 41,
                 'atParryBase': 914,
                 'atParryValueBase': 2114,
@@ -605,10 +613,10 @@ class EquipAttribute:
             del self.attributes['atPhysicsAttackPowerPercent']
         except KeyError:
             pass
-        try:
-            del self.attributes['atSkillEventHandler']
-        except KeyError:
-            pass
+        # try:
+        #     del self.attributes['atSkillEventHandler']
+        # except KeyError:
+        #     pass
 
         self.json_attributes = dumps(json_data)
         return self.json_attributes

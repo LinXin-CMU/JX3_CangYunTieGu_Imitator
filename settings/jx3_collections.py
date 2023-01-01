@@ -262,6 +262,12 @@ from collections import namedtuple
 _recipe = namedtuple('recipe_data', ['index', 'slot', 'desc', 'value'])
 
 recipe = {
+
+    # 这里是秘籍基础库
+    # 让需要检查字段的秘籍生效还需要在player.GetRecipeData中给对应技能注册秘籍！
+    # 不需要检查字段的秘籍仅需激活，在脚本中根据id添加逻辑。
+    # 秘籍是一对多的，不能在这里直接记录对应的生效技能。
+
     # 盾刀
     1863: _recipe(79, "atRecipePhysicsCriticalPercent", "盾刀2%会心", 0.02),     # pushButton_{key}
     1864: _recipe(15, "atRecipePhysicsCriticalPercent", "盾刀3%会心", 0.03),
@@ -279,6 +285,7 @@ recipe = {
     1853: _recipe(25, "atRecipeDamagePercent", "盾压5%伤害", 0.05),
     1858: _recipe(20, "atSkillEventHandler", "盾压5%触发", None),
     1859: _recipe(26, "atSkillEventHandler", "盾压5%触发", None),
+    1932: _recipe(None, "atRecipeDamagePercent", "套装盾压10%伤害", 102/1024),
     # 劫刀
     1833: _recipe(30, "atRecipePhysicsCriticalPercent", "劫刀2%会心", 0.02),
     1834: _recipe(27, "atRecipePhysicsCriticalPercent", "劫刀3%会心", 0.03),
@@ -304,6 +311,7 @@ recipe = {
     1895: _recipe(48, "atSkillEventHandler", "绝刀-1s调息", None),
     1896: _recipe(49, "atSkillEventHandler", "绝刀-2s调息", None),
     1850: _recipe(42, "atSkillEventHandler", "绝刀-15耗怒", None),
+    1933: _recipe(None, "atRecipeDamagePercent", "套装绝刀10%伤害", 102/1024),
     # 盾飞
     1955: _recipe(50, "atRecipePhysicsCriticalPercent", "盾飞2%会心", 0.02),
     1956: _recipe(52, "atRecipePhysicsCriticalPercent", "盾飞3%会心", 0.03),
@@ -339,6 +347,7 @@ recipe = {
     1873: _recipe(76, "atSkillEventHandler", "血怒2%回血", None),
     1874: _recipe(72, "atSkillEventHandler", "血怒3%回血", None),
     # 其他秘籍
+    1923: _recipe(None, "atSetEquipmentRecipe", "套装4%双会", None),
     1879: _recipe(None, "atRecipeDamagePercent", "绝刀+30%", 306/1024),
     4409: _recipe(None, "atRecipeDamagePercent", "斩刀+30%", 306/1024),
     4918: _recipe(None, "atRecipeDamagePercent", "绝刀+20%", 205/1024),
@@ -386,4 +395,28 @@ npc_attribute_data = {
     124: _npc_attribs(27550, 4789),
 }
 
-
+# 属性收益模块的小抄
+# attrib_slots = {
+#             'atVitalityBase': 0,
+#             'atVitalityBasePercentAdd': 0,
+#             'atAgilityBase': 0,
+#             'atAgilityBasePercentAdd': 0,
+#             'atStrengthBase': 0,
+#             'atStrengthBasePercentAdd': 0,
+#             'atPhysicsAttackPowerBase': 0,
+#             'atPhysicsAttackPowerPercent': 0,
+#             'atVitalityToPhysicsAttackPowerCof': 0,
+#             'atPhysicsCriticalStrike': 0,
+#             'atPhysicsCriticalStrikeBaseRate': 0,
+#             'atPhysicsCriticalDamagePowerBase': 0,
+#             'atPhysicsCriticalDamagePowerBaseKiloNumRate': 0,
+#             'atVitalityToPhysicsOverComeCof': 0,
+#             'atPhysicsOvercomeBase': 0,
+#             'atPhysicsOvercomePercent': 0,
+#             'atStrainBase': 0,
+#             'atStrainRate': 0,
+#             'atSurplusValueAddPercent': 0,
+#             'atSurplusValueBase': 0,
+#             'atParryValueBase': 0,
+#             'atParryValuePercent': 0,
+#         }

@@ -19,7 +19,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     target.AddPublicCoolDown(0, target.GetSetting('AttackFreq'))
 

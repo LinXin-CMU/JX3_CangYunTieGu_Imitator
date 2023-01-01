@@ -5,7 +5,7 @@ from scripts.Default import *
 
 
 tSkillData = {
-    1: damage_data(nDamageBase=0, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0),
+    1: damage_data(nDamageBase=100, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0),
 }
 
 tSkillCoolDown = {
@@ -18,7 +18,7 @@ nNeedGcdType = [7]
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     player.AddPublicCoolDown(7, 0.5*16)
     player.AddSkillCoolDown(13040, 25*16)

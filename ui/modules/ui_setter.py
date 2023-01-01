@@ -14,12 +14,15 @@ class UiSetter:
         self.config = ConfigSetting()
 
         # 设置界面的隐藏
-        self.ui.groupBox_15.move(90, 320)
+        self.ui.groupBox_15.move(90, 213)
         self.ui.groupBox_15.setVisible(False)
-        self.ui.groupBox_16.move(90, 360)
+        self.ui.groupBox_16.move(90, 253)
         self.ui.groupBox_16.setVisible(False)
+        self.ui.groupBox_14.move(1033, 0)
         self.ui.groupBox_14.setVisible(False)
         self.ui.groupBox_17.setVisible(False)
+        self.ui.groupBox_25.move(1030, 410)
+        self.ui.groupBox_25.setVisible(False)
         self.ui.setting_button.clicked.connect(
             lambda: self.ui.groupBox_14.setVisible(not self.ui.groupBox_14.isVisible()))
         self.ui.envior_button.clicked.connect(
@@ -28,12 +31,16 @@ class UiSetter:
             lambda: self.ui.groupBox_16.setVisible(not self.ui.groupBox_16.isVisible()))
         self.ui.equip_button.clicked.connect(
             lambda: self.ui.groupBox_17.setVisible(not self.ui.groupBox_17.isVisible()))
+        self.ui.pushButton_125.clicked.connect(
+            lambda: self.ui.groupBox_25.setVisible(not self.ui.groupBox_25.isVisible()))
         self.ui.equip_close_button.clicked.connect(
             lambda: self.ui.groupBox_17.setVisible(False))
         self.ui.equip_close_button.clicked.connect(
             lambda: self.ui.groupBox_24.setVisible(False))
         self.ui.equip_close_button_2.clicked.connect(
             lambda: self.ui.groupBox_15.setVisible(False))
+        self.ui.equip_close_button_4.clicked.connect(
+            lambda: self.ui.groupBox_25.setVisible(False))
 
         # 清除阵眼
         self.ui.pushButton_124.clicked.connect(

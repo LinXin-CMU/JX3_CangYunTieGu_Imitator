@@ -18,7 +18,7 @@ nNeedGcdType = [0, 1, 2, 3, 4, 5]
 nNeedPosState = 0
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     nCoolDown = 12
     if player.IsSkillRecipeActive(1856):

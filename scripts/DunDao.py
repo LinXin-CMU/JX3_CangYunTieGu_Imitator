@@ -24,7 +24,7 @@ def SubEvent_ChuChen(fParry) -> bool:
         return True
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
     # print('这是盾刀母技能脚本')
     if not player:
         return

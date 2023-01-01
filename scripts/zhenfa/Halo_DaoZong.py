@@ -18,7 +18,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     player.AddBuff(24578, 1)
     # 五阵目前（横刀断浪）pve基本无效，省略

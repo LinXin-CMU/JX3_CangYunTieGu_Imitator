@@ -18,7 +18,7 @@ nNeedGcdType = [0, 1, 2, 3, 4, 5]
 nNeedPosState = 0
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     # 盾飞后0.5s无法施展盾猛
     if player.IsHaveBuff(8873, 1):

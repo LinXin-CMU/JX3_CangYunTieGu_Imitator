@@ -4,7 +4,7 @@
 from settings.jx3_types import skill_script, damage_data, cooldown_data, Player, Target
 import random
 from scripts.include.buff import buff_data
-from scripts.include.slot import _attrib_data
+from scripts.include.slot import attrib_data
 
 tSkillData = {
     1: damage_data(nDamageBase=0, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0),
@@ -21,7 +21,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     return 1
 

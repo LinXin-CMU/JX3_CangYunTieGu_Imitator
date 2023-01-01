@@ -39,7 +39,7 @@ nNeedGcdType = []
 nNeedPosState = 0
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     return 1
 

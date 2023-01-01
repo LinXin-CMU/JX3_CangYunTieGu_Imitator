@@ -20,7 +20,7 @@ nNeedPosState = None
 
 bJueFan = True
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     player.AddBuff(8403, 1)
 

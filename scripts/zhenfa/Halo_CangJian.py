@@ -18,7 +18,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     player.AddBuff(1923, 1)
     # 藏剑五阵横刀断浪无作用

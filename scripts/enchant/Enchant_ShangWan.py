@@ -18,7 +18,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     if not player:
         return
@@ -31,5 +31,5 @@ def Apply(player: Player, target: Target):
     return 1
 
 
-ShangWan = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState,
+Enchant_ShangWan = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState,
                           Apply)

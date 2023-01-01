@@ -1,6 +1,6 @@
 # coding: utf-8
 # author: LinXin
-import re
+from re import compile, match, search
 
 from PyQt5.QtWidgets import QPushButton, QMainWindow, QListView, QTableWidget, QHBoxLayout, QVBoxLayout, QLabel, \
     QComboBox, QTableWidgetItem, QInputDialog
@@ -222,7 +222,7 @@ class UiEquip:
         # 导出json
         self.ui.pushButton_121.clicked.connect(self.export_json_func)
         # 导入json
-        self.ui.equip_button_3.clicked.connect(self.import_json_func)
+        # self.ui.equip_button_3.clicked.connect(self.import_json_func)
 
 
 
@@ -620,12 +620,12 @@ class UiEquip:
     def set_stone_selector(self, idx, box: QComboBox):
         def inner():
             _selector = set()
-            _compile = re.compile(r'彩·(..)·(..)·(..)')
+            _compile = compile(r'彩·(..)·(..)·(..)')
 
             if not self.current_filtrated_stone_list:
                 stone_data = stone[6]
                 for _stone_data in stone_data.values():
-                    _match = re.match(_compile, _stone_data['Name'])
+                    _match = match(_compile, _stone_data['Name'])
 
                     key = _match.group(1)
                     if key in {'守护', '击破', '济世'}:
@@ -642,7 +642,7 @@ class UiEquip:
                 self.current_filtrated_stone_list = self.get_stone_list_by_selector()
 
                 for _stone_data in self.current_filtrated_stone_list[6]:
-                    _match = re.match(_compile, _stone_data['Name'])
+                    _match = match(_compile, _stone_data['Name'])
 
                     key = _match.group(1)
                     if key in {'守护', '击破', '济世'}:
@@ -720,7 +720,7 @@ class UiEquip:
                     _name = id_stone_data.get("Name")
                     if not _name:
                         continue
-                    if not any([re.search(i, _name) for i in str_selector]):
+                    if not any([search(i, _name) for i in str_selector]):
                         continue
 
                     stone_attrs = id_stone_data['_Attrs']

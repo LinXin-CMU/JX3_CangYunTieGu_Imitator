@@ -18,7 +18,7 @@ nNeedGcdType = []
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     target.DelBuff(21308, all_layer=True)
 

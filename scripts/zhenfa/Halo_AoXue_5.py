@@ -18,7 +18,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     player.AddBuff(936, 1)
     player.AddBuff(50017, 1)

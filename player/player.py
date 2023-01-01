@@ -1,13 +1,13 @@
 # coding: utf-8
 # author: LinXin
-import random
+from random import randint
 
 from settings.jx3_types import *
-from settings.jx3_collections import recipe, global_params
+from settings.jx3_collections import recipe, global_params, special_stones
 from .player_attribute import Attribute
 from .player_skill import skill_id_to_script
 from scripts.include.buff import buff_data
-from scripts.include.slot import _attrib_data
+from scripts.include.slot import attrib_data
 import scripts
 
 
@@ -20,7 +20,7 @@ class Player:
         self.casted = None
         self.damage = 0
         # ————————————————————属性部分————————————————————
-        self._attribute = Attribute(self, attrs)
+        self._attribute = Attribute(self, attrs['json'])
         self.life = 1.0
         self.level = 120
         self._snapshot: Dict[int, Dict] = {
@@ -46,13 +46,6 @@ class Player:
         }
         # 当前时间
         self._timer = -1
-        # ————————————————————体态部分————————————————————
-        # 默认添加盾姿态buff
-        self.AddBuff(8277, 1)
-        # 默认添加从容buff
-        self.AddBuff(8423, 1)
-        # 默认添加卷雪刀buff
-        self.AddBuff(50011, 1, lasting=1)
         # ————————————————————目标部分————————————————————
         self._target = target
         # ————————————————————环境部分————————————————————
@@ -63,9 +56,58 @@ class Player:
             'AttackCount': 0,
             'Halo': None,
             'ParryByExpect': 0,
+            'WeaponType': None,
+            'PendantType': None,
+            'Enchants': None,
         }
-        self.expect_parry: Dict[int, float] = {     # 用于计算累计寒甲概率
+        self.expect_parry: Dict[int, float] = {  # 用于计算累计寒甲概率
         }
+        self.attack_record: Dict[int, int] = {  # 用于计算各类与施展技能或命中相关的期望
+        }
+        self.recorder = None  # 伤害记录器, 用于快捷计算属性收益
+
+        self.team_mate_data = None   # 队友
+
+        # ————————————————————体态部分————————————————————
+        self.SetPlayerDefaultState(attrs)
+
+    def SetPlayerDefaultState(self, attrs):
+        # 添加盾姿态buff
+        self.AddBuff(8277, 1)
+        # 添加从容buff
+        self.AddBuff(8423, 1)
+        # 添加卷雪刀buff
+        self.AddBuff(50011, 1, lasting=1)
+
+        # 尝试激活装备效果
+        if attrs['recipe']:
+            [self.SetSkillRecipeActive(recipe_id) for recipe_id in attrs['recipe']]
+        # 精简五彩石百分比加成
+        tEquipList = self._attribute.origin_data['EquipList']
+        if not ['PRIMARY_WEAPON']:
+            return
+        stone_id = tEquipList['PRIMARY_WEAPON']['stone']
+        if stone_id in special_stones:
+            slot, value = special_stones.get(stone_id)
+            self.AddBuff(50022, 1, attrib=[attrib_data(slot, value)])
+
+        if self.mount == 10389:
+            if self.GetSkillLevel('活血') == 1:
+                self.AddBuff(50020, 1)
+
+        elif self.mount == 10390:
+            if self.GetSkillLevel('活脉') == 1:
+                self.AddBuff(50021, 1)
+
+
+    def SetFightRecorder(self, recorder):
+        self.recorder = recorder
+
+    def SetAdvanceEffect(self, attribs):
+        self.AddBuff(50027, 1, attrib=attribs)
+
+    def SetTeamMateData(self, data):
+        self.team_mate_data = data
 
     # ————————————————————怒气部分————————————————————
 
@@ -139,6 +181,10 @@ class Player:
     @property
     def AllDamageAddPercent(self):
         return self._attribute.AllDamageAddPercent
+
+    @property
+    def BaseAttributes(self):
+        return self._attribute.GetBaseAttributes()
 
     def SetSnapShot(self, skill_id):
         """
@@ -232,7 +278,7 @@ class Player:
                 return
 
         # 技能自身效果
-        state = _skill.Apply(self, self._target)
+        state = _skill.Apply(self, self._target, skill_level)
         if not state:
             return
 
@@ -240,16 +286,82 @@ class Player:
         if not _damage_data:
             _damage_data = _skill.tSkillData[skill_level]
         if _fExpect < 1:
-            _damage_data = damage_data(*[i*_fExpect for i in _damage_data])
+            _damage_data = damage_data(*[i * _fExpect for i in _damage_data])
         dmg, isCritical = self.CallPhysicsDamage(skill_id, _damage_data=_damage_data)
 
         # 通用技能效果
-        # 蔑视
-        if self.GetSkillLevel('蔑视') and skill_id in {13044, 13045, 13046, 13047, 13052, 13053, 13054, 13055, 25213}:
-            # 判断血量
-            self.AddBuff(9889, 1)
+        # 施展技能后
+        if skill_id in {13044, 13045, 13046, 13047, 13052, 13053, 13054, 13055, 25213}:
+            # 奇穴效果
+            if self.GetSkillLevel('蔑视') == 1:
+                # 判断血量
+                self.AddBuff(9889, 1)
+
+            # 武器特效
+            szWeaponType = self.GetSetting('WeaponType')
+            if szWeaponType in {'烽烟黯'}:
+                self.CastSkill(50007, 1)
+            elif szWeaponType in {'龙门飞剑(防御)'}:
+                self.CastSkill(26140, 1)
+            elif szWeaponType in {'龙门飞剑(输出)'}:
+                self.CastSkill(29919, 3)
+
+            # 飘黄
+            if self.GetTeamMateTalent(28678):
+                self.CastSkill(29541, 1)
+
+        # 造成伤害后
+        if skill_id in {'DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316, 25215}:
+
+            # 记录攻击频率
+            self.attack_record[self._timer] = skill_id
+
+            # 恋战
+            if self.GetSkillLevel('恋战') == 1:
+                if self.GetSetting('CriticalByExpect'):
+                    # 直接计算恋战期望，并添加对应数值的buff
+                    self.DelBuff(8267, all_layer=True)
+                    value = self.GetLianZhanExpectByCritical(self.PhysicsCriticalPercent)
+                    self.AddBuff(8267, 1,
+                                 attrib=[attrib_data('atPhysicsCriticalStrikeBaseRate', value * (30 / 1024))])
+                else:
+                    self.CastSkill(13127, 1)
+                    if isCritical:
+                        self.CastSkill(13128, 1)
+
+            # # 这里应该是附魔判定条件
+            # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+            #     self.CastSkill(22166, 1)
+            # if random.randint(1, 10000) / 10000 <= 205 / 1024:
+            #     self.CastSkill(22169, 1)
+            # if nFlag:
+            #     self.CastSkill(33257, 1)
+            # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+            #     self.CastSkill(22122, 1)
+            # if random.randint(1, 10000) / 10000 <= 102 / 1024:
+            #     self.CastSkill(33249, 1)
+
+            # 门派套装效果
+            if self.IsSkillRecipeActive(1923):
+                nAttack = self.GetDuringAttackCount(6*16)
+                dwSetBuffID = 1428
+                fSetPercent = 102 / 1024
+                fExpect = 1 - ((1 - fSetPercent) ** nAttack)
+                self.DelBuff(dwSetBuffID)
+                self.AddBuff(dwSetBuffID, 1, attrib=[
+                    attrib_data("atPhysicsCriticalStrikeBaseRate", 400*fExpect/10000),
+                    attrib_data("atPhysicsCriticalDamagePowerBaseKiloNumRate", 41*fExpect/1024)
+                ])
+
+            # 其他概率触发
+            self.CastSkill(50011, 1)
+
 
         # 记录技能
+        # 以下技能不计入战斗统计
+        if skill_id in {50011, 60000, 60001, 60002}:
+            return
+
         if self.casted is None:
             self.casted = [{
                 'second': self._timer / 16,
@@ -262,6 +374,7 @@ class Player:
                 'buff': {i: j for i, j in self.buffs.items()},
                 'tbuff': {i: j for i, j in self._target.buffs.items()},
                 'fExpect': _fExpect,
+                'cd_盾飞': self.GetSkillCoolDown(13050),
             }]
         else:
             self.casted.append({
@@ -275,6 +388,7 @@ class Player:
                 'buff': {i: j for i, j in self.buffs.items()},
                 'tbuff': {i: j for i, j in self._target.buffs.items()},
                 'fExpect': _fExpect,
+                'cd_盾飞': self.GetSkillCoolDown(13050),
             })
 
     def GetSkillLevel(self, skill_id):
@@ -333,16 +447,17 @@ class Player:
 
         # 奇穴系数修饰
         nAttackRate = _damage_data.nAttackRate
+
+        # 卷云
+        tJuanYunData = {
+            'DunDao_1': 1.05,
+            13059: 1.1,
+            13060: 1.15,
+            13119: 1.2,
+        }
         if self.GetSkillLevel('卷云') == 1:
-            match skill_id:
-                case 'DunDao_1':
-                    nAttackRate *= 1.05
-                case 13059:
-                    nAttackRate *= 1.1
-                case 13060:
-                    nAttackRate *= 1.15
-                case 13119:
-                    nAttackRate *= 1.2
+            if skill_id in tJuanYunData:
+                nAttackRate *= tJuanYunData[skill_id]
 
         # 判断是否是快照机制
         if skill_id in {
@@ -351,7 +466,7 @@ class Player:
             'LiuXueInterval_1', 'LiuXueInterval_2', 'LiuXueInterval_3', 'LiuXueInterval_4'
         }:
             nPhysicsAttackPower, fPhysicsCriticalPercent, fPhysicsCriticalDamagePowerPercent, \
-            fStrainPercent, fAllDamageAddPercent, nHasteValueGuo = self.GetSnapShot(13054).values()
+                fStrainPercent, fAllDamageAddPercent, _ = self.GetSnapShot(13054).values()
         else:
             nPhysicsAttackPower = self.PhysicsAttackPower
             fPhysicsCriticalPercent = self.PhysicsCriticalPercent
@@ -360,18 +475,23 @@ class Player:
             fAllDamageAddPercent = self.AllDamageAddPercent
 
         # 基础伤害
+        nWeaponDamage = self.WeaponDamage
         if not skill_id == 32745:
-            nDamage = int(nBaseDamage + nAttackRate * nPhysicsAttackPower + nWeaponDamagePercent * self.WeaponDamage)
+            nDamage = int(nBaseDamage + nAttackRate * nPhysicsAttackPower + nWeaponDamagePercent * nWeaponDamage)
         else:
-            nDamage = int(nAttackRate * self.SurplusValue * global_params['fSurplusParam'])
+            nPhysicsAttackPower = self.SurplusValue
+            nAttackRate *= global_params['fSurplusParam']
+            nDamage = int(nAttackRate * nPhysicsAttackPower)
 
         if nDamage > 0:
 
             # 秘籍增伤
-            nDamage = int(nDamage * (1 + recipe_data['atRecipeDamagePercent']))
+            fRecipeDamagePercent = recipe_data['atRecipeDamagePercent']
+            nDamage = int(nDamage * (1 + fRecipeDamagePercent))
 
             # 破防无双
-            nDamage = int(nDamage * (1 + self.PhysicsOvercomePercent) * (1 + fStrainPercent))
+            fPhysicsOvercomePercent = self.PhysicsOvercomePercent
+            nDamage = int(nDamage * (1 + fPhysicsOvercomePercent) * (1 + fStrainPercent))
 
             # 目标防御
             nTargetDefense = self._target.PhysicsShieldValue
@@ -380,15 +500,17 @@ class Player:
             }
             slots = self._attribute.get_buff_attribute_value(slots)
             nTargetDefense -= int(nTargetDefense * slots['atAllShieldIgnorePercent'] / 1024)
-            nTargetDefensePercent = self._target.GetPhysicsShieldPercent(nTargetDefense)
-            nDamage = int(nDamage * (1 - nTargetDefensePercent))
+            fTargetDefensePercent = self._target.GetPhysicsShieldPercent(nTargetDefense)
+            nDamage = int(nDamage * (1 - fTargetDefensePercent))
 
             self._target.DelBuff(50010)  # 删除盾击无视buff, 确保不会被其他技能利用
+            self._target.DelBuff(50039)  # 飘黄无视防御buff
 
             # 会心判定
             fCritical = fPhysicsCriticalPercent
-            fCritical += recipe_data['atRecipePhysicsCriticalPercent']
-            if random.randint(1, 10000) <= fCritical * 10000:
+            fRecipeCriticalPercent = recipe_data['atRecipePhysicsCriticalPercent']
+            fCritical += fRecipeCriticalPercent
+            if randint(1, 10000) <= fCritical * 10000:
                 nFlag = 1
             else:
                 nFlag = 0
@@ -411,35 +533,25 @@ class Player:
             # 全局增伤
             nDamage = int(nDamage * fAllDamageAddPercent)
 
-            # 施展招式后的判定
-            if skill_id in ['DunDao_1', 13045, 13046, 13047, 13052, 13053, 13054, 13055, 13059, 13060, 13119, 13316,
-                            25215]:
-                if self.GetSkillLevel('恋战') == 1:
-                    if self.GetSetting('CriticalByExpect'):
-                        # 直接计算恋战期望，并添加对应数值的buff
-                        self.DelBuff(8267, all_layer=True)
-                        value = self.GetLianZhanExpectByCritical(self.PhysicsCriticalPercent)
-                        self.AddBuff(8267, 1, attrib=[_attrib_data('atPhysicsCriticalStrikeBaseRate', value * (30 / 1024))])
-                    else:
-                        self.CastSkill(13127, 1)
-                        if nFlag:
-                            self.CastSkill(13128, 1)
-
-                # # 这里应该是附魔判定条件
-                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                #     self.CastSkill(22166, 1)
-                # if random.randint(1, 10000) / 10000 <= 205 / 1024:
-                #     self.CastSkill(22169, 1)
-                # if nFlag:
-                #     self.CastSkill(33257, 1)
-                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                #     self.CastSkill(22122, 1)
-                # if random.randint(1, 10000) / 10000 <= 102 / 1024:
-                #     self.CastSkill(33249, 1)
+            # 目标易伤
+            fTargetDamageCoefficient = self._target.PhysicsDamageCoefficient
+            nDamage += int(nDamage * fTargetDamageCoefficient)
 
             # 会心率用会心期望计算时, 要将nFlag设置为期望会心率
             if self.GetSetting('CriticalByExpect'):
                 nFlag = fCritical
+
+            # 全局复盘状态记录
+            tBuffValues = self._attribute.get_buff_attribute_value(self.recorder.attrib_slots)
+
+            if self.recorder:
+                self.recorder.update(
+                    self._timer, skill_id,
+                    nBaseDamage, nAttackRate, nWeaponDamagePercent,     # 技能信息
+                    fTargetDefensePercent, fLevelDamageParam,
+                    fRecipeDamagePercent, fRecipeCriticalPercent, fAllDamageAddPercent,      # 不随增益变化的全局信息
+                    tBuffValues     # buff的数据值
+                )
 
         else:
             nFlag = 0
@@ -463,17 +575,29 @@ class Player:
 
         # 秘籍
         match skill_id:
+
             case 'DunDao_1' | 13059 | 13060 | 13119:
+                # 盾刀
                 recipes = [1860, 1861, 1862, 1863, 1864, 1865]
-            case 13045:
-                recipes = [1852, 1853, 1854, 1855]
+
+            case 13045 | 50006:
+                # 盾压
+                recipes = [1852, 1853, 1854, 1855, 1932]
+
             case 13052:
+                # 劫刀
                 recipes = [1830, 1831, 1832, 1833, 1834, 1835]
+
             case 13054:
+                # 斩刀
                 recipes = [1838, 1839, 1840, 1841, 1842, 1843, 4409]
+
             case 13055:
-                recipes = [1846, 1847, 1848, 1849, 4918, 4919, 4920, 4921, 1879]
+                # 绝刀
+                recipes = [1846, 1847, 1848, 1849, 4918, 4919, 4920, 4921, 1879, 1933]
+
             case 13050:
+                # 盾飞
                 recipes = [1953, 1954, 1955, 1956]
 
         if recipes:
@@ -634,6 +758,9 @@ class Player:
         # 减buff持续时间
         _del = []
         for buff_id, _buff_data in self.buffs.items():
+            # 不处理永久buff
+            if _buff_data.lasting > 999999:
+                continue
             new_lasting = max(_buff_data.lasting - nPassedTime, 0)
             if not new_lasting:
                 _del.append(buff_id)
@@ -790,7 +917,7 @@ class Player:
             nSingleLayerExpect = 1
             for j in range(i):
                 if j > 0:
-                    nSingleLayerExpect *= (1 - fCritical - j * (30/1024))
+                    nSingleLayerExpect *= (1 - fCritical - j * (30 / 1024))
                 else:
                     nSingleLayerExpect *= 1
             nLayerExpect += nSingleLayerExpect
@@ -808,7 +935,7 @@ class Player:
             nSingleLayerExpect = 1
             for j in range(i):
                 if j > 0:
-                    nSingleLayerExpect *= (1 - fParry - j * (60/1024))
+                    nSingleLayerExpect *= (1 - fParry - j * (60 / 1024))
                 else:
                     nSingleLayerExpect *= 1
             nLayerExpect += nSingleLayerExpect
@@ -840,5 +967,64 @@ class Player:
 
         return ret
 
+    def GetDuringAttackCount(self, nDuring):
+        """
+        获取在nDuring期间的攻击频率
+        :param nDuring:
+        :return:
+        """
+        assert nDuring > 0.9999, '需要计算攻击频率的时间段至少要有1帧'
+        nEarliest = max(0, self._timer - nDuring)
 
+        nCount = 0
+        for nTime in reversed(self.attack_record.keys()):
+            if nTime < nEarliest:
+                break
 
+            nCount += 1
+
+        return nCount
+
+    @staticmethod
+    def ResetEventCount():
+        """
+        重置概率触发事件的计数\n
+        :return:
+        """
+        from scripts.equip.PercentageEventTrigger import ResetEventCount
+        ResetEventCount()
+
+        from scripts.advance.Advance_HaoLingSanJun import ResetState
+        ResetState()
+
+    def GetTeamMateTalent(self, dwTalentID):
+        """
+        获取队友是否能够提供某项增益\n
+        :param szTeamMateName:
+        :param dwTalentID:
+        :return:
+        """
+        if not self.team_mate_data:
+            return
+
+        if not self.team_mate_data['Talents']:
+            return
+
+        if dwTalentID not in self.team_mate_data['Talents']:
+            return
+
+        return 1
+
+    def GetTeamMateAdvanceStackNum(self, dwTalentID):
+        """
+        获取队友某项增益的层数\n
+        :param dwTalentID:
+        :return:
+        """
+        if not self.GetTeamMateTalent(dwTalentID):
+            return
+
+        if dwTalentID not in self.team_mate_data['Stacks']:
+            return 0
+
+        return self.team_mate_data['Stacks'][dwTalentID]

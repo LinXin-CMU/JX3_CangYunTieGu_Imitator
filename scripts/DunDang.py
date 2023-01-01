@@ -45,7 +45,7 @@ attrib_value = {
 }
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target, dwSkillLevel):
     player.AddPublicCoolDown(0, 1.5*16)
 
     rage = player.rage
@@ -53,9 +53,10 @@ def Apply(player: Player, target):
 
     # 千山奇穴下效果
     if player.GetSkillLevel('千山') == 1:
-        player.AddBuff(8448, lv_dundang, attrib=attrib_value[lv_dundang])
+    # if True:
+        player.AddBuff(8448, lv_dundang, attrib=attrib_value[lv_dundang+11])
     else:
-        player.AddBuff(8499, lv_dundang, attrib=attrib_value[lv_dundang+11])
+        player.AddBuff(8499, lv_dundang, attrib=attrib_value[lv_dundang])
 
     # 振奋
     if player.GetSkillLevel('振奋') == 1:

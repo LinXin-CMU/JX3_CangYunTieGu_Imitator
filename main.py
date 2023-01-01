@@ -1,15 +1,18 @@
 # coding: utf-8
 # author: LinXin
 # 这一堆大部分都是测试代码~
-import time
+# from time
 
 from PyQt5.QtWidgets import QApplication
-import datetime
+from PyQt5.QtChart import QChartView
+from datetime import datetime
 
 from player.player import Player
+from player.player_recorder import FightRecorder
 from target.target import Target
 from ui.ui_main import MainUI
 
+QChartView()
 
 app = QApplication([])
 ui = MainUI()
@@ -20,54 +23,47 @@ class Main:
     def __init__(self):
         self.target = None
         self.player = None
+        self.recorder = FightRecorder()
 
     def run(self):
-        nTime = time.time()
+        # nTime = time.time()
+        nFightTime = ui.get_fight_time()
+        recorder = self.recorder.StartNewFight()
 
         self.target = Target()
-        self.player = Player(ui.get_talent(), ui.get_recipe(), self.target, ui.get_attribute())
+        self.player = Player(ui.get_talent(), ui.get_recipe(), self.target, ui.get_attribute_with_set())
+        self.recorder.SetPlayer(self.player)
         self.target.player = self.player
         self.target.level = ui.get_level()
         self.player.settings = ui.get_settings()
         self.target.settings = self.player.settings
         self.target.SetNpcAttributeValueByLevel()
         self.player.ActiveHaloByID()
+        self.player.SetFightRecorder(recorder)
+        self.player.ResetEventCount()
+        self.player.SetAdvanceEffect(ui.get_self_advance_attribute())
+        self.player.SetTeamMateData(ui.get_other_advance_data())
+        recorder.SetBaseAttribute(self.player.BaseAttributes)
+
+        nCommand = ui.get_command_id()
+        if not nCommand:
+            return
 
         skills = {}
+        self.player.CastSkill(50015, 1)     # 增益初始化
         i = 0
-        while i < 300*16:
+        while i < nFightTime:
 
             self.player.Timer(i)
             self.target.Timer(i)
 
-            self.player.CastSkill(13045, 1)  # /cast 盾压
+            self.player.CastSkill(nCommand, 1)
 
-            if not (self.player.IsHaveBuff(8499) or self.player.IsHaveBuff(8448)):
-                self.player.CastSkill(13046, 1)  # /cast [nobuff:盾挡] 盾猛
-
-            if self.player.rage > 80 and True:
-                self.player.CastSkill(25213, 1)  # /cast 断马摧城
-
-            self.player.CastSkill(13047, 1)  # /cast 盾击
-            self.player.CastSkill(13044, 1)  # /cast 盾刀
-
-            if self.player.rage == 110:
-                self.player.CastSkill(13391, 1)  # /cast [rage>109] 盾挡
-            if self.player.rage >= 65 and (self.player.IsHaveBuff(8499) or self.player.IsHaveBuff(8448)):
-                self.player.CastSkill(13050, 1)  # /cast [rage>=65&buff:盾挡] 盾飞
-            if self.player.GetSkillCoolDown(13054) > 0 and self.player.GetSkillCoolDown(13055) > 0:
-                self.player.CastSkill(13051, 1)  # /cast [bufftime:盾飞<9] 盾回
-
-            self.player.CastSkill(13054, 1)  # /cast 斩刀
-
-            if self.player.IsHaveBuff(24755):
-                self.player.CastSkill(13055, 1)  # /cast [buff:24755] 绝刀
-
-            self.player.CastSkill(13052, 1)  # /cast 劫刀
-
-            if not self.player.IsHaveBuff(8245) and (
-                    self.player.IsHaveBuff(8499) or self.player.IsHaveBuff(8448)) and self.player.rage < 50:
-                self.player.CastSkill(13040, 1)
+            # if self.player.GetBuff(18783, 1).layer == 5:
+            #     self.player.CastSkill(26141, 1)     # /use 龙门飞剑
+            if self.player.GetBuff(8391).lasting > 14.5 * 16:
+                self.player.CastSkill(26060, 1)
+                self.player.CastSkill(50008, 1)
 
     
             print(self.player.rage)
@@ -87,13 +83,16 @@ class Main:
                 skills[i['name']]['damage'] += i['damage']
                 skills[i['name']]['critical'] += i['critical']
     
-        ui.label_info.setText(f"[{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 模拟完成！")
-        ui.set_skill_data_table(skills)
-        print(int(self.player.damage / 300))
+        ui.label_info.setText(f"[{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 模拟完成！")
+        ui.set_skill_data_table(skills, nFightTime)
         ui.progressBar.setValue(300)
+        ui.set_attribute_profits(*recorder.end())
+        ui.tabWidget_2.setCurrentIndex(1)
 
-        print(time.time() - nTime)
-        return int(self.player.damage / 300)
+        # print(time.time() - nTime)
+        nDps = int(self.player.damage / (nFightTime / 16))
+        ui.add_history(skills, ui.comboBox_14.currentText(), nDps, ui.halo_button.text(), ui.qijin_checkBox.checkState())
+        return nDps
 
     def get_csv(self):
         import csv
@@ -101,14 +100,14 @@ class Main:
         if not self.player:
             return
 
-        with open(f"{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}-player.csv", 'w', encoding='gbk',
+        with open(f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}-player.csv", 'w', encoding='gbk',
                   newline='') as f:
             csv_writer = csv.DictWriter(f, fieldnames=['second', 'frame', 'name', 'desc', 'rage', 'damage', 'critical',
-                                                       'buff', 'tbuff', 'fExpect'])
+                                                       'buff', 'tbuff', 'fExpect', 'cd_盾飞'])
             csv_writer.writeheader()
             csv_writer.writerows(self.player.casted)
 
-        ui.label_info.setText(f"[{datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 导出成功！")
+        ui.label_info.setText(f"[{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 导出成功！")
 
 
 # def multiThread_run():

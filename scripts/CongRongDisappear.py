@@ -18,7 +18,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     if player.life >= 0.6:
         player.AddBuff(8423, 1)

@@ -42,11 +42,13 @@ class TalentSelector:
         for i in range(1, 13):
             gb: QGroupBox = getattr(self.ui, f'groupBox_{i}')
             gb.setVisible(False)
+            gb.move(8+60*i, 390)
             btn: QPushButton = getattr(self.ui, f'pushButton_{i}')
             btn.clicked.connect(set_index(i, self._talent_clicked))
 
         for i in range(1, 10):
             gb: QGroupBox = getattr(self.ui, f'groupBox_skill_{i}')
+            gb.move(6+60*i, 340)
             gb.setVisible(False)
             btn: QPushButton = getattr(self.ui, f'skill_button_{i}')
             btn.clicked.connect(set_index(i, self._skill_clicked))
@@ -104,7 +106,10 @@ class TalentSelector:
         # ---------------------奇穴部分---------------------
         # noinspection PyBroadException
         try:
-            data = eval(qx_data)
+            if not isinstance(qx_data, dict):
+                data = eval(qx_data)
+            else:
+                data = qx_data
         except:
             return
 

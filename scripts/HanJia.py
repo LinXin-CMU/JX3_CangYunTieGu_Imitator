@@ -2,7 +2,7 @@
 # author: LinXin
 
 from scripts.Default import *
-from scripts.include.slot import _attrib_data
+from scripts.include.slot import attrib_data
 
 tSkillData = {
     1: damage_data(nDamageBase=0, nDamageRand=0, nAttackRate=0, nWeaponDamagePercent=0),
@@ -19,7 +19,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     # 招架后加寒甲buff
     if player.IsHaveBuff(8462) and (player.IsHaveBuff(8271) or player.IsHaveBuff(8437) or player.IsHaveBuff(17772)):
@@ -50,8 +50,10 @@ def Apply(player: Player, target: Target):
     else:
         nAttack = nLargeLayer * 30000 + (nLayer - (nLargeLayer * 100)) * 300
         fExpectParry = player.GetCumulativeExpectParry(8*16)
-        player.AddBuff(50014, 1, attrib=[_attrib_data('atPhysicsAttackPowerBase', int(nAttack * fExpectParry))])
-
+        player.DelBuff(50014)
+        player.DelBuff(8437)
+        player.AddBuff(50014, 1, attrib=[attrib_data('atPhysicsAttackPowerBase', int(nAttack * fExpectParry))])
+        player.AddBuff(8437, 1)
 
 
 

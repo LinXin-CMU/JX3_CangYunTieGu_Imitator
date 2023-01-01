@@ -18,7 +18,7 @@ nNeedGcdType = []
 nNeedPosState = None
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     # ------------------以下效果要延迟0.375s放到盾飞子技能里实现-------------------
     # 盾飞跳伤害后添加计数buff

@@ -18,7 +18,7 @@ nNeedGcdType = [0, 1, 2, 3, 4, 5]
 nNeedPosState = 0
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target, dwSkillLevel):
     player.AddPublicCoolDown(1, 1*16)
     player.AddPublicCoolDown(2, 0.5*16)
 
@@ -45,6 +45,9 @@ def Apply(player: Player, target):
 
     # 盾击无视目标50%防御
     target.AddBuff(50010, 1)
+
+    # 盾击减盾飞cd
+    player.ClearCDTime(13050, 2*16)
 
     return 1
 

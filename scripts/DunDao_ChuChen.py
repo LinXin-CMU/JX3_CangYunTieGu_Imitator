@@ -19,7 +19,7 @@ nNeedMinRage = 0
 nNeedPosState = 0
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     return 1
 

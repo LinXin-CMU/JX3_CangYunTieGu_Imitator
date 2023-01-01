@@ -18,7 +18,7 @@ nNeedGcdType = [6]
 nNeedPosState = 1
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     player.CastSkill('DunHuiChangeState', 1)
     player.AddBuff(8424, 1)

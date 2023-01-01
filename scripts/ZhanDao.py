@@ -19,7 +19,7 @@ nNeedMinRage = 15
 nNeedPosState = 1
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
     if not player:
         return
 

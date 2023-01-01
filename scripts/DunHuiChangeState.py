@@ -18,7 +18,7 @@ nNeedGcdType = [6]
 nNeedPosState = 1
 
 
-def Apply(player: Player, target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     # 盾回换姿态
     player.DelBuff(8278, 1)

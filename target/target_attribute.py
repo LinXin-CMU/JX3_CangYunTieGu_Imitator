@@ -88,12 +88,17 @@ class Attribute:
     @property
     def PhysicsShieldValue(self):
         slots = {
-            'atPhysicsShieldPercent': 0
+            'atPhysicsShieldPercent': 0,
+            'atPhysicsShieldBase': 0,
         }
         slots = self._get_buff_attribute_value(slots)
         value = self._attributes['PhysicsShieldValue']
+        value += slots['atPhysicsShieldBase']
 
         value += int(value * slots['atPhysicsShieldPercent'] / 1024)
+        if value < 0:
+            value = 0
+
         return value
 
     def GetPhysicsShieldPercent(self, value):
@@ -104,3 +109,12 @@ class Attribute:
         nDefenseConst = global_params['fPhysicsShieldParam'] * (nTargetLevel * LEVEL_RATE - LEVEL_CONST)
 
         return value / (value + nDefenseConst)
+
+    @property
+    def PhysicsDamageCoefficient(self):
+        slots = {
+            'atPhysicsDamageCoefficient': 0,
+        }
+        slots = self._get_buff_attribute_value(slots)
+        value = slots['atPhysicsDamageCoefficient'] / 1024
+        return value

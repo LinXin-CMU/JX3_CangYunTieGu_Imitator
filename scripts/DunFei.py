@@ -9,7 +9,7 @@ tSkillData = {
 }
 
 tSkillCoolDown = {
-    1: cooldown_data(nSingleCoolDown=18, nMaxStackNum=3)
+    1: cooldown_data(nSingleCoolDown=18*16, nMaxStackNum=3)
 }
 
 tSkillName = '盾飞'
@@ -18,7 +18,7 @@ nNeedGcdType = [6]
 nNeedPosState = 0
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     # 盾飞加buff
     nTime = buff_data.get(8391)
@@ -36,6 +36,9 @@ def Apply(player: Player, target: Target):
 
     # 盾飞进gcd
     player.AddPublicCoolDown(6, 1*16)
+
+    # 盾飞进cd
+    player.AddSkillCoolDown(13050, 18*16)
 
     # 盾飞立即加虚弱buff
     target.AddBuff(8248, 1)

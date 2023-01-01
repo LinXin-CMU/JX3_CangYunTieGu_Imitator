@@ -18,7 +18,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     if not player:
         return
@@ -26,15 +26,18 @@ def Apply(player: Player, target: Target):
     if player.IsHaveBuff(15456):
         return
 
-    if random.random() < 0.3:
-        player.AddBuff(15455, 1, attrib=[59])
-    else:
-        player.AddBuff(15455, 1, attrib=[60])
+    # if random.random() < 0.3:
+    #     player.AddBuff(15455, 1, attrib=[59])
+    # else:
+    #     player.AddBuff(15455, 1, attrib=[60])
+    fPercent = 0.3
+    dwAttrib = attrib_data('atAllDamageAddPercent', int(10*fPercent+51*(1-fPercent)))
+    player.AddBuff(15455, 1, attrib=[dwAttrib])
 
     player.AddBuff(15456, 1)
 
     return 1
 
 
-ShangYao = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState,
+Enchant_ShangYao = skill_script(tSkillData, tSkillCoolDown, tSkillName, tDesc, nNeedGcdType, nNeedMinRage, nNeedPosState,
                           Apply)

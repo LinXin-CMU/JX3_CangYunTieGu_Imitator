@@ -44,6 +44,8 @@ class Target:
     @property
     def PhysicsShieldValue(self): return ...
     def GetPhysicsShieldPercent(self, value): ...
+    @property
+    def PhysicsDamageCoefficient(self): return ...
 
     # ————————————————————技能部分————————————————————
 
@@ -336,5 +338,20 @@ class Player:
         """
         获取在nDuring期间内的累计招架率
         :param nDuring:
+        :return:
+        """
+
+    def GetTeamMateTalent(self, dwTalentID):
+        """
+        获取队友是否能够提供某项增益\n
+        :param szTeamMateName:
+        :param dwTalentID:
+        :return:
+        """
+
+    def GetTeamMateAdvanceStackNum(self, dwTalentID):
+        """
+        获取队友某项增益的层数\n
+        :param dwTalentID:
         :return:
         """

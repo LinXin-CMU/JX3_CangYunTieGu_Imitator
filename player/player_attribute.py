@@ -3,8 +3,8 @@
 # 负责属性计算
 
 from settings.jx3_types import Player
-from settings.jx3_collections import special_stones, LEVEL_CONST, LEVEL_RATE, global_params
-from scripts.include.slot import attribute_value, _attrib_data
+from settings.jx3_collections import LEVEL_CONST, LEVEL_RATE, global_params, special_stones
+from scripts.include.slot import attribute_value, attrib_data
 
 from typing import Dict
 from math import ceil
@@ -34,6 +34,10 @@ class Attribute:
 
         self._player = player
         self._get_origin_attributes_value()
+
+    def GetBaseAttributes(self):
+        return self.base_attributes
+
 
     def _get_origin_attributes_value(self):
         """
@@ -138,38 +142,47 @@ class Attribute:
 
     def get_buff_attribute_value(self, slots) -> Dict[str, int]:
 
+        tSlots = {k: v for k, v in slots.items()}
+
         for buff in self._player.buffs.values():
             if not buff.attrib:
                 continue
-            for attrib_data in buff.attrib:
-                if isinstance(attrib_data, _attrib_data):
+            for _attrib_data in buff.attrib:
+                if isinstance(_attrib_data, attrib_data):
                     pass  # 如果是给定属性字段和值，那么不作查找
                 else:
-                    attrib_data = attribute_value[attrib_data]
-                if attrib_data.slot in slots:
-                    slots[attrib_data.slot] += attrib_data.value * buff.layer
+                    _attrib_data = attribute_value[_attrib_data]
+                if _attrib_data.slot in tSlots:
+                    tSlots[_attrib_data.slot] += _attrib_data.value * buff.layer
 
-        return slots
+        return tSlots
 
     @property
     def Vitality(self):
         slots = {
+            'atVitalityBase': 0,
             'atVitalityBasePercentAdd': 0
         }
-        # 活血
-        if self._player.GetSkillLevel('活血') == 1:
-            slots['atVitalityBasePercentAdd'] += 102
-        # 五彩石
-        tEquipList = self.origin_data['EquipList']
-        if not ['PRIMARY_WEAPON']:
-            return
-        stone_id = tEquipList['PRIMARY_WEAPON']['stone']
-        if stone_id in special_stones:
-            slot, value = special_stones.get(stone_id)
-            if slot == 'atVitalityBasePercentAdd':
-                slots['atVitalityBasePercentAdd'] += value
+        slots = self.get_buff_attribute_value(slots)
+
+        # 以下注释内容已设置为buff
+
+        # # 活血
+        # if self._player.GetSkillLevel('活血') == 1:
+        #     slots['atVitalityBasePercentAdd'] += 102
+
+        # # 五彩石
+        # tEquipList = self.origin_data['EquipList']
+        # if not ['PRIMARY_WEAPON']:
+        #     return
+        # stone_id = tEquipList['PRIMARY_WEAPON']['stone']
+        # if stone_id in special_stones:
+        #     slot, value = special_stones.get(stone_id)
+        #     if slot == 'atVitalityBasePercentAdd':
+        #         slots['atVitalityBasePercentAdd'] += value
 
         value = self.base_attributes['Vitality']
+        value += slots['atVitalityBase']
         value += int(value * (slots['atVitalityBasePercentAdd'] / 1024))
 
         return value
@@ -177,22 +190,29 @@ class Attribute:
     @property
     def Agility(self):
         slots = {
+            'atAgilityBase': 0,
             'atAgilityBasePercentAdd': 0
         }
-        # 活脉
-        if self._player.GetSkillLevel('活脉') == 1:
-            slots['atAgilityBasePercentAdd'] += 102
-        # 五彩石
-        tEquipList = self.origin_data['EquipList']
-        if not ['PRIMARY_WEAPON']:
-            return
-        stone_id = tEquipList['PRIMARY_WEAPON']['stone']
-        if stone_id in special_stones:
-            slot, value = special_stones.get(stone_id)
-            if slot == 'atAgilityBasePercentAdd':
-                slots['atAgilityBasePercentAdd'] += value
+        slots = self.get_buff_attribute_value(slots)
+
+        # 以下注释内容已设置为buff
+
+        # # 活脉
+        # if self._player.GetSkillLevel('活脉') == 1:
+        #     slots['atAgilityBasePercentAdd'] += 102
+
+        # # 五彩石
+        # tEquipList = self.origin_data['EquipList']
+        # if not ['PRIMARY_WEAPON']:
+        #     return
+        # stone_id = tEquipList['PRIMARY_WEAPON']['stone']
+        # if stone_id in special_stones:
+        #     slot, value = special_stones.get(stone_id)
+        #     if slot == 'atAgilityBasePercentAdd':
+        #         slots['atAgilityBasePercentAdd'] += value
 
         value = self.base_attributes['Agility']
+        value += slots['atAgilityBase']
         value += int(value * (slots['atAgilityBasePercentAdd'] / 1024))
 
         return value
@@ -200,20 +220,25 @@ class Attribute:
     @property
     def Strength(self):
         slots = {
+            'atStrengthBase': 0,
             'atStrengthBasePercentAdd': 0
         }
+        slots = self.get_buff_attribute_value(slots)
 
-        # 五彩石
-        tEquipList = self.origin_data['EquipList']
-        if not ['PRIMARY_WEAPON']:
-            return
-        stone_id = tEquipList['PRIMARY_WEAPON']['stone']
-        if stone_id in special_stones:
-            slot, value = special_stones.get(stone_id)
-            if slot == 'atStrengthBasePercentAdd':
-                slots['atStrengthBasePercentAdd'] += value
+        # 以下注释内容已设置为buff
+
+        # # 五彩石
+        # tEquipList = self.origin_data['EquipList']
+        # if not ['PRIMARY_WEAPON']:
+        #     return
+        # stone_id = tEquipList['PRIMARY_WEAPON']['stone']
+        # if stone_id in special_stones:
+        #     slot, value = special_stones.get(stone_id)
+        #     if slot == 'atStrengthBasePercentAdd':
+        #         slots['atStrengthBasePercentAdd'] += value
 
         value = self.base_attributes['Strength']
+        value += slots['atStrengthBase']
         value += int(value * (slots['atStrengthBasePercentAdd'] / 1024))
 
         return value
@@ -244,12 +269,16 @@ class Attribute:
     @property
     def PhysicsCriticalPercent(self):
         slots = {
-            'atPhysicsCriticalStrikeBaseRate': 0
+            'atPhysicsCriticalStrike': 0,
+            'atPhysicsCriticalStrikeBaseRate': 0,
+            'atAllTypeCriticalStrike': 0,
         }
 
         slots = self.get_buff_attribute_value(slots)
 
         value = self.base_attributes['PhysicsCriticalStrike']
+        value += slots['atPhysicsCriticalStrike']
+        value += slots['atAllTypeCriticalStrike']
         # 身法转化
         value += int(self.Agility * 0.64)
 
@@ -262,10 +291,14 @@ class Attribute:
     @property
     def PhysicsCriticalDamagePowerPercent(self):
         slots = {
+            'atPhysicsCriticalDamagePowerBase': 0,
             'atPhysicsCriticalDamagePowerBaseKiloNumRate': 0,
+            'atAllTypeCriticalDamagePowerBase': 0,
         }
         slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['PhysicsCriticalDamagePower']
+        value += slots['atPhysicsCriticalDamagePowerBase']
+        value += slots['atAllTypeCriticalDamagePowerBase']
 
         # 转化为百分比
         value /= global_params['fCriticalStrikePowerParam'] * (LEVEL_RATE * 120 - LEVEL_CONST)
@@ -276,12 +309,18 @@ class Attribute:
     @property
     def PhysicsOvercomePercent(self):
         slots = {
-            'atVitalityToPhysicsOverComeCof': 0
+            'atVitalityToPhysicsOverComeCof': 0,
+            'atPhysicsOvercomeBase': 0,
+            'atPhysicsOvercomePercent': 0,
         }
         slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['PhysicsOvercome']
         # 力道转化
         value += int(self.Strength * 0.3)
+        # 固定值增益
+        value += slots['atPhysicsOvercomeBase']
+        # 百分比增益
+        value += int(value * slots['atPhysicsOvercomePercent'] / 1024)
 
         # 体质转化
         value += int(self.Vitality * slots['atVitalityToPhysicsOverComeCof'] / 1024)
@@ -293,21 +332,29 @@ class Attribute:
     @property
     def StrainPercent(self):
         slots = {
+            'atStrainBase': 0,
+            'atStrainRate': 0,
         }
         slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['Strain']
-
+        value += slots['atStrainBase']
         # 转化为百分比
         value /= global_params['fInsightParam'] * (LEVEL_RATE * 120 - LEVEL_CONST)
+        # 百分比固定增益
+        value += slots['atStrainRate'] / 1024
+
         return value
 
     @property
     def SurplusValue(self):
         slots = {
             'atSurplusValueAddPercent': 0,
+            'atSurplusValueBase': 0,
         }
         slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['SurplusValue']
+        # 固定值
+        value += slots['atSurplusValueBase']
 
         value += int(value * slots['atSurplusValueAddPercent'] / 1024)
 
@@ -373,11 +420,12 @@ class Attribute:
     @property
     def ParryValue(self):
         slots = {
+            'atParryValueBase': 0,
             'atParryValuePercent': 0,
         }
         slots = self.get_buff_attribute_value(slots)
         value = self.base_attributes['ParryValue']
-
+        value += slots['atParryValueBase']
         # 增益值
         value += int(value * slots['atParryValuePercent'] / 1024)
 
@@ -406,6 +454,7 @@ class Attribute:
             'atAllDamageAddPercent': 0,
             'atAllPhysicsDamageAddPercent': 0,
         }
+        slots = self.get_buff_attribute_value(slots)
         value = 1
         value *= (1 + slots['atAllDamageAddPercent'] / 1024)
         value *= (1 + slots['atAllPhysicsDamageAddPercent'] / 1024)

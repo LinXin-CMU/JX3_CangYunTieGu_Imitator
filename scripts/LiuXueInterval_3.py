@@ -19,7 +19,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     if target.IsHaveBuff(8249):
         # 先计算实际帧数

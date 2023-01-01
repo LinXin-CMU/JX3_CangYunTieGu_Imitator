@@ -18,7 +18,7 @@ nNeedGcdType = []
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     player.DelBuff(8245)
     player.DelBuff(8382)

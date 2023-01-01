@@ -116,6 +116,10 @@ class Target:
     def PhysicsShieldValue(self):
         return self._attribute.PhysicsShieldValue
 
+    @property
+    def PhysicsDamageCoefficient(self):
+        return self._attribute.PhysicsDamageCoefficient
+
     def GetPhysicsShieldPercent(self, value):
         return self._attribute.GetPhysicsShieldPercent(value)
 
@@ -179,7 +183,7 @@ class Target:
 
         if not self.player:
             return
-        state = _skill.Apply(self.player, self)
+        state = _skill.Apply(self.player, self, skill_level)
         # 技能伤害
         if state:
             self._damage += state

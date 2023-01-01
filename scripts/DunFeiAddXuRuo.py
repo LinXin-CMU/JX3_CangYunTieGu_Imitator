@@ -17,7 +17,7 @@ nNeedGcdType = []
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     # 延迟0.125s刷新虚弱buff
     if player.IsHaveBuff(50001) and player.IsHaveBuff(8278):

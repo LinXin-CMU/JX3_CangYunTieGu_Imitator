@@ -2,7 +2,7 @@
 # author: LinXin
 
 from scripts.Default import *
-from scripts.include.slot import _attrib_data
+from scripts.include.slot import attrib_data
 
 
 tSkillData = {
@@ -20,7 +20,7 @@ nNeedMinRage = 0
 nNeedPosState = None
 
 
-def Apply(player: Player, target: Target):
+def Apply(player: Player, target: Target, dwSkillLevel):
 
     # 是否招架的判定
     fParry = player.ParryPercent
@@ -45,7 +45,7 @@ def Apply(player: Player, target: Target):
         if player.GetSetting('ParryByExpect'):
             player.DelBuff(8272)
             fLayerExpect = player.GetJianTieExpectByParry(player.ParryPercent)
-            player.AddBuff(8272, 1, attrib=[_attrib_data('atParryBaseRate', fLayerExpect*(60/1024))])
+            player.AddBuff(8272, 1, attrib=[attrib_data('atParryBaseRate', fLayerExpect * (60 / 1024))])
         else:
             player.CastSkill(13139, 1)
             if nFlag:
