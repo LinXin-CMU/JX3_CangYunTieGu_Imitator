@@ -41,14 +41,19 @@ def Apply(player: Player, target: Target, dwSkillLevel):
     # 命中后刷新dot快照, 注意先记录快照后添加dot, 避免第一跳查找不到快照属性
     player.SetSnapShot(13054)
 
-    # 怒炎-命中虚弱目标添加怒炎buff
+    # 目标有虚弱的情况下
     if target.IsHaveBuff(8248):
+
+        # 怒炎-命中虚弱目标添加怒炎buff
         if player.GetSkillLevel('怒炎') == 1:
             player.AddBuff(24755, 1)
             player.AddBuff(24756, 1)
 
+        # 绝返-命中虚弱目标添加绝返buff
+        if player.GetSkillLevel("绝返") == 1:
+            player.AddBuff(8451, 1)
+
         # 斩刀命中虚弱buff添加流血
-        target.DelBuff(8248)
         if target.IsHaveBuff(8249, 1):
             # 已有流血目标
             b_lxitv = player.GetBuff(50005)
@@ -62,16 +67,27 @@ def Apply(player: Player, target: Target, dwSkillLevel):
             else:
                 player.CastSkill(50001, 1)
 
+        # 消耗虚弱buff
+        target.DelBuff(8248)
+
+
     elif target.IsHaveBuff(8249):
         # 命中仅有流血buff目标刷新流血效果
         b_lxitv = player.GetBuff(50005)
         target.AddBuff(8249, 1, lasting=(24 * lx_itv + b_lxitv.lasting))
 
+    # 刷新割裂效果
+    if target.IsHaveBuff(21308):
+        target.AddBuff(21308, 1, lasting=25*16)
+
     # 戍卫-斩刀强仇和减伤
     player.AddBuff(13934, 1)
 
     # 铁骨1级破招
-    player.CastSkill(32745, 1)
+    if player.mount == 10389:
+        player.CastSkill(32745, 1)
+    elif player.mount == 10390:
+        player.CastSkill(32745, 2)
 
     return 1
 

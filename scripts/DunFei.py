@@ -20,6 +20,9 @@ nNeedPosState = 0
 
 def Apply(player: Player, target: Target, dwSkillLevel):
 
+    # 盾飞0.375内不能施展盾挡
+    player.AddBuff(50044, 1)
+
     # 盾飞加buff
     nTime = buff_data.get(8391)
     if not nTime:

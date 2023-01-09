@@ -9,8 +9,10 @@
 # Recorder.update：增加一条新记录
 # self.GetDamageFromAdvancedAttribute：根据传入的属性增益计算期望DPS
 from collections import namedtuple
+from math import ceil
 
 from player.player_recorder_attribute import RecorderAttribute
+from db.jx3_stone import stone
 
 
 class Recorder:
@@ -81,9 +83,12 @@ class FightRecorder:
         self.records = None
         self.recorder_attribute = RecorderAttribute()
         self.current_record: Recorder | None = None
+        self.nBaseDamage = 0
+        self.player = None
 
     def SetPlayer(self, player):
         self.recorder_attribute.SetPlayer(player)
+        self.player = player
 
     def StartNewFight(self):
         self.current_record = Recorder(self)
@@ -99,11 +104,18 @@ class FightRecorder:
         # print(self.GetDamageFromAdvancedAttribute(
         #     {'atPhysicsAttackPower': 0}
         # ))
-        return self.GetAttributeProfit()
+        self.nBaseDamage = self.GetDamageFromAdvancedAttribute({'': 0})
 
-    def GetDamageFromAdvancedAttribute(self, slots):
+        profits = self.GetAttributeProfit()
+        stone_profits = self.GetStoneProfit(profits[0])
+
+        return profits, stone_profits
+
+    def GetDamageFromAdvancedAttribute(self, slots, dwAdvanceBuffAttrib=None):
         """
         根据给定的属性额外数值计算新DPS\n
+        dwAdvanceBuffAttrib： 可添加的有效字段在上文\n
+        :param dwAdvanceBuffAttrib:
         :param slots:
         :return:
         """
@@ -127,6 +139,13 @@ class FightRecorder:
         # 计算伤害
         nDamage = 0
         for rd in record:
+
+            # 额外buff增益
+            if dwAdvanceBuffAttrib:
+                for slot, value in dwAdvanceBuffAttrib.items():
+                    if slot in rd.tBuffValues:
+                        rd.tBuffValues[slot] += value
+
             self.recorder_attribute.update_slots(rd.tBuffValues)
 
             # 计算各属性
@@ -160,6 +179,17 @@ class FightRecorder:
             nBaseDamage = int(nBaseDamage * fCritical * fCriticalPower + nBaseDamage * (1 - fCritical))
             nDamage += nBaseDamage
 
+            # 清空额外buff增益
+            if dwAdvanceBuffAttrib:
+                for slot, value in dwAdvanceBuffAttrib.items():
+                    if slot in rd.tBuffValues:
+                        rd.tBuffValues[slot] -= value
+
+        # 清空体质和拆招额外增益记录
+        self.recorder_attribute.set_advanced_parry_value(0)
+        self.recorder_attribute.set_advanced_vitality_value(0)
+
+
         return int(nDamage / 300)
 
     def GetAttributeProfit(self):
@@ -187,8 +217,7 @@ class FightRecorder:
         single_profits = {}
         marker_profits = {}
 
-        # 基准DPS
-        nBaseDamage = self.GetDamageFromAdvancedAttribute({'': 0})
+        nBaseDamage = self.nBaseDamage
 
         # 单点收益
         for slot, values in profits.items():
@@ -196,8 +225,6 @@ class FightRecorder:
 
                 if slot == 'ParryValue':
                     self.recorder_attribute.set_advanced_parry_value(value)
-                else:
-                    self.recorder_attribute.set_advanced_parry_value(0)
 
                 nDamage = self.GetDamageFromAdvancedAttribute({slot: value*100})
                 fAdvanced = (nDamage / nBaseDamage) - 1
@@ -226,13 +253,8 @@ class FightRecorder:
 
                 if slot == 'ParryValue':
                     self.recorder_attribute.set_advanced_parry_value(value * markers[slot])
-                    self.recorder_attribute.set_advanced_vitality_value(0)
                 elif slot == 'Vitality':
                     self.recorder_attribute.set_advanced_vitality_value(value * markers[slot])
-                    self.recorder_attribute.set_advanced_parry_value(0)
-                else:
-                    self.recorder_attribute.set_advanced_parry_value(0)
-                    self.recorder_attribute.set_advanced_vitality_value(0)
 
                 nDamage = self.GetDamageFromAdvancedAttribute({slot: value * markers[slot]})
                 fAdvanced = (nDamage / nBaseDamage) - 1
@@ -251,11 +273,209 @@ class FightRecorder:
             nDamage = self.GetDamageFromAdvancedAttribute({'ParryValue': nAdvancedParryValue})
             fAdvanced = (nDamage / nBaseDamage) - 1
             marker_equip_profits['ParryValue'].append(fAdvanced)
-        self.recorder_attribute.set_advanced_parry_value(0)
-
 
         return single_profits, marker_profits, marker_equip_profits
 
+    def GetStoneProfit(self, single_profits):
+        """
+        计算各五彩石的收益\n
+        :return:
+        """
+        # 1. 读取所有五彩石
+        player = self.player
 
+        dwAttrib, dwStoneLevel, dwStoneSlot = player.GetAttributeWithoutStone()
+        if not dwStoneLevel:
+            dwStoneLevel = 6
+
+        self.current_record.base_attributes = dwAttrib
+
+        nBaseDamage = self.GetDamageFromAdvancedAttribute({'': 0})
+
+        # 精简五彩石的百分比加成是一个buff，不会在上文函数中被移除，因此需要在这里额外判定
+        dwBuffSlot = {}
+        for slot in {'atVitalityBasePercentAdd', 'atAgilityBasePercentAdd', 'atStrengthBasePercentAdd'}:
+            if slot in dwStoneSlot:
+                dwBuffSlot[slot] = -1 * dwStoneSlot[slot]
+
+
+        _Attrs = []
+        _Attr_ID = set()
+        dwUnEnabledSlots = {'Spunk', 'Spirit', 'Magic', 'Lunar', 'Solar', 'Neutral', 'Poison', 'Decritical', 'Dodge',
+                            'Life', 'Mana', 'Tough', 'Therapy', 'Threat', 'Resist', 'Strength', 'Agility',
+                            'WeaponDamage', 'AllTypeCritical', 'Haste', 'Parry', 'Vitality'}
+
+        stones = stone.get(dwStoneLevel)
+        if not stones:
+            return
+
+        for dwID, dwStoneDatas in stones.items():
+            attrs = set(i for i in dwStoneDatas['_Attrs'] if i is not None)
+
+            for attr in attrs:
+                for other_slot in dwUnEnabledSlots:
+                    if other_slot in attr:
+                        break
+
+                else:  # 如果没有被break就检查下一个属性，否则会在外层也被break
+                    continue
+
+                break
+
+            else:
+                _Attr_ID.add(dwID)
+
+                if attrs not in _Attrs:
+                    _Attrs.append(attrs)
+
+
+        # 2. 计算大致属性收益比
+        # 强制计算体质精简和体外拆，其他dps五彩石在这里粗略比较
+
+        profits = {
+            'atVitalityBase': single_profits['Vitality'][4],
+            'atPhysicsAttackPowerBase': single_profits['PhysicsAttackPowerBase'][4],
+            'atPhysicsCriticalStrike': single_profits['PhysicsCriticalStrike'][4],
+            'atPhysicsCriticalDamagePowerBase': single_profits['PhysicsCriticalDamagePower'][4],
+            'atPhysicsOvercomeBase': single_profits['PhysicsOvercome'][4],
+            'atStrainBase': single_profits['Strain'][4],
+            'atSurplusValueBase': single_profits['SurplusValue'][4],
+        }
+
+        stone_profit_check = {}
+
+        for dwID in _Attr_ID:
+            dwStoneData = stones.get(dwID)
+
+            fProfit = 0
+            dwSlots = {}
+
+            for i in range(1, 4):
+                slot = dwStoneData.get(f"Attribute{i}ID")
+                if not slot:
+                    continue
+
+                value1 = dwStoneData.get(f"Attribute{i}Value1")
+                value2 = dwStoneData.get(f"Attribute{i}Value2")
+                if not value1 and not value2:
+                    continue
+
+                value = max([int(v) for v in {value1, value2} if v is not None])
+
+                if slot in profits:
+                    fProfit += value * profits[slot]
+                    dwSlots[slot] = value
+
+            stone_profit_check[dwID] = {
+                'profit': fProfit,
+                'slot': dwSlots,
+                'name': dwStoneData['Name']
+            }
+
+        # 计算各五彩石收益
+        # 取前15名+体质精简+体外拆，再排名取出前十名进行展示
+
+        stone_ids = [i for i in stone_profit_check.keys()]
+        stone_ids.sort(key=lambda i: stone_profit_check[i]['profit'], reverse=True)
+
+        if len(stone_ids) > 15:
+            stone_ids = stone_ids[:15]
+
+        slot_dict = {
+            'atPhysicsAttackPowerBase': {'key': 'PhysicsAttackPowerBase', 'name': '攻击'},
+            'atPhysicsCriticalStrike': {'key': 'PhysicsCriticalStrike', 'name': '会心'},
+            'atPhysicsCriticalDamagePowerBase': {'key': 'PhysicsCriticalDamagePower', 'name': '会效'},
+            'atPhysicsOvercomeBase': {'key': 'PhysicsOvercome', 'name': '破防'},
+            'atStrainBase': {'key': 'Strain', 'name': '无双'},
+            'atSurplusValueBase': {'key': 'SurplusValue', 'name': '破招'},
+        }
+        dwStoneAdvancedData = None
+
+        # 先计算前15种dps精简
+        for dwID in stone_ids:
+            dwSlots = stone_profit_check[dwID]['slot']
+            advance_data = {}
+            szText = ''
+
+            for slot, value in dwSlots.items():
+                slot = slot_dict.get(slot)
+                if not slot:
+                    return
+
+                st = slot.get('key')
+                advance_data[st] = value
+                szText += f"{slot.get('name')} "
+
+            nAdvancedDamage = self.GetDamageFromAdvancedAttribute(advance_data, dwBuffSlot)
+
+            if dwStoneAdvancedData is None:
+                dwStoneAdvancedData = [(stone_profit_check[dwID]['name'], szText, nAdvancedDamage)]
+            else:
+                dwStoneAdvancedData.append((stone_profit_check[dwID]['name'], szText, nAdvancedDamage))
+
+        # 再计算体外拆和体质精简
+        # 体外拆
+        special_stone_id_1 = [4018, 4019, 4020, 4021, 4022, 4023]
+        id_TWC = special_stone_id_1[dwStoneLevel-1]
+        dwStoneData = stones.get(id_TWC)
+        if not dwStoneData:
+            return
+
+        slot = {
+            'Vitality': int(dwStoneData['Attribute1Value1']),
+            'ParryValue': int(dwStoneData['Attribute3Value1'])
+        }
+
+        self.recorder_attribute.set_advanced_vitality_value(slot['Vitality'])
+        self.recorder_attribute.set_advanced_parry_value(slot['ParryValue'])
+        nAdvancedDamage = self.GetDamageFromAdvancedAttribute(slot, dwBuffSlot)
+
+        dwStoneAdvancedData.append((dwStoneData['Name'], '体质 外防/血量 拆招 ', nAdvancedDamage))
+
+        # 体质精简
+        special_stone_id_2 = [0, 0, 0, 5597, 5598, 5599]
+        id_TZJJ = special_stone_id_2[dwStoneLevel - 1]
+        if id_TZJJ:
+            dwStoneData = stones.get(id_TZJJ)
+
+            # 体质精简的额外体质要先录入，所以这里可能会有点误差，无伤大雅
+            value1 = int(dwStoneData['Attribute1Value1'])
+            value2 = int(dwStoneData['Attribute2Value1']) / 1024
+            nAdvanceVitality = value1 + int(self.recorder_attribute.Vitality * value2)
+
+            slot = {
+                'Vitality': nAdvanceVitality,
+                'Agility': value1,
+                'Strength': value1,
+            }
+
+            self.recorder_attribute.set_advanced_vitality_value(nAdvanceVitality)
+            nAdvancedDamage = self.GetDamageFromAdvancedAttribute(slot, dwBuffSlot)
+
+            dwStoneAdvancedData.append((dwStoneData['Name'], '全属性 体质(百分比) ', nAdvancedDamage))
+
+        dwStoneAdvancedData.sort(key=lambda i: i[2], reverse=True)
+
+        # 计算提升率
+        ret = None
+        for stone_checked_data in dwStoneAdvancedData:
+            fAdvance = f"{stone_checked_data[2] / nBaseDamage - 1:.2%}"
+
+            if ret is None:
+                ret = [(stone_checked_data[0], stone_checked_data[1], fAdvance)]
+            else:
+                ret.append((stone_checked_data[0], stone_checked_data[1], fAdvance))
+
+        # print(*[f"{i[0]}: {i[2]}\n" for i in ret])
+
+        return ret
+
+
+
+
+
+
+    def GetHaloProfit(self):
+        pass
 
 

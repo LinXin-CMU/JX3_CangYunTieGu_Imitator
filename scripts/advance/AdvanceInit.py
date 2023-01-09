@@ -20,12 +20,15 @@ nNeedPosState = None
 
 def Apply(player: Player, target: Target, dwSkillLevel):
 
-    # 铁牢律
     # 破风
     if player.GetTeamMateTalent(18872):
         target.AddBuff(12717, 1)
     elif player.GetTeamMateTalent(403):
         target.AddBuff(661, 1)
+
+    # 撼如雷
+    if player.GetTeamMateTalent(404):
+        player.AddBuff(362, 1)
 
     # 鼓
     if player.GetTeamMateTalent(15115):
@@ -63,6 +66,10 @@ def Apply(player: Player, target: Target, dwSkillLevel):
     if player.GetTeamMateTalent(31208):
         target.AddBuff(23305, 1)
         target.DelBuff(4058)
+
+    # 袖气
+    if player.GetTeamMateTalent(545):
+        player.AddBuff(673, 1)
 
     # 左旋右转
     if player.GetTeamMateTalent(567):

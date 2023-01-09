@@ -3,8 +3,13 @@
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QAbstractItemView, QListView, QComboBox, QCheckBox
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
+# from PyQt5.QtWebEngineWidgets import QWebEngineView
 from typing import List, Dict
 from functools import reduce
+from webbrowser import open_new
+from requests import get
+# from re import compile
+
 
 from .ui import Ui_MainWindow
 from settings.jx3_collections import recipe
@@ -48,6 +53,7 @@ class MainUI(Ui_MainWindow, QMainWindow):
         self._attrib = UiAttrib(self)
         # self._equipsetter = UiEquip(self)
         # self._equipsetter.import_json_func(data=self.config['default_equips'])
+        # self.browser = QWebEngineView()
 
         self.skill_data_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         self.tableWidget.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -100,7 +106,23 @@ class MainUI(Ui_MainWindow, QMainWindow):
         self.pushButton_129.clicked.connect(self.other_advance_text_func)
         self.other_advance_explain_func()
 
+        self.pushButton_130.clicked.connect(self.show_help_page)
+        self.comboBox_16.setView(QListView())
+        self.comboBox_16.currentTextChanged.connect(self.set_mount)
+
+        self.pushButton_131.clicked.connect(lambda: self.plainTextEdit.setPlainText(
+            """[网络延迟]\n\n 每次施展的技能均会在一段网络延迟后响应。\n 施展有公共cd的技能时，网络延迟的效果类似于延长了公共cd时间，从而减少实际技能数量。
+            \n 计算器采用的逻辑为将延迟累积，修改实际战斗时间，因此战斗记录中的表现为战斗会提前结束。"""
+        ))
+
         self.set_attrib_line_edit()
+
+        version = self.config['self_version']
+        if not version:
+            version = '未知'
+        self.setWindowTitle(f"横刀断浪铁骨DPS模拟器({version})")
+
+        self.set_latest_version()
 
 
     def get_talent(self) -> Dict[int, str]:
@@ -402,9 +424,9 @@ class MainUI(Ui_MainWindow, QMainWindow):
         self.skill_data_table.setRowCount(len([i for i in list_data if i['damage'] > 0]))
 
         if nFightTime:
-            self.dps_label.setText(f'{int(nTotalDamage / (nFightTime / 16))}')
+            self.lcdNumber.display(f'{int(nTotalDamage / (nFightTime / 16))}')
         if nDps:
-            self.dps_label.setText(f"{nDps}")
+            self.lcdNumber.display(f"{nDps}")
 
         for index, item in enumerate(list_data):
             self.skill_data_table.setItem(index, 0, QTableWidgetItem(f'{item["name"]}'))
@@ -446,6 +468,8 @@ class MainUI(Ui_MainWindow, QMainWindow):
             "怒绝": 60000,
             "双绝": 60002,
             "高城": 60003,
+            "怒血": 60006,
+            "千血": 60005,
         }
         szText = self.comboBox_14.currentText()
         nID = commands_id.get(szText)
@@ -709,12 +733,12 @@ class MainUI(Ui_MainWindow, QMainWindow):
 
     def other_advance_major_box_clicked(self, box: QCheckBox):
         link = {
-            self.checkBox_38: [self.groupBox_28, "[铁牢律]\n\n 团本常见\n\n 常见增益：号令三军、劲风(破风)\n\n 乘龙箭使用者较少。\n\n 号令三军选项框右侧为填写层数的位置，一般默认即可。"],
+            self.checkBox_38: [self.groupBox_28, "[铁牢律]\n\n 团本常见\n\n 常见增益：号令三军、劲风(破风)\n\n 乘龙箭使用者较少。\n\n 号令三军选项框右侧为填写层数的位置，一般默认即可。\n\n 勾选后会自动激活[撼如雷]效果，外功攻击提高5%。"],
             self.checkBox_39: [self.groupBox_29, "[洗髓经]\n\n 团本较少\n\n 舍身弘法为单体增益，一般情况下铁骨享受不到。\n\n 舍身弘法选项框右侧为填写层数的位置，一般默认即可。"],
             self.checkBox_40: [self.groupBox_30, "[明尊琉璃体]\n\n 团本常见\n\n 常见增益：朝圣言(铁骨较难利用)、戒火斩\n\n 额外注意：戒火斩会被秋肃顶替。\n\n 朝圣言选项框右侧为填写层数的位置，一般默认即可。"],
             self.checkBox_41: [self.groupBox_31, "[铁骨衣]\n\n  双铁骨在团本中较少见\n\n 常见增益：振奋、寒啸千军\n\n 会补虚弱的人数比例较少\n\n 这里指的是给自己提供增益的副T铁骨，非自身。\n\n 振奋选项框右侧为填写层数的位置，一般默认即可。"],
             self.checkBox_42: [self.groupBox_32, "[离经易道]\n\n 团本常见\n\n 常见增益：秋肃\n\n 落子无悔为爆发治疗技能，一般不会作为增益使用。\n\n 秋肃会顶替掉戒火斩的效果。"],
-            self.checkBox_43: [self.groupBox_33, "[云裳心经]\n\n 团本常见\n\n 常见增益：左旋右转\n\n 泠风解怀收益很低，一般不会点出。"],
+            self.checkBox_43: [self.groupBox_33, "[云裳心经]\n\n 团本常见\n\n 常见增益：左旋右转\n\n 泠风解怀收益很低，一般不会点出。\n\n 勾选后会自动激活[袖气]效果，体质,身法,力道提高244点。"],
             self.checkBox_44: [self.groupBox_34, "[补天诀]\n\n 团本常见\n\n 常见增益：仙王蛊鼎"],
             self.checkBox_45: [self.groupBox_35, "[相知]\n\n 团本常见\n\n 常见增益：梅花三弄\n\n 梅花三弄的覆盖率取决于铁骨自身奇穴和相知奇穴，有雄峦或天音知脉的情况下覆盖率会变高，请依照实际情况填写覆盖率\n\n 弄梅(风雷瑶琴剑梅花盾)对于铁骨覆盖率较低。\n\n 梅花三弄及弄梅右侧为填写覆盖率的位置，一般默认即可，也可按照实际情况填写。"],
             self.checkBox_46: [self.groupBox_36, "[灵素]\n\n 团本常见\n\n 常见增益：配伍、飘黄\n\n 香稠对于输出主T收益很高，对于团队总DPS也是正提升，但对治疗量有影响，一般情况下灵素不会默认选择此奇穴。"],
@@ -727,6 +751,12 @@ class MainUI(Ui_MainWindow, QMainWindow):
 
             gb[0].setEnabled(checked)
             self.plainTextEdit.setPlainText(gb[1])
+
+            if box == self.checkBox_41:
+                self.spinBox_4.setEnabled(True)
+            elif box == self.checkBox_45:
+                self.spinBox_7.setEnabled(True)
+                self.spinBox_8.setEnabled(True)
 
         return inner
 
@@ -791,10 +821,17 @@ class MainUI(Ui_MainWindow, QMainWindow):
             else:
                 ret['Mates'].append(origin)
 
-        # 破风特殊处理
+        # 部分默认效果特殊处理
         if ret['Mates']:
+            dwAppendEffect = []
             if "铁牢律" in ret['Mates']:
-                ret['Talents'] = [403]
+                dwAppendEffect += [403, 404]
+            if "云裳心经" in ret['Mates']:
+                dwAppendEffect += [545]
+
+            if dwAppendEffect:
+                ret['Talents'] = dwAppendEffect
+
 
         for box, talent_id in talents.items():
             if not box.isEnabled():
@@ -885,6 +922,86 @@ class MainUI(Ui_MainWindow, QMainWindow):
 
         return nFightTime
 
+    def set_progress_bar_by_time(self, nFightTime):
+        self.progressBar.setMaximum(nFightTime // 16)
+
+    def show_help_page(self):
+        help_url = self.config['help_url']
+        if help_url:
+            open_new(help_url)
+
+    def get_delay_msec(self):
+        nDelay = self.spinBox_9.value()
+        return nDelay
+
+    def get_mount_id(self):
+        dwMountID = {
+            '分山劲': 10390,
+            '铁骨衣': 10389,
+        }
+        szMount = self.comboBox_16.currentText()
+        if szMount not in dwMountID:
+            return
+
+        nMountID = dwMountID[szMount]
+        return nMountID
+
+    def set_mount(self):
+        nMountID = self.get_mount_id()
+
+        self.mount = nMountID
+        self._selector.set_basic_data()
+
+        if self.mount == 10389:
+            dwDefaultTalent = self.config['default_talent_tiegu']
+        elif self.mount == 10390:
+            dwDefaultTalent = self.config['default_talent_fenshan']
+        else:
+            dwDefaultTalent = ""
+        self._selector.set_data_by_json(dwDefaultTalent)
+
+    def set_stone_profit_table(self, profits):
+
+        table = self.tableWidget_7
+
+        for index, profit in enumerate(profits):
+            for idx, value in enumerate(profit):
+                table.setItem(index, idx, QTableWidgetItem(f"{value}"))
+
+    def set_latest_version(self):
+
+        dwVersion = self.get_latest_version_code()
+        if not dwVersion:
+            self.pushButton_132.setText("检查更新失败！")
+        else:
+            self.pushButton_132.setText(f"最新版本:v{dwVersion}")
+
+        self.pushButton_132.clicked.connect(self.show_help_page)
+
+
+    @staticmethod
+    def get_latest_version_code():
+
+        url = r'https://cms.jx3box.com/api/cms/post/51087'
+
+        resp = get(url)
+        if not resp.status_code == 200:
+            return
+
+        data = resp.json().get('data')
+        if not data:
+            return
+
+        szTitle: str = data.get('post_title')
+        if not szTitle:
+            return
+
+        version = szTitle[szTitle.find('v')+1:szTitle.find(')')]
+        if not version:
+            return
+
+
+        return version
 
 
 

@@ -11,20 +11,20 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>苍云模拟器</string>
+   <string>铁骨DPS模拟器v1.2</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QTabWidget" name="tabWidget_2">
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>-2</y>
-      <width>2101</width>
+      <y>0</y>
+      <width>1251</width>
       <height>851</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab_7">
      <attribute name="title">
@@ -4308,26 +4308,13 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>70</x>
-        <y>257</y>
-        <width>54</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>寒甲环境</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_45">
-      <property name="geometry">
-       <rect>
-        <x>70</x>
         <y>290</y>
         <width>54</width>
         <height>21</height>
        </rect>
       </property>
       <property name="text">
-       <string>阵眼</string>
+       <string>寒甲环境</string>
       </property>
      </widget>
      <widget class="QSpinBox" name="Level_spinBox">
@@ -4366,55 +4353,13 @@ color: rgb(255, 255, 255);</string>
       <property name="geometry">
        <rect>
         <x>130</x>
-        <y>257</y>
-        <width>75</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>副本</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="pushButton_124">
-      <property name="geometry">
-       <rect>
-        <x>210</x>
-        <y>294</y>
-        <width>14</width>
-        <height>14</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>6</pointsize>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">QPushButton{
-border-radius: 7px;
-border: 1px solid rgb(67, 65, 70)
-}
-QPushButton:hover{
-	background-color: rgb(140, 140, 140);
-	color: rgb(255, 255, 255);
-	border-color: rgb(255, 255, 255);
-}</string>
-      </property>
-      <property name="text">
-       <string>×</string>
-      </property>
-     </widget>
-     <widget class="QPushButton" name="halo_button">
-      <property name="geometry">
-       <rect>
-        <x>130</x>
         <y>290</y>
         <width>75</width>
         <height>23</height>
        </rect>
       </property>
       <property name="text">
-       <string>无阵眼</string>
+       <string>副本</string>
       </property>
      </widget>
      <widget class="Line" name="line_9">
@@ -9658,6 +9603,74 @@ QPushButton:hover{
         </property>
        </widget>
       </widget>
+      <widget class="Line" name="line_20">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>340</y>
+         <width>421</width>
+         <height>16</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="halo_button">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>350</y>
+         <width>75</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>无阵眼</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_45">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>350</y>
+         <width>54</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>阵眼</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_124">
+       <property name="geometry">
+        <rect>
+         <x>150</x>
+         <y>354</y>
+         <width>14</width>
+         <height>14</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>6</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton{
+border-radius: 7px;
+border: 1px solid rgb(67, 65, 70)
+}
+QPushButton:hover{
+	background-color: rgb(140, 140, 140);
+	color: rgb(255, 255, 255);
+	border-color: rgb(255, 255, 255);
+}</string>
+       </property>
+       <property name="text">
+        <string>×</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QPushButton" name="pushButton_128">
       <property name="geometry">
@@ -9766,12 +9779,124 @@ QPushButton:hover{
        <string>分钟</string>
       </property>
      </widget>
+     <widget class="QLabel" name="label_205">
+      <property name="geometry">
+       <rect>
+        <x>70</x>
+        <y>256</y>
+        <width>54</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>网络延迟</string>
+      </property>
+     </widget>
+     <widget class="QSpinBox" name="spinBox_9">
+      <property name="geometry">
+       <rect>
+        <x>144</x>
+        <y>256</y>
+        <width>51</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="minimum">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <number>100</number>
+      </property>
+      <property name="singleStep">
+       <number>10</number>
+      </property>
+      <property name="value">
+       <number>40</number>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_206">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>255</y>
+        <width>31</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>毫秒</string>
+      </property>
+     </widget>
+     <widget class="QComboBox" name="comboBox_16">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>900</x>
+        <y>50</y>
+        <width>69</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <item>
+       <property name="text">
+        <string>铁骨衣</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>分山劲</string>
+       </property>
+      </item>
+     </widget>
+     <widget class="QLabel" name="label_207">
+      <property name="geometry">
+       <rect>
+        <x>860</x>
+        <y>50</y>
+        <width>31</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>心法</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_131">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>259</y>
+        <width>14</width>
+        <height>14</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>8</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QPushButton{
+border-radius: 7px;
+border: 1px solid rgb(67, 65, 70)
+}
+QPushButton:hover{
+	background-color: rgb(140, 140, 140);
+	color: rgb(255, 255, 255);
+	border-color: rgb(255, 255, 255);
+}</string>
+      </property>
+      <property name="text">
+       <string>i</string>
+      </property>
+     </widget>
      <zorder>line_16</zorder>
      <zorder>comboBox_14</zorder>
      <zorder>label_44</zorder>
-     <zorder>label_45</zorder>
-     <zorder>pushButton_124</zorder>
-     <zorder>halo_button</zorder>
      <zorder>envior_button</zorder>
      <zorder>label_177</zorder>
      <zorder>groupBox_11</zorder>
@@ -9846,8 +9971,14 @@ QPushButton:hover{
      <zorder>label_202</zorder>
      <zorder>groupBox_25</zorder>
      <zorder>groupBox_14</zorder>
-     <zorder>groupBox_16</zorder>
      <zorder>groupBox_15</zorder>
+     <zorder>label_205</zorder>
+     <zorder>spinBox_9</zorder>
+     <zorder>label_206</zorder>
+     <zorder>comboBox_16</zorder>
+     <zorder>label_207</zorder>
+     <zorder>pushButton_131</zorder>
+     <zorder>groupBox_16</zorder>
     </widget>
     <widget class="QWidget" name="tab_8">
      <attribute name="title">
@@ -9857,9 +9988,9 @@ QPushButton:hover{
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>20</y>
+        <y>10</y>
         <width>71</width>
-        <height>21</height>
+        <height>31</height>
        </rect>
       </property>
       <property name="font">
@@ -9915,25 +10046,6 @@ QPushButton:hover{
         <string>会心率</string>
        </property>
       </column>
-     </widget>
-     <widget class="QLabel" name="dps_label">
-      <property name="geometry">
-       <rect>
-        <x>60</x>
-        <y>20</y>
-        <width>91</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>等线</family>
-        <pointsize>11</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
      </widget>
      <widget class="Line" name="line_18">
       <property name="geometry">
@@ -10028,6 +10140,33 @@ QPushButton:hover{
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
+     <widget class="QLCDNumber" name="lcdNumber">
+      <property name="geometry">
+       <rect>
+        <x>60</x>
+        <y>12</y>
+        <width>81</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">border: 1px solid rgb(227, 76, 0);
+color: rgb(227, 76, 0);
+background: rgb(222, 222, 222);</string>
+      </property>
+      <property name="smallDecimalPoint">
+       <bool>false</bool>
+      </property>
+      <property name="digitCount">
+       <number>7</number>
+      </property>
+      <property name="segmentStyle">
+       <enum>QLCDNumber::Flat</enum>
+      </property>
+      <property name="intValue" stdset="0">
+       <number>666666</number>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="tab_9">
      <attribute name="title">
@@ -10094,6 +10233,119 @@ QPushButton:hover{
        </property>
       </item>
      </widget>
+     <widget class="QTableWidget" name="tableWidget_7">
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>40</y>
+        <width>325</width>
+        <height>328</height>
+       </rect>
+      </property>
+      <property name="selectionBehavior">
+       <enum>QAbstractItemView::SelectRows</enum>
+      </property>
+      <row>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>2</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>3</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>4</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>5</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>6</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>7</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>8</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>9</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>10</string>
+       </property>
+      </row>
+      <column>
+       <property name="text">
+        <string>名称</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>属性</string>
+       </property>
+      </column>
+      <column>
+       <property name="text">
+        <string>提升率</string>
+       </property>
+      </column>
+     </widget>
+     <widget class="QLabel" name="label_208">
+      <property name="geometry">
+       <rect>
+        <x>553</x>
+        <y>10</y>
+        <width>321</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>五彩石收益</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_209">
+      <property name="geometry">
+       <rect>
+        <x>550</x>
+        <y>370</y>
+        <width>321</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: rgb(166, 166, 166);</string>
+      </property>
+      <property name="text">
+       <string>此处计算收益时，已去除当前配装中的五彩石</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QPushButton" name="setting_button">
@@ -10107,6 +10359,32 @@ QPushButton:hover{
     </property>
     <property name="text">
      <string>设置</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_130">
+    <property name="geometry">
+     <rect>
+      <x>1140</x>
+      <y>-2</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>使用说明</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_132">
+    <property name="geometry">
+     <rect>
+      <x>1052</x>
+      <y>-2</y>
+      <width>91</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>最新版本:v1.2</string>
     </property>
    </widget>
   </widget>

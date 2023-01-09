@@ -24,6 +24,7 @@ nNeedPosState = None
 def Apply(player: Player, target: Target, dwSkillLevel):
 
     buff_zy = player.GetBuff(50025)
+    buff_gy = player.GetBuff(50043)
     buff_hj = player.GetBuff(8437)
 
     if player.GetSkillLevel('千山') == 1:
@@ -41,6 +42,8 @@ def Apply(player: Player, target: Target, dwSkillLevel):
         player.CastSkill(13051, 1)
     if player.rage < 5:
         player.CastSkill(13051, 1)
+    if buff_gy.lasting > 0 and player.rage >= 50:
+        player.CastSkill(13055, 1)
     if cd_juedao < 1.5*16 and buff_hj.lasting > 0:
         player.CastSkill(13054, 1)
     if player.IsHaveBuff(24755) and buff_hj.lasting > 0:
@@ -50,6 +53,8 @@ def Apply(player: Player, target: Target, dwSkillLevel):
     if buff_zy.lasting > 0 and buff_dd.lasting > 9.5*16:
         player.CastSkill(13050, 1)
     if player.rage >= 65 and cd_juedao < 1.5*16 and cd_duanma > 3*16:
+        player.CastSkill(13050, 1)
+    if buff_gy.lasting > 0 and player.rage >= 50:
         player.CastSkill(13050, 1)
     if player.rage >= 110 and (buff_zy.lasting > 0):
         player.CastSkill(13391, 1)
@@ -63,6 +68,8 @@ def Apply(player: Player, target: Target, dwSkillLevel):
         player.CastSkill(13047, 1)
     player.CastSkill(13044, 1)
     if player.rage <= 90 and player.GetSkillCoolDown(13040) <= 25*2*16 and cd_duanma < 2*16:
+        player.CastSkill(13040, 1)
+    if buff_gy.lasting > 0 and 50 > player.rage >= 40:
         player.CastSkill(13040, 1)
     if player.rage <= 70 and player.GetSkillCoolDown(13046) > 8*16:
         player.CastSkill(13040, 1)

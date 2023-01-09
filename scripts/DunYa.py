@@ -49,27 +49,34 @@ def Apply(player: Player, target: Target, dwSkillLevel):
         nRage = 25
     else:
         nRage = 15
-    
-    if player.GetSetting('ParryByExpect'):
 
-        # 用盾压重置率计算回怒期望
-        fExpect = player.ParryPercent
-        if not isinstance(fExpect, float):
-            return
-
-        if player.IsSkillRecipeActive(1858):
-            fExpect += 0.05
-        if player.IsSkillRecipeActive(1859):
-            fExpect += 0.05
-
-        nRage *= fExpect
-
-        player.CastSkill(50006, 1, _fExpect=fExpect)
-        player.AddPublicCoolDown(0, int(1.5 * 16 * fExpect))
-
-    else:
+    # 优先触发橙武特效
+    if player.IsHaveBuff(50043):
         player.CastSkill(19409, 1)
-        player.AddPublicCoolDown(0, 1.5 * 16)
+        player.ClearCDTime(13045)
+        nRage += 15
+    else:
+        if player.GetSetting('ParryByExpect') and player.mount == 10389:
+            # 盾压期望技能
+            # 必须在铁骨心法下才这么处理
+            # 用盾压重置率计算回怒期望
+            fExpect = player.ParryPercent
+            if not isinstance(fExpect, float):
+                return
+
+            if player.IsSkillRecipeActive(1858):
+                fExpect += 0.05
+            if player.IsSkillRecipeActive(1859):
+                fExpect += 0.05
+
+            nRage *= fExpect
+
+            player.CastSkill(50006, 1, _fExpect=fExpect)
+            player.AddPublicCoolDown(0, int(1.5 * 16 * fExpect))
+
+        else:
+            player.CastSkill(19409, 1)
+            player.AddPublicCoolDown(0, 1.5 * 16)
 
     player.rage += nRage
 

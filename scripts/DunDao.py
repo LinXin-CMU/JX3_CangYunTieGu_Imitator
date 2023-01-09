@@ -74,7 +74,7 @@ def Apply(player: Player, target: Target, dwSkillLevel):
     target.AddBuff(8398, 1)   # 卷云
 
     # 盾压重置
-    if not player.GetSetting('ParryByExpect'):
+    if not player.GetSetting('ParryByExpect') or player.mount != 10389:
         parry = player.ParryPercent
         if not isinstance(parry, float):
             return

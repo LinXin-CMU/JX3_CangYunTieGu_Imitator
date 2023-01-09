@@ -2,7 +2,7 @@
 # author: LinXin
 from PyQt5.QtWidgets import QComboBox, QLabel, QApplication
 from PyQt5.QtCore import pyqtSignal, QEvent
-from PyQt5.Qt import QColor
+# from PyQt5.Qt import QColor
 from PyQt5.QtGui import QMouseEvent
 from PIL import Image
 
@@ -43,17 +43,17 @@ class StarLabel(QLabel):
 ICONS = {
     'equip_max': Image.open(r'ui/source/border_max.png').toqpixmap(),
     'db': Image.open(r'ui/source/border_min.png').toqpixmap(),
-    'embedding_0': Image.open(r'ui/source/embedding_0.png').resize((16, 16)).toqpixmap(),
-    'embedding_1': Image.open(r'ui/source/embedding_1.png').resize((16, 16)).toqpixmap(),
-    'embedding_2': Image.open(r'ui/source/embedding_2.png').resize((16, 16)).toqpixmap(),
-    'embedding_3': Image.open(r'ui/source/embedding_3.png').resize((16, 16)).toqpixmap(),
-    'embedding_4': Image.open(r'ui/source/embedding_4.png').resize((16, 16)).toqpixmap(),
-    'embedding_5': Image.open(r'ui/source/embedding_5.png').resize((16, 16)).toqpixmap(),
-    'embedding_6': Image.open(r'ui/source/embedding_6.png').resize((16, 16)).toqpixmap(),
-    'embedding_7': Image.open(r'ui/source/embedding_7.png').resize((16, 16)).toqpixmap(),
-    'embedding_8': Image.open(r'ui/source/embedding_8.png').resize((16, 16)).toqpixmap(),
-    'star': Image.open(r'ui/source/star.png').resize((16, 16)).toqpixmap(),
-    'star_grey': Image.open(r'ui/source/star_grey.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_0': Image.open(r'ui/source/embedding_0.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_1': Image.open(r'ui/source/embedding_1.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_2': Image.open(r'ui/source/embedding_2.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_3': Image.open(r'ui/source/embedding_3.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_4': Image.open(r'ui/source/embedding_4.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_5': Image.open(r'ui/source/embedding_5.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_6': Image.open(r'ui/source/embedding_6.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_7': Image.open(r'ui/source/embedding_7.png').resize((16, 16)).toqpixmap(),
+    # 'embedding_8': Image.open(r'ui/source/embedding_8.png').resize((16, 16)).toqpixmap(),
+    # 'star': Image.open(r'ui/source/star.png').resize((16, 16)).toqpixmap(),
+    # 'star_grey': Image.open(r'ui/source/star_grey.png').resize((16, 16)).toqpixmap(),
 
 }
 

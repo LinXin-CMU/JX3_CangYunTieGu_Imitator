@@ -5,6 +5,7 @@
 from settings.jx3_types import Player
 from settings.jx3_collections import LEVEL_CONST, LEVEL_RATE, global_params, special_stones
 from scripts.include.slot import attribute_value, attrib_data
+from db.jx3_stone import stone
 
 from typing import Dict
 from math import ceil
@@ -161,7 +162,8 @@ class Attribute:
     def Vitality(self):
         slots = {
             'atVitalityBase': 0,
-            'atVitalityBasePercentAdd': 0
+            'atVitalityBasePercentAdd': 0,
+            'atBasePotentialAdd': 0,
         }
         slots = self.get_buff_attribute_value(slots)
 
@@ -183,6 +185,7 @@ class Attribute:
 
         value = self.base_attributes['Vitality']
         value += slots['atVitalityBase']
+        value += slots['atBasePotentialAdd']
         value += int(value * (slots['atVitalityBasePercentAdd'] / 1024))
 
         return value
@@ -191,7 +194,8 @@ class Attribute:
     def Agility(self):
         slots = {
             'atAgilityBase': 0,
-            'atAgilityBasePercentAdd': 0
+            'atAgilityBasePercentAdd': 0,
+            'atBasePotentialAdd': 0,
         }
         slots = self.get_buff_attribute_value(slots)
 
@@ -213,6 +217,7 @@ class Attribute:
 
         value = self.base_attributes['Agility']
         value += slots['atAgilityBase']
+        value += slots['atBasePotentialAdd']
         value += int(value * (slots['atAgilityBasePercentAdd'] / 1024))
 
         return value
@@ -221,7 +226,8 @@ class Attribute:
     def Strength(self):
         slots = {
             'atStrengthBase': 0,
-            'atStrengthBasePercentAdd': 0
+            'atStrengthBasePercentAdd': 0,
+            'atBasePotentialAdd': 0,
         }
         slots = self.get_buff_attribute_value(slots)
 
@@ -239,6 +245,7 @@ class Attribute:
 
         value = self.base_attributes['Strength']
         value += slots['atStrengthBase']
+        value += slots['atBasePotentialAdd']
         value += int(value * (slots['atStrengthBasePercentAdd'] / 1024))
 
         return value
@@ -459,3 +466,92 @@ class Attribute:
         value *= (1 + slots['atAllDamageAddPercent'] / 1024)
         value *= (1 + slots['atAllPhysicsDamageAddPercent'] / 1024)
         return value
+
+    def GetAttributeWithoutStone(self):
+        """
+        获取不含五彩石的基础属性\n
+        :return:
+        """
+        tEquipList = self.origin_data.get('EquipList')
+        if not tEquipList:
+            return self.base_attributes, 0, {}
+
+        dwWeaponData = tEquipList.get('PRIMARY_WEAPON')
+        if not dwWeaponData:
+            return self.base_attributes, 0, {}
+
+        dwStoneID = dwWeaponData.get("stone")
+        if not dwStoneID:
+            return self.base_attributes, 0, {}
+
+        for dwLevel, stone_db in stone.items():
+            if dwStoneID in stone_db:
+                dwStoneData = stone_db[dwStoneID]
+                break
+
+        else:
+            return self.base_attributes, 0, {}
+
+        slots = {}
+        for i in range(1, 4):
+            slot = dwStoneData.get(f"Attribute{i}ID")
+            if not slot:
+                continue
+
+            value1 = dwStoneData.get(f"Attribute{i}Value1")
+            value2 = dwStoneData.get(f"Attribute{i}Value2")
+            if not value1 and not value2:
+                continue
+
+            value = max([int(v) for v in {value1, value2} if v is not None])
+
+            slots[slot] = value
+
+        ret = {k: v for k, v in self.base_attributes.items()}
+
+        for k, v in slots.items():
+            match k:
+                case 'atVitalityBase':
+                    ret['Vitality'] -= v
+                case 'atAgilityBase':
+                    ret['Agility'] -= v
+                case 'atStrengthBase':
+                    ret['Strength'] -= v
+                case 'atBasePotentialAdd':
+                    ret['Vitality'] -= v
+                    ret['Agility'] -= v
+                    ret['Strength'] -= v
+
+                case 'atPhysicsAttackPowerBase':
+                    ret['PhysicsAttackPowerBase'] -= v
+                case 'atPhysicsCriticalStrike' | 'atAllTypeCriticalStrike':
+                    ret['PhysicsCriticalStrike'] -= v
+                case 'atPhysicsCriticalDamagePowerBase' | 'atAllTypeCriticalDamagePowerBase':
+                    ret['PhysicsCriticalDamagePower'] -= v
+                case 'atPhysicsOvercomeBase':
+                    ret['PhysicsOvercome'] -= v
+                case 'atStrainBase':
+                    ret['Strain'] -= v
+                case 'atSurplusValueBase':
+                    ret['SurplusValue'] -= v
+                case 'atHasteBase':
+                    ret['atHasteBase'] -= v
+                case 'atParryBase':
+                    ret['Parry'] -= v
+                case 'atParryValueBase':
+                    ret['ParryValue'] -= v
+                case 'atMeleeWeaponDamageBase':
+                    ret['WeaponDamage'] -= v
+
+                case 'atVitalityBasePercentAdd':
+                    nVitality = int(self.base_attributes['Vitality'] * v / 1024)
+                    ret['PhysicsAttackPowerBase'] -= int(nVitality * 2.25 * 0.5)
+
+        return ret, dwLevel, slots
+
+
+
+
+
+
+

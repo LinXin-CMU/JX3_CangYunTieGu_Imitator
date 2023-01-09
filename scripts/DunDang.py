@@ -46,6 +46,14 @@ attrib_value = {
 
 
 def Apply(player: Player, target: Target, dwSkillLevel):
+
+    if player.rage < 10:
+        return
+
+    # 盾飞0.375内不能施展盾挡，避免盾挡盾飞在同一帧内施展导致的判定异常
+    if player.IsHaveBuff(50044):
+        return
+
     player.AddPublicCoolDown(0, 1.5*16)
 
     rage = player.rage
@@ -64,6 +72,8 @@ def Apply(player: Player, target: Target, dwSkillLevel):
         player.AddBuff(8504, n_zhenfen)
 
     player.rage -= (lv_dundang * 10)
+
+
 
     return 1
 

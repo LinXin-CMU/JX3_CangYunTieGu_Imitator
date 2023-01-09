@@ -14,10 +14,12 @@ class UiSetter:
         self.config = ConfigSetting()
 
         # 设置界面的隐藏
-        self.ui.groupBox_15.move(90, 213)
+        self.ui.groupBox_15.move(50, 150)
         self.ui.groupBox_15.setVisible(False)
-        self.ui.groupBox_16.move(90, 253)
+        self.ui.groupBox_15.raise_()
+        self.ui.groupBox_16.move(440, 250)
         self.ui.groupBox_16.setVisible(False)
+        self.ui.groupBox_16.raise_()
         self.ui.groupBox_14.move(1033, 0)
         self.ui.groupBox_14.setVisible(False)
         self.ui.groupBox_17.setVisible(False)
@@ -63,6 +65,10 @@ class UiSetter:
         for btn in [self.ui.pushButton_122, self.ui.pushButton_123]:
             btn.clicked.connect(self.halo_button_clicked(btn.text()[:2]))
         self.ui.equip_close_button_3.clicked.connect(lambda: self.ui.groupBox_16.setVisible(False))
+
+        # 五彩石收益表格宽度
+        for index, width in enumerate([125, 125, 50]):
+            self.ui.tableWidget_7.setColumnWidth(index, width)
 
 
     def envior_button_clicked(self, value):

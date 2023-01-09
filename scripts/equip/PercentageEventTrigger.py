@@ -40,17 +40,26 @@ dwShangMaoAttrib = {
     4: [101, 102],
 }
 
+
 def Apply(player: Player, target: Target, dwSkillLevel):
 
     # 橙武
     szWeaponType = player.GetSetting('WeaponType')
-    if szWeaponType in {'铁骨橙武'}:
-        if not player.IsHaveBuff(2584):
-            global nChengWuCount
+
+    if not player.IsHaveBuff(2584):
+        global nChengWuCount
+
+        if szWeaponType in {'铁骨橙武'}:
             nChengWuCount += 1
             if nChengWuCount > 32:
                 nChengWuCount = 0
                 player.CastSkill(50009, 1)
+
+        elif szWeaponType in {'分山橙武'}:
+            nChengWuCount += 1
+            if nChengWuCount > 32:
+                nChengWuCount = 0
+                player.CastSkill(50016, 1)
 
     # 大附魔
     # 设置结构: [0-帽, 1-衣, 2-腰, 3-腕, 4-鞋]

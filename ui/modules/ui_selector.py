@@ -34,7 +34,6 @@ class TalentSelector:
         self.ui = ui
         # self.qx_index = {}
         self.config = ConfigSetting()
-        self._talent = '铁骨衣'
 
         self.talent = {}
         self.recipe = {}
@@ -42,13 +41,13 @@ class TalentSelector:
         for i in range(1, 13):
             gb: QGroupBox = getattr(self.ui, f'groupBox_{i}')
             gb.setVisible(False)
-            gb.move(8+60*i, 390)
+            gb.move(8+60*i, 420)
             btn: QPushButton = getattr(self.ui, f'pushButton_{i}')
             btn.clicked.connect(set_index(i, self._talent_clicked))
 
         for i in range(1, 10):
             gb: QGroupBox = getattr(self.ui, f'groupBox_skill_{i}')
-            gb.move(6+60*i, 340)
+            gb.move(6+60*i, 370)
             gb.setVisible(False)
             btn: QPushButton = getattr(self.ui, f'skill_button_{i}')
             btn.clicked.connect(set_index(i, self._skill_clicked))
@@ -59,21 +58,35 @@ class TalentSelector:
 
         self.ui.button_ImportJsonTalent.clicked.connect(self.get_data_by_json)
 
-        self._set_basic_data()
-        self.set_data_by_json(self.config['default_talent'], self.config['default_recipe'])
+        self.talent_frames = None
+        self.set_basic_data()
 
-    def _set_basic_data(self):
+        if self.ui.mount == 10389:
+            dwDefaultTalent = self.config['default_talent_tiegu']
+        elif self.ui.mount == 10390:
+            dwDefaultTalent = self.config['default_talent_fenshan']
+        else:
+            dwDefaultTalent = ""
+        self.set_data_by_json(dwDefaultTalent, self.config['default_recipe'])
+
+    def set_basic_data(self):
         """
         读取并设置奇穴初始数据\n
         :return:
         """
 
-        if self._talent not in talent:
+        if self.ui.mount not in talent:
             return
 
-        for qx_position in talent[self._talent]:
+        if self.talent_frames is not None:
+            for frame in self.talent_frames:
+                frame.deleteLater()
+
+        frames = None
+
+        for qx_position in talent[self.ui.mount]:
             gb = getattr(self.ui, f"groupBox_{qx_position}")
-            for idx, qx in enumerate(talent[self._talent][qx_position].values()):
+            for idx, qx in enumerate(talent[self.ui.mount][qx_position].values()):
                 # 生成一个QPushButton
                 btn = QPushButton(gb)
                 btn.resize(40, 40)
@@ -85,6 +98,14 @@ class TalentSelector:
                 lb.setText(f'{qx.get("name")}')
                 lb.move(0, 50 + 60 * idx)
                 lb.setAlignment(Qt.AlignVCenter | Qt.AlignHCenter)
+
+                # 记录奇穴控件
+                if frames is None:
+                    frames = [btn, lb]
+                else:
+                    frames += [btn, lb]
+
+        self.talent_frames = frames
 
     def get_data_by_json(self):
         """
@@ -118,16 +139,18 @@ class TalentSelector:
         if 'sq' not in data:
             return
 
-        if data.get('xf') != self._talent:
-            return
+        xf = {
+            10389: '铁骨衣',
+            10390: '分山劲',
+        }
+        if data.get('xf') == xf.get(self.ui.mount):
+            for pos, idx in enumerate(data.get('sq').split(",")):
+                self._set_qx_data(pos + 1, idx)
 
-        for pos, idx in enumerate(data.get('sq').split(",")):
-            self._set_qx_data(pos + 1, idx)
-
-        # 记录当前奇穴
-        qx_setting = data.get('sq').split(",")
-        for index, qx in enumerate(qx_setting):
-            self.talent[str(index + 1)] = talent[self._talent][str(index + 1)][qx]["name"]
+            # 记录当前奇穴
+            qx_setting = data.get('sq').split(",")
+            for index, qx in enumerate(qx_setting):
+                self.talent[str(index + 1)] = talent[self.ui.mount][str(index + 1)][qx]["name"]
 
         # ---------------------秘籍部分---------------------
         # noinspection PyBroadException
@@ -157,7 +180,7 @@ class TalentSelector:
             idx = str(idx)
 
         data = talent
-        for k in [self._talent, pos, idx]:
+        for k in [self.ui.mount, pos, idx]:
             data = data.get(k)
             if not data:
                 return

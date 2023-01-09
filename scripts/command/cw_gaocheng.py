@@ -26,6 +26,7 @@ def Apply(player: Player, target: Target, dwSkillLevel):
     buff_zy = player.GetBuff(50025)
     buff_yz = player.GetBuff(18222)
     buff_ny = player.GetBuff(8276)
+    buff_gy = player.GetBuff(50043)
 
     if player.GetSkillLevel('高城') == 1:
         buff_tg = player.GetBuff(17886)
@@ -34,7 +35,7 @@ def Apply(player: Player, target: Target, dwSkillLevel):
 
     cd_duanma = player.GetSkillCoolDown(25213)
     cd_juedao = player.GetSkillCoolDown(13055)
-    cd_dunfei = player.GetSkillCoolDown(13050)
+    # cd_dunfei = player.GetSkillCoolDown(13050)
 
     if player.rage < 5 or buff_yz.lasting < 2*16 or buff_ny.lasting < 2*16:
         player.CastSkill(13051, 1)
@@ -42,13 +43,17 @@ def Apply(player: Player, target: Target, dwSkillLevel):
         player.CastSkill(13054, 1)
     if player.IsHaveBuff(24755):
         player.CastSkill(13055, 1)
+    if buff_gy.lasting > 0 and player.rage >= 50:
+        player.CastSkill(13055, 1)
     if cd_juedao > 1.5*16 or buff_zy.lasting == 0 and (player.rage >= 70 or player.rage < 10):
         player.CastSkill(13052, 1)
     if buff_zy.lasting > 0 and buff_yz.layer == 5 and buff_yz.lasting > 2*16:
         player.CastSkill(13052, 1)
     if player.rage >= 90 and buff_tg.layer > 10:
         player.CastSkill(25213, 1)
-    if player.rage >= 75 and cd_juedao < 3*16 and buff_yz.lasting > 2*16 and cd_duanma > 3*16:
+    if player.rage >= 75 and cd_juedao < 3.1*16 and buff_yz.lasting > 2*16 and cd_duanma > 3*16:
+        player.CastSkill(13050, 1)
+    if buff_gy.lasting > 0 and player.rage >= 50:
         player.CastSkill(13050, 1)
     player.CastSkill(13045, 1)
     if player.rage <= 85 and cd_duanma > 15*16:
@@ -58,6 +63,8 @@ def Apply(player: Player, target: Target, dwSkillLevel):
     if player.rage <= 90 and player.GetSkillCoolDown(13040) <= 25*2*16 and cd_duanma < 2*16:
         player.CastSkill(13040, 1)
     if player.rage <= 70 and player.GetSkillCoolDown(13046) > 8*16:
+        player.CastSkill(13040, 1)
+    if buff_gy.lasting > 0 and 50 > player.rage >= 40:
         player.CastSkill(13040, 1)
     if player.GetSkillLevel("鸿烈"):
         player.CastSkill(26897, 1)

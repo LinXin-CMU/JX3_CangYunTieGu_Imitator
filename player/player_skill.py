@@ -54,6 +54,12 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     28678: scripts.Advance_PiaoHuang,
     29541: scripts.Advance_PiaoHuangDmg,
     29919: scripts.FeiJian_Dps_Passive,
+    30769: scripts.ZhenYunJieHui_major,
+    30857: scripts.ZhenYunJieHui_3_dmg,
+    30858: scripts.ZhenYunJieHui_JueGuo,
+    30859: scripts.ZhenYunJue,
+    30925: scripts.ZhenYunJieHui_1_dmg,
+    30926: scripts.ZhenYunJieHui_2_dmg,
     30850: scripts.Advance_LingFengJieHuai,
     32381: scripts.Advance_LuoZiWuHui,
     32745: scripts.PoZhao,
@@ -76,11 +82,16 @@ skill_id_to_script: Dict[int, skill_script[Union[damage_data, cooldown_data, int
     50013: scripts.Advance_HanXiaoQianJun,
     # 50014 友方虚弱占位
     50015: scripts.AdvanceInit,
+    50016: scripts.ChengWu_Dps,
 
 
     # 以下是宏
+    # 注意要把这些id写入不计入战斗统计的序列
     60000: scripts.cw_nujue,
     60001: scripts.nujue,
     60002: scripts.cw_shuangjue,
     60003: scripts.cw_gaocheng,
+    60004: scripts.cw_jueyun,
+    60005: scripts.cw_qianxue,
+    60006: scripts.cw_nuxue,
 }

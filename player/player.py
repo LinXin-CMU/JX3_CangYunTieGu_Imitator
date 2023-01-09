@@ -68,6 +68,9 @@ class Player:
 
         self.team_mate_data = None   # 队友
 
+        self.nDelayMsec = 0
+        self.nTotalDelayFrame = 0
+
         # ————————————————————体态部分————————————————————
         self.SetPlayerDefaultState(attrs)
 
@@ -215,6 +218,9 @@ class Player:
                 'HasteValueGuo': 0,
             }
 
+    def GetAttributeWithoutStone(self):
+        return self._attribute.GetAttributeWithoutStone()
+
     # ————————————————————技能部分————————————————————
 
     def CastSkill(self, skill_id, skill_level, *, _damage_data=None, _fExpect=1):
@@ -359,7 +365,7 @@ class Player:
 
         # 记录技能
         # 以下技能不计入战斗统计
-        if skill_id in {50011, 60000, 60001, 60002}:
+        if skill_id in {50011, 60000, 60001, 60002, 60003, 60004, 60005, 60006}:
             return
 
         if self.casted is None:
@@ -375,6 +381,7 @@ class Player:
                 'tbuff': {i: j for i, j in self._target.buffs.items()},
                 'fExpect': _fExpect,
                 'cd_盾飞': self.GetSkillCoolDown(13050),
+                'cd_斩刀': self.GetSkillCoolDown(13054),
             }]
         else:
             self.casted.append({
@@ -389,6 +396,7 @@ class Player:
                 'tbuff': {i: j for i, j in self._target.buffs.items()},
                 'fExpect': _fExpect,
                 'cd_盾飞': self.GetSkillCoolDown(13050),
+                'cd_斩刀': self.GetSkillCoolDown(13054),
             })
 
     def GetSkillLevel(self, skill_id):
@@ -505,6 +513,7 @@ class Player:
 
             self._target.DelBuff(50010)  # 删除盾击无视buff, 确保不会被其他技能利用
             self._target.DelBuff(50039)  # 飘黄无视防御buff
+            self.DelBuff(50041, 1)      # 分野会心会效buff
 
             # 会心判定
             fCritical = fPhysicsCriticalPercent
@@ -590,7 +599,7 @@ class Player:
 
             case 13054:
                 # 斩刀
-                recipes = [1838, 1839, 1840, 1841, 1842, 1843, 4409]
+                recipes = [1838, 1839, 1840, 1841, 1842, 1843, 4409, 2520]
 
             case 13055:
                 # 绝刀
@@ -819,6 +828,11 @@ class Player:
         nNewFrame = int(1024 * nOriginFrame / (1024 + nHasteGuo))
         self._gcd_list[cooldown_type] = nNewFrame
 
+        # 延迟计算
+        # 每次添加0类和1类gcd（即真gcd）时添加一次延迟
+        if cooldown_type in {0, 1}:
+            self.nTotalDelayFrame += self.nDelayMsec
+
     def ClearCDTime(self, skill_id, period=None):
         """
         :param skill_id:
@@ -1028,3 +1042,12 @@ class Player:
             return 0
 
         return self.team_mate_data['Stacks'][dwTalentID]
+
+    def SetDelay(self, nDelayMsec):
+        self.nDelayMsec = nDelayMsec
+
+    def GetCumulativeDelayFrame(self) -> int:
+        return int(self.nTotalDelayFrame / 62.5)
+
+    def SetMount(self, dwMountID):
+        self.mount = dwMountID

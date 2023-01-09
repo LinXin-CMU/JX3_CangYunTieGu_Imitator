@@ -4,50 +4,56 @@
 # from time
 
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtChart import QChartView
+from PyQt5.QtCore import QCoreApplication, Qt
 from datetime import datetime
+from PIL import Image
 
 from player.player import Player
 from player.player_recorder import FightRecorder
 from target.target import Target
 from ui.ui_main import MainUI
 
-QChartView()
 
-app = QApplication([])
-ui = MainUI()
+# print("main.py row55 测试用！！记得打包时注释掉！！")
 
 
 class Main:
 
-    def __init__(self):
+    def __init__(self, ui: MainUI):
         self.target = None
         self.player = None
         self.recorder = FightRecorder()
+        self.ui = ui
 
     def run(self):
         # nTime = time.time()
-        nFightTime = ui.get_fight_time()
+        nFightTime = self.ui.get_fight_time()
+        self.ui.set_progress_bar_by_time(nFightTime)
+
         recorder = self.recorder.StartNewFight()
 
         self.target = Target()
-        self.player = Player(ui.get_talent(), ui.get_recipe(), self.target, ui.get_attribute_with_set())
+        self.player = Player(self.ui.get_talent(), self.ui.get_recipe(), self.target, self.ui.get_attribute_with_set())
         self.recorder.SetPlayer(self.player)
         self.target.player = self.player
-        self.target.level = ui.get_level()
-        self.player.settings = ui.get_settings()
+        self.target.level = self.ui.get_level()
+        self.player.SetMount(self.ui.get_mount_id())
+        self.player.settings = self.ui.get_settings()
         self.target.settings = self.player.settings
         self.target.SetNpcAttributeValueByLevel()
         self.player.ActiveHaloByID()
         self.player.SetFightRecorder(recorder)
         self.player.ResetEventCount()
-        self.player.SetAdvanceEffect(ui.get_self_advance_attribute())
-        self.player.SetTeamMateData(ui.get_other_advance_data())
+        self.player.SetAdvanceEffect(self.ui.get_self_advance_attribute())
+        self.player.SetTeamMateData(self.ui.get_other_advance_data())
+        self.player.SetDelay(self.ui.get_delay_msec())
         recorder.SetBaseAttribute(self.player.BaseAttributes)
 
-        nCommand = ui.get_command_id()
+        nCommand = self.ui.get_command_id()
         if not nCommand:
             return
+
+        # nCommand = 60004
 
         skills = {}
         self.player.CastSkill(50015, 1)     # 增益初始化
@@ -71,9 +77,16 @@ class Main:
             print(self.target.buffs)
     
             # 设置进度条
-            ui.progressBar.setValue(i//16)
+            self.ui.progressBar.setValue(i//16)
 
-            i += int(self.player.GetLatestStep())
+            # 判断延迟时间
+            nDelay = self.player.GetCumulativeDelayFrame()
+            if i + nDelay >= nFightTime:
+                break
+            else:
+                i += int(self.player.GetLatestStep())
+
+
 
         for i in self.player.casted:
             if i['name'] not in skills:
@@ -83,15 +96,22 @@ class Main:
                 skills[i['name']]['damage'] += i['damage']
                 skills[i['name']]['critical'] += i['critical']
     
-        ui.label_info.setText(f"[{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 模拟完成！")
-        ui.set_skill_data_table(skills, nFightTime)
-        ui.progressBar.setValue(300)
-        ui.set_attribute_profits(*recorder.end())
-        ui.tabWidget_2.setCurrentIndex(1)
+        self.ui.label_info.setText(f"[{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 模拟完成！")
+        self.ui.set_skill_data_table(skills, nFightTime)
+        self.ui.progressBar.setValue(self.ui.progressBar.maximum())
+
+        profits = recorder.end()
+        self.ui.set_attribute_profits(*profits[0])
+        self.ui.set_stone_profit_table(profits[1])
+        self.ui.tabWidget_2.setCurrentIndex(1)
 
         # print(time.time() - nTime)
         nDps = int(self.player.damage / (nFightTime / 16))
-        ui.add_history(skills, ui.comboBox_14.currentText(), nDps, ui.halo_button.text(), ui.qijin_checkBox.checkState())
+        self.ui.add_history(skills, self.ui.comboBox_14.currentText(), nDps, self.ui.halo_button.text(), self.ui.qijin_checkBox.checkState())
+
+        print(self.player.BaseAttributes)
+        print(self.player.GetAttributeWithoutStone())
+
         return nDps
 
     def get_csv(self):
@@ -103,11 +123,11 @@ class Main:
         with open(f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}-player.csv", 'w', encoding='gbk',
                   newline='') as f:
             csv_writer = csv.DictWriter(f, fieldnames=['second', 'frame', 'name', 'desc', 'rage', 'damage', 'critical',
-                                                       'buff', 'tbuff', 'fExpect', 'cd_盾飞'])
+                                                       'buff', 'tbuff', 'fExpect', 'cd_盾飞', 'cd_斩刀'])
             csv_writer.writeheader()
             csv_writer.writerows(self.player.casted)
 
-        ui.label_info.setText(f"[{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 导出成功！")
+        self.ui.label_info.setText(f"[{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}] 导出成功！")
 
 
 # def multiThread_run():
@@ -123,8 +143,10 @@ class Main:
 
 
 def main():
-    global ui, app
-    main = Main()
+    QCoreApplication.setAttribute(Qt.AA_EnableHighDpiScaling)
+    app = QApplication([])
+    ui = MainUI()
+    main = Main(ui)
     ui.button_main.clicked.connect(main.run)
     ui.button_tocsv.clicked.connect(main.get_csv)
     ui.show()

@@ -2,7 +2,7 @@
 # author: LinXin
 
 talent = {
-    "铁骨衣": {
+    10389: {
         "1": {
             "1": {"name": "狂刀", "icon": 6439, "desc": "盾刀造成的威胁值提高30%。", "order": "1", "pos": 1, "is_skill": 0, "meta": None,
                   "extend": None, "id": "13338"},
@@ -117,7 +117,7 @@ talent = {
                   "order": "12", "pos": 4, "is_skill": 1, "meta": "闻鼓则进，闻金则止，无有不胜。", "extend": "辅助技，有效增加友方近战成员的伤害能力。", "id": "15072"},
             "5": {"name": "断马摧城", "icon": 14087, "desc": "举盾对自身8尺范围最多5个目标造成一次锤击，造成外功伤害并使其眩晕3秒。当前每拥有10点怒气此次伤害提高7.5%，并使其眩晕时长增加0.25秒。被命中的目标受到惊吓，攻击力下降50%，并在5秒内逐渐恢复。外功伤害>",
                   "order": "12", "pos": 5, "is_skill": 1, "meta": "高城楼橹数千重，一追击地勇摧之。", "extend": "攻击技，擎盾状态下方可施展，造成自身范围的高额伤害，怒气高时施展最佳。", "id": "25213"}}},
-    "分山劲": {
+    10390: {
         "1": {
              "1": {"name": "刀魂", "icon": 6291, "desc": "擎刀姿态下自身基础外功攻击力提高15%。", "order": "1", "pos": 1, "is_skill": 0,
                    "meta": None, "extend": None, "id": "13317"},
@@ -303,6 +303,7 @@ recipe = {
     1840: _recipe(36, "atRecipeDamagePercent", "斩刀5%伤害", 0.05),
     1844: _recipe(35, "atSkillEventHandler", "斩刀锁足", None),
     1845: _recipe(41, "atSkillEventHandler", "斩刀解锁足减速", None),
+    2520: _recipe(None, "atRecipeDamagePercent", "绝返斩刀20%伤害", 205/1024),
     # 绝刀
     1848: _recipe(44, "atRecipePhysicsCriticalPercent", "绝刀3%会心", 0.03),
     1849: _recipe(47, "atRecipePhysicsCriticalPercent", "绝刀4%会心", 0.04),

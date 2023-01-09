@@ -41,12 +41,25 @@ def Apply(player: Player, target: Target, dwSkillLevel):
         nPeriod += 1
     if player.IsSkillRecipeActive(1869):
         nPeriod += 1
-    nPeriod *= 16
+    if player.GetSkillLevel("锋鸣") == 1:
+        nPeriod += 24
+
+    nPeriod *= 16   # 转化为帧
 
     if player.GetSkillLevel('愤恨') == 1:
-        buff_xn_id = 8386
+        if player.mount == 10389:
+            buff_xn_id = 8386
+        elif player.mount == 10390:
+            buff_xn_id = 8385
+        else:
+            return
     else:
-        buff_xn_id = 8245
+        if player.mount == 10389:
+            buff_xn_id = 8245
+        elif player.mount == 10390:
+            buff_xn_id = 8244
+        else:
+            return
 
     # 血怒连按处理
     if player.IsHaveBuff(8384):
@@ -86,7 +99,13 @@ def Apply(player: Player, target: Target, dwSkillLevel):
         for i in range(3):
             player.AddBuff(50009, 1)
 
+    # 阵云buff
+    if player.GetSkillLevel("阵云结晦") == 1:
+        player.AddBuff(22993, 1)
 
+    # 锋鸣buff
+    if player.GetSkillLevel("锋鸣") == 1:
+        player.AddBuff(14309, 1)
 
 
     player.rage += nAddRage

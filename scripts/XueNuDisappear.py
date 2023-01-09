@@ -20,11 +20,14 @@ nNeedPosState = None
 
 def Apply(player: Player, target: Target, dwSkillLevel):
 
+    player.DelBuff(8244)
     player.DelBuff(8245)
     player.DelBuff(8382)
     player.DelBuff(8383)
     player.DelBuff(8384)
+    player.DelBuff(8385)
     player.DelBuff(8386)
+    player.DelBuff(14309)
     player.DelBuff(14964)
     player.DelBuff(50009)
 

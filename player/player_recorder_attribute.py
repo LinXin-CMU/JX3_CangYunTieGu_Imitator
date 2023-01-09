@@ -23,7 +23,7 @@ class RecorderAttribute(Attribute):
         self.player = player
 
     def set_base_attribute(self, base_attributes):
-        self.base_attributes = base_attributes
+        self.base_attributes = {k: v for k, v in base_attributes.items()}
 
     def update_slots(self, slots_dict):
         self.slots_dict = slots_dict
@@ -87,6 +87,5 @@ class RecorderAttribute(Attribute):
         value += int(nVitality * slots['atVitalityToPhysicsAttackPowerCof'] / 1024)
 
         return value
-
 
 
